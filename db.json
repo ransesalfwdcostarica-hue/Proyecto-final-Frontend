@@ -15,6 +15,14 @@
       "nombre": "pepe",
       "edad": "19",
       "rol": "admin"
+    },
+    {
+      "id": "8f69",
+      "email": "Rsalasfwdcostarica@gmail.com",
+      "password": "1234",
+      "nombre": "Ronny Salas ",
+      "edad": "18",
+      "rol": "client"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

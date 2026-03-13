@@ -24,32 +24,34 @@ const Navbar = () => {
         <nav className="navbar">
             <div className="navbar-container">
                 <Link to="/" className="navbar-logo">
-                    <Dumbbell className="logo-icon" size={32} />
-                    <span>Power Fit</span>
+                    <Dumbbell className="logo-icon" size={26} />
+                    <span>Power <span style={{ fontWeight: 300, color: 'var(--text-muted)' }}>FIT</span></span>
                 </Link>
 
                 <div className="navbar-links">
+                    <Link to="/plan" className="nav-link">Entrenamientos</Link>
                     <Link to="/dietas" className="nav-link">Dietas</Link>
-                    <Link to="/contacto" className="nav-link">Contacto</Link>
-                    <Link to="/" className="nav-link">
-                        <span>Inicia tu plan ya</span>
-                    </Link>
+                    <Link to="#" className="nav-link">Comunidad</Link>
+                    <Link to="/contacto" className="nav-link">Sobre Nosotros</Link>
                 </div>
 
                 <div className="navbar-actions">
                     {user ? (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <span style={{ color: 'white', fontWeight: '500' }}>Hola, {user.nombre || user.email?.split('@')[0]}</span>
-                            <button onClick={handleLogout} className="nav-login" style={{ cursor: 'pointer', background: 'transparent', border: '1px solid var(--primary)', fontFamily: 'inherit' }}>
-                                <LogOut size={20} />
-                                <span>Salir</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                            <span style={{ color: 'white', fontWeight: '500', fontSize: '0.9rem' }}>Hola, {user.nombre || user.email?.split('@')[0]}</span>
+                            <button onClick={handleLogout} className="nav-btn-outline">
+                                Salir
                             </button>
                         </div>
                     ) : (
-                        <Link to="/login" className="nav-login">
-                            <User size={20} />
-                            <span>Iniciar sesión</span>
-                        </Link>
+                        <>
+                            <Link to="/login" className="nav-login-link">
+                                Iniciar Sesión
+                            </Link>
+                            <Link to="/registro" className="nav-btn-red">
+                                Empieza Ahora
+                            </Link>
+                        </>
                     )}
                 </div>
             </div>

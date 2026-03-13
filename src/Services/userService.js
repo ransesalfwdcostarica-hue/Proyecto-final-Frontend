@@ -28,11 +28,11 @@ export const loginUser = async (email, password) => {
     }
     const users = await response.json();
     const user = users.find(u => u.email === email && u.password === password);
-    
+
     if (!user) {
       throw new Error("Credenciales inválidas");
     }
-    
+
     return user;
   } catch (error) {
     console.error("Login error:", error);
