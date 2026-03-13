@@ -1,0 +1,21 @@
+{
+  "users": [
+    {
+      "id": "872f",
+      "email": "jporrasfwdcostarica@gmail.com",
+      "password": "jheycob12",
+      "nombre": "jocksan Ruiz brr",
+      "edad": "45",
+      "rol": "client"
+    },
+    {
+      "id": "19ad",
+      "email": "pepe@pepe.pepe",
+      "password": "pepe",
+      "nombre": "pepe",
+      "edad": "19",
+      "rol": "admin"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
