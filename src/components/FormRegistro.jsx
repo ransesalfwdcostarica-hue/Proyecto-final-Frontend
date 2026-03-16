@@ -8,8 +8,7 @@ function FormRegistro() {
     email: "",
     password: "",
     nombre: "",
-    edad: "",
-    rol: ""
+    edad: ""
   });
 
   const [error, setError] = useState("");
@@ -28,16 +27,16 @@ function FormRegistro() {
     setError("");
 
     // Simple validacion
-    if (!formData.email || !formData.password || !formData.nombre || !formData.edad || !formData.rol) {
+    if (!formData.email || !formData.password || !formData.nombre || !formData.edad) {
       setError("Todos los campos son obligatorios.");
       return;
     }
 
     setLoading(true);
     try {
-      await registerUser(formData);
+      await registerUser({ ...formData, rol: "client" });
       alert("¡Usuario registrado con éxito!");
-      setFormData({ email: "", password: "", nombre: "", edad: "", rol: "" });
+      setFormData({ email: "", password: "", nombre: "", edad: "" });
     } catch (err) {
       setError("Hubo un error al registrar el usuario. Inténtalo de nuevo.");
     } finally {
@@ -109,24 +108,6 @@ function FormRegistro() {
                 value={formData.edad}
                 onChange={handleChange}
               />
-            </div>
-          </div>
-
-          <div className="auth-form-group">
-            <label className="auth-form-label">Rol de Cuenta</label>
-            <div className="auth-input-wrapper">
-              <Shield className="auth-input-icon" size={18} />
-              <select
-                className="auth-form-input"
-                name="rol"
-                value={formData.rol}
-                onChange={handleChange}
-                style={{ cursor: 'pointer' }}
-              >
-                <option value="" disabled>Selecciona un rol</option>
-                <option value="admin">Administrador</option>
-                <option value="client">Cliente</option>
-              </select>
             </div>
           </div>
         </div>

@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock, User, Hash, Shield } from "lucide-react";
-import { registerUser } from "../services/userService";
+import Swal from 'sweetalert2';
+import { registerUser, checkUserExists } from "../Services/userService.jsx";
 
 function FormRegistro() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -12,7 +14,6 @@ function FormRegistro() {
     rol: ""
   });
 
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -25,21 +26,67 @@ function FormRegistro() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError("");
 
     // Simple validacion
     if (!formData.email || !formData.password || !formData.nombre || !formData.edad || !formData.rol) {
-      setError("Todos los campos son obligatorios.");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos incompletos',
+        text: 'Todos los campos son obligatorios.',
+        background: '#171212',
+        color: '#ffffff',
+        iconColor: '#7d2020',
+        timer: 1500,
+        showConfirmButton: false
+      });
       return;
     }
 
     setLoading(true);
     try {
-      await registerUser(formData);
-      alert("¡Usuario registrado con éxito!");
+      // Verificar si el usuario ya existe
+      const exists = await checkUserExists(formData.email);
+      if (exists) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Este correo electrónico ya está registrado.',
+          background: '#171212',
+          color: '#ffffff',
+          iconColor: '#7d2020',
+          timer: 1500,
+          showConfirmButton: false
+        });
+        setLoading(false);
+        return;
+      }
+
+      const newUser = await registerUser(formData);
+      localStorage.setItem("userId", newUser.id); // Guardamos el ID para el siguiente paso
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Usuario registrado correctamente',
+        background: '#171212',
+        color: '#ffffff',
+        iconColor: '#7d2020',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
       setFormData({ email: "", password: "", nombre: "", edad: "", rol: "" });
-    } catch (err) {
-      setError("Hubo un error al registrar el usuario. Inténtalo de nuevo.");
+      navigate("/perfil-salud");
+    } catch {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un error al registrar el usuario. Inténtalo de nuevo.',
+        background: '#171212',
+        color: '#ffffff',
+        iconColor: '#7d2020',
+        timer: 1500,
+        showConfirmButton: false
+      });
     } finally {
       setLoading(false);
     }
@@ -135,8 +182,6 @@ function FormRegistro() {
           <input type="checkbox" required />
           <span>Acepto los <Link to="#" className="terms-link">Términos de Servicio</Link> y la <Link to="#" className="terms-link">Política de Privacidad</Link>.</span>
         </label>
-
-        {error && <p className="auth-error-text">{error}</p>}
 
         <button
           className="auth-form-button"

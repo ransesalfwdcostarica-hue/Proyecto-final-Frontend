@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
-import { loginUser } from "../services/userService";
+import Swal from 'sweetalert2';
+import { loginUser } from "../Services/userService.jsx";
 
 function FormLogin() {
   const [formData, setFormData] = useState({
@@ -36,10 +37,31 @@ function FormLogin() {
       // Store user info in localStorage
       localStorage.setItem("user", JSON.stringify(user));
 
-      alert(`¡Bienvenido ${user.nombre || user.email}!`);
-      window.location.href = "/";
+      Swal.fire({
+        icon: 'success',
+        title: `¡Bienvenido ${user.nombre || user.email}!`,
+        background: '#171212',
+        color: '#ffffff',
+        iconColor: '#7d2020',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
+
     } catch (err) {
-      setError(err.message || "Error al iniciar sesión. Verifica tus credenciales.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de inicio de sesión',
+        text: err.message || "Credenciales inválidas.",
+        background: '#171212',
+        color: '#ffffff',
+        iconColor: '#7d2020',
+        timer: 2000,
+        showConfirmButton: false
+      });
     } finally {
       setLoading(false);
     }

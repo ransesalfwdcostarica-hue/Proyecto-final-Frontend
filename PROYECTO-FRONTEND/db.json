@@ -1,28 +1,22 @@
 {
   "users": [
     {
-      "id": "872f",
-      "email": "jporrasfwdcostarica@gmail.com",
-      "password": "jheycob12",
-      "nombre": "jocksan Ruiz brr",
-      "edad": "45",
-      "rol": "client"
-    },
-    {
-      "id": "19ad",
-      "email": "pepe@pepe.pepe",
-      "password": "pepe",
-      "nombre": "pepe",
-      "edad": "19",
-      "rol": "admin"
-    },
-    {
-      "id": "8f69",
-      "email": "Rsalasfwdcostarica@gmail.com",
-      "password": "1234",
-      "nombre": "Ronny Salas ",
-      "edad": "18",
-      "rol": "client"
+      "id": "acf5",
+      "email": "arnold@gmail.com",
+      "password": "arnold",
+      "nombre": "Arnold",
+      "edad": "35",
+      "rol": "client",
+      "edadFisica": "35",
+      "sexo": "m",
+      "altura": "190",
+      "peso": "150",
+      "lugarEntrenamiento": "gym",
+      "alergias": "No\n",
+      "pesoActual": 150,
+      "pesoMeta": 100,
+      "plazoSemanas": 12,
+      "deficitEstimado": 450
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

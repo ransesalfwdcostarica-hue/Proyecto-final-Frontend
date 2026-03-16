@@ -9,21 +9,30 @@
       "rol": "client"
     },
     {
-      "id": "19ad",
-      "email": "pepe@pepe.pepe",
-      "password": "pepe",
-      "nombre": "pepe",
-      "edad": "19",
-      "rol": "admin"
-    },
-    {
       "id": "8f69",
       "email": "Rsalasfwdcostarica@gmail.com",
       "password": "1234",
       "nombre": "Ronny Salas ",
       "edad": "18",
       "rol": "client"
+    },
+    {
+      "id": "28d3",
+      "email": "pepe@pepe.pepe",
+      "password": "pepe",
+      "nombre": "pepe",
+      "edad": "22",
+      "rol": "admin"
+    },
+    {
+      "id": "0d12",
+      "email": "Admin@gmail.com",
+      "password": "12345",
+      "nombre": "Admin",
+      "edad": "100",
+      "rol": "admin"
     }
   ],
+  "routines": [],
   "$schema": "./node_modules/json-server/schema.json"
 }
