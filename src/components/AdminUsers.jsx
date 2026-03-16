@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAllUsers, deleteUser } from '../Services/userService';
+import { getAllUsers, deleteUser } from '../services/userService';
 import { Trash2, UserPlus } from 'lucide-react';
 
 const AdminUsers = () => {

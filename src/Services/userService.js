@@ -1,8 +1,17 @@
 const BASE_URL = "http://localhost:3001";
 
+// Helper to handle multiple endpoint names (users/usuarios)
+const multiFetch = async (endpoint, options = {}) => {
+  let response = await fetch(`${BASE_URL}/users${endpoint}`, options);
+  if (response.status === 404) {
+    response = await fetch(`${BASE_URL}/usuarios${endpoint}`, options);
+  }
+  return response;
+};
+
 export const registerUser = async (userData) => {
   try {
-    const response = await fetch(`${BASE_URL}/users`, {
+    const response = await multiFetch("", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -20,17 +29,20 @@ export const registerUser = async (userData) => {
     throw error;
   }
 };
+
 export const loginUser = async (email, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/users`);
+    const response = await multiFetch("");
+    
     if (!response.ok) {
-      throw new Error("Error fetching users");
+      throw new Error(`Error del servidor (${response.status}). Asegúrate de que npm run backend esté activo.`);
     }
+
     const users = await response.json();
-    const user = users.find(u => u.email === email && u.password === password);
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
 
     if (!user) {
-      throw new Error("Credenciales inválidas");
+      throw new Error("Credenciales inválidas. Revisa tu correo y contraseña.");
     }
 
     return user;
@@ -42,7 +54,7 @@ export const loginUser = async (email, password) => {
 
 export const getAllUsers = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/users`);
+    const response = await multiFetch("");
     if (!response.ok) {
       throw new Error("Error fetching users");
     }
@@ -55,7 +67,7 @@ export const getAllUsers = async () => {
 
 export const deleteUser = async (userId) => {
   try {
-    const response = await fetch(`${BASE_URL}/users/${userId}`, {
+    const response = await multiFetch(`/${userId}`, {
       method: "DELETE",
     });
     if (!response.ok) {

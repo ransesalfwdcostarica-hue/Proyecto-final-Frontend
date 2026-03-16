@@ -1,4 +1,5 @@
 import { Mail, Phone, Send, MessageSquare, Bot } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import '../styles/Contacto.css';
 
 const Contacto = () => {
@@ -17,13 +18,13 @@ const Contacto = () => {
                     <div className="info-card">
                         <div className="info-icon"><Phone size={28} /></div>
                         <h3>Llámanos</h3>
-                        <p>+52 555 123 4567</p>
+                        <p>+506 7269 4020</p>
                     </div>
-                    <div className="info-card">
+                    <Link to="/chatbot" className="info-card" style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className="info-icon"><Bot size={28} /></div>
                         <h3>Hablar con chat IA</h3>
                         <p>Respuestas instantáneas 24/7</p>
-                    </div>
+                    </Link>
                     <div className="info-card">
                         <div className="info-icon"><Mail size={28} /></div>
                         <h3>Email</h3>

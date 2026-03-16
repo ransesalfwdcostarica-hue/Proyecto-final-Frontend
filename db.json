@@ -10,11 +10,19 @@
     },
     {
       "id": "0d12",
-      "email": "juan@gmail.com",
-      "password": "jheycob11",
-      "nombre": "Juansitooo",
-      "edad": "34",
+      "email": "Admin@gmail.com",
+      "password": "12345",
+      "nombre": "Admin",
+      "edad": "100",
       "rol": "admin"
+    },
+    {
+      "id": "0d1111",
+      "email": "prueba@gmail.com",
+      "password": "1",
+      "nombre": "prueba",
+      "edad": "1",
+      "rol": "client"
     }
   ],
   "routines": [],

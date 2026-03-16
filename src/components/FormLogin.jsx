@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
-import { loginUser } from "../Services/userService";
+import { loginUser } from "../services/userService";
 
 function FormLogin() {
   const [formData, setFormData] = useState({
@@ -40,7 +40,7 @@ function FormLogin() {
       if (user.rol === "admin") {
         window.location.href = "/admin";
       } else {
-        window.location.href = "/";
+        window.location.href = "/dashboard";
       }
     } catch (err) {
       setError(err.message || "Error al iniciar sesión. Verifica tus credenciales.");

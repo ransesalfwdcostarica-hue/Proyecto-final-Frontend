@@ -1,11 +1,15 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Dumbbell, User, Flame, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import '../styles/Navbar.css';
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [user, setUser] = useState(null);
+    
+    // Check if we are in a dashboard area
+    const isDashboard = location.pathname.includes('/dashboard') || location.pathname.includes('/admin');
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -21,7 +25,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="navbar">
+        <nav className={`navbar ${isDashboard ? 'navbar-solid' : ''}`}>
             <div className="navbar-container">
                 <Link to="/" className="navbar-logo">
                     <Dumbbell className="logo-icon" size={26} />
@@ -39,9 +43,13 @@ const Navbar = () => {
                     {user ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                             <span style={{ color: 'white', fontWeight: '500', fontSize: '0.9rem' }}>Hola, {user.nombre || user.email?.split('@')[0]}</span>
-                            {user.rol === 'admin' && (
+                            {user.rol === 'admin' ? (
                                 <Link to="/admin" className="nav-btn-red" style={{ padding: '0.5rem 1rem' }}>
                                     Panel Admin
+                                </Link>
+                            ) : (
+                                <Link to="/dashboard" className="nav-btn-outline" style={{ padding: '0.5rem 1rem' }}>
+                                    Ver Perfil
                                 </Link>
                             )}
                             <button onClick={handleLogout} className="nav-btn-outline">
