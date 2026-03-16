@@ -8,6 +8,11 @@
     transition: all 0.3s ease;
 }
 
+.navbar-solid {
+    background: #050505 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
 .navbar-container {
     max-width: 1280px;
     margin: 0 auto;

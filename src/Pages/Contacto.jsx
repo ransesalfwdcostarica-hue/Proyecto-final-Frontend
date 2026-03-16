@@ -18,7 +18,7 @@ const Contacto = () => {
                     <div className="info-card">
                         <div className="info-icon"><Phone size={28} /></div>
                         <h3>Llámanos</h3>
-                        <p>+52 555 123 4567</p>
+                        <p>+506 7269 4020</p>
                     </div>
                     <Link to="/chatbot" className="info-card" style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className="info-icon"><Bot size={28} /></div>

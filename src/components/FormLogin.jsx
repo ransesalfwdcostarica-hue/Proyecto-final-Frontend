@@ -37,7 +37,11 @@ function FormLogin() {
       localStorage.setItem("user", JSON.stringify(user));
 
       alert(`¡Bienvenido ${user.nombre || user.email}!`);
-      window.location.href = "/";
+      if (user.rol === "admin") {
+        window.location.href = "/admin";
+      } else {
+        window.location.href = "/dashboard";
+      }
     } catch (err) {
       setError(err.message || "Error al iniciar sesión. Verifica tus credenciales.");
     } finally {
