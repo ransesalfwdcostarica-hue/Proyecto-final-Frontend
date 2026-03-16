@@ -1,22 +1,6 @@
 {
   "users": [
     {
-      "id": "872f",
-      "email": "jporrasfwdcostarica@gmail.com",
-      "password": "jheycob12",
-      "nombre": "jocksan Ruiz brr",
-      "edad": "45",
-      "rol": "client"
-    },
-    {
-      "id": "8f69",
-      "email": "Rsalasfwdcostarica@gmail.com",
-      "password": "1234",
-      "nombre": "Ronny Salas ",
-      "edad": "18",
-      "rol": "client"
-    },
-    {
       "id": "28d3",
       "email": "pepe@pepe.pepe",
       "password": "pepe",
