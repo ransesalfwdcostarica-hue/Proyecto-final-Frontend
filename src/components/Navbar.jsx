@@ -58,7 +58,7 @@ const Navbar = () => {
                         </div>
                     ) : (
                         <>
-                            <Link to="/login" className="nav-login-link">
+                            <Link to="/login" className="nav-btn-outline">
                                 Iniciar Sesión
                             </Link>
                             <Link to="/registro" className="nav-btn-red">

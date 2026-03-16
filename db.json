@@ -31,6 +31,46 @@
       "nombre": "Admin",
       "edad": "100",
       "rol": "admin"
+    },
+    {
+      "id": "29fd",
+      "email": "ranses@gmail.com",
+      "password": "R4nses_2008",
+      "nombre": "Ranses",
+      "edad": "20",
+      "rol": "client"
+    },
+    {
+      "id": "c24c",
+      "email": "testuser_1742160000@example.com",
+      "password": "Password123!",
+      "nombre": "Test User",
+      "edad": "25",
+      "rol": "client",
+      "edadFisica": "25",
+      "sexo": "m",
+      "altura": "180",
+      "peso": "75",
+      "lugarEntrenamiento": "gym",
+      "alergias": "Ning"
+    },
+    {
+      "id": "a358",
+      "email": "pepe@pepe",
+      "password": "pepe",
+      "nombre": "Pepe",
+      "edad": "20",
+      "rol": "client",
+      "edadFisica": "20",
+      "sexo": "m",
+      "altura": "190",
+      "peso": "90",
+      "lugarEntrenamiento": "gym",
+      "alergias": "No",
+      "pesoActual": 90,
+      "pesoMeta": 75,
+      "plazoSemanas": 8,
+      "deficitEstimado": 450
     }
   ],
   "routines": [],
