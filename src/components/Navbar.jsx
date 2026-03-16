@@ -39,6 +39,11 @@ const Navbar = () => {
                     {user ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                             <span style={{ color: 'white', fontWeight: '500', fontSize: '0.9rem' }}>Hola, {user.nombre || user.email?.split('@')[0]}</span>
+                            {user.rol === 'admin' && (
+                                <Link to="/admin" className="nav-btn-red" style={{ padding: '0.5rem 1rem' }}>
+                                    Panel Admin
+                                </Link>
+                            )}
                             <button onClick={handleLogout} className="nav-btn-outline">
                                 Salir
                             </button>

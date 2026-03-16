@@ -4,6 +4,8 @@ import Home from '../pages/Home';
 import Contacto from '../pages/Contacto';
 import Login from '../pages/Login';
 import Registro from '../Pages/Registro';
+import DashboardAdmin from '../Pages/DashboardAdmin';
+
 const Routing = () => {
     return (
         <Router>
@@ -16,6 +18,7 @@ const Routing = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/registro" element={<Registro />} />
                 <Route path="/plan" element={<div style={{ paddingTop: '100px', textAlign: 'center' }}><h2>Elige tu Plan</h2></div>} />
+                <Route path="/admin" element={<DashboardAdmin />} />
             </Routes>
         </Router>
     );
