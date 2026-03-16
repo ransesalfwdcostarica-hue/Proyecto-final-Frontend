@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import Home from '../pages/Home';
-import Contacto from '../pages/Contacto';
-import Login from '../pages/Login';
-import Registro from '../pages/Registro';
+import Home from '../Pages/Home';
+import Contacto from '../Pages/Contacto';
+import Login from '../Pages/Login';
+import Registro from '../Pages/Registro';
+import Chatbot from '../pages/Chatbot';
 
 const Routing = () => {
     return (
@@ -16,6 +17,7 @@ const Routing = () => {
                 <Route path="/dietas" element={<div style={{ paddingTop: '100px', textAlign: 'center' }}><h2>Sección de Dietas en construcción</h2></div>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/registro" element={<Registro />} />
+                <Route path="/chatbot" element={<Chatbot />} />
                 <Route path="/plan" element={<div style={{ paddingTop: '100px', textAlign: 'center' }}><h2>Elige tu Plan</h2></div>} />
             </Routes>
         </Router>

@@ -2,7 +2,7 @@ const BASE_URL = "http://localhost:3001";
 
 export const registerUser = async (userData) => {
   try {
-    const response = await fetch(`${BASE_URL}/users`, {
+    const response = await fetch(`${BASE_URL}/usuarios`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -22,7 +22,7 @@ export const registerUser = async (userData) => {
 };
 export const loginUser = async (email, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/users`);
+    const response = await fetch(`${BASE_URL}/usuarios`);
     if (!response.ok) {
       throw new Error("Error fetching users");
     }
