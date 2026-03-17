@@ -1,12 +1,8 @@
 const BASE_URL = "http://localhost:3001";
 
-// Helper to handle multiple endpoint names (users/usuarios)
+// Helper to handle endpoint names (usuarios is the one in db.json)
 const multiFetch = async (endpoint, options = {}) => {
-  let response = await fetch(`${BASE_URL}/users${endpoint}`, options);
-  if (response.status === 404) {
-    response = await fetch(`${BASE_URL}/usuarios${endpoint}`, options);
-  }
-  return response;
+  return await fetch(`${BASE_URL}/usuarios${endpoint}`, options);
 };
 
 export const registerUser = async (userData) => {
