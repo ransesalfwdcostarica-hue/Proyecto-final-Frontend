@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Mail, Lock, User, Hash, Shield } from "lucide-react";
+import { Mail, Lock, User, Hash, Shield, CheckCircle } from "lucide-react";
 import { registerUser } from "../services/userService";
 
 function FormRegistro() {
@@ -13,6 +13,7 @@ function FormRegistro() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,7 +36,7 @@ function FormRegistro() {
     setLoading(true);
     try {
       await registerUser({ ...formData, rol: "client" });
-      alert("¡Usuario registrado con éxito!");
+      setIsNotificationOpen(true);
       setFormData({ email: "", password: "", nombre: "", edad: "" });
     } catch (err) {
       setError("Hubo un error al registrar el usuario. Inténtalo de nuevo.");
@@ -144,6 +145,28 @@ function FormRegistro() {
       <div className="auth-footer-text">
         <p>¿Ya tienes una cuenta? <Link to="/login" className="auth-link">Iniciar Sesión</Link></p>
       </div>
+
+      {/* Modal de Notificación Personalizada */}
+      {isNotificationOpen && (
+        <div className="notification-overlay">
+          <div className="notification-content animate-fade-in success">
+            <div className="notification-icon-container">
+              <CheckCircle size={48} color="#05cd99" />
+            </div>
+            <h3>¡Cuenta Creada!</h3>
+            <p>Tu registro ha sido exitoso. Ahora puedes iniciar sesión para acceder a tu perfil fitness.</p>
+            <div className="modal-actions-column">
+              <Link to="/login" className="btn-notification">Ir al Inicio de Sesión</Link>
+              <button 
+                className="btn-cancel-link" 
+                onClick={() => setIsNotificationOpen(false)}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

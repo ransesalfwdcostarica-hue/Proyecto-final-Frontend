@@ -1,4 +1,4 @@
-import { Mail, Phone, Send, MessageSquare, Bot } from 'lucide-react';
+import { Mail, Phone, Send, MessageSquare, Bot, History, Target, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import '../styles/Contacto.css';
 
@@ -61,6 +61,41 @@ const Contacto = () => {
                                 <Send size={18} /> Enviar Mensaje
                             </button>
                         </form>
+                    </div>
+                </div>
+
+                {/* Our Story and Mission Sections */}
+                <div className="about-sections animate-fade-in delay-300">
+                    <div className="about-grid">
+                        <div className="about-card history-card">
+                            <div className="about-icon-wrapper">
+                                <History size={32} />
+                            </div>
+                            <div className="about-text">
+                                <h2>Nuestra Historia</h2>
+                                <p>
+                                    PowerFit nació de la pasión por transformar vidas a través del fitness. Lo que comenzó como un pequeño grupo de entusiastas, se convirtió en una plataforma dedicada a romper las barreras que impiden a las personas alcanzar su mejor versión. Creemos que el fitness no es solo levantar pesas, sino construir una mentalidad inquebrantable.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="about-card mission-card">
+                            <div className="about-icon-wrapper">
+                                <Target size={32} />
+                            </div>
+                            <div className="about-text">
+                                <h2>Nuestra Misión</h2>
+                                <p>
+                                    Democratizar el acceso a entrenamientos de élite y nutrición experta. Queremos ayudar a cada persona, sin importar su punto de partida, a descubrir su fuerza interior y transformar su salud física y mental mediante herramientas tecnológicas innovadoras y una comunidad de apoyo real.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="about-footer-card">
+                        <Users size={40} className="text-primary" />
+                        <h3>Únete a la evolución</h3>
+                        <p>Más que una aplicación, somos el compañero que nunca te deja rendirte.</p>
                     </div>
                 </div>
             </div>
