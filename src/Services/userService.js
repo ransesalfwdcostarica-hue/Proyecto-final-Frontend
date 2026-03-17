@@ -81,7 +81,7 @@ export const deleteUser = async (userId) => {
 
 export const checkUserExists = async (email) => {
   try {
-    const response = await fetch(`${BASE_URL}/users`);
+    const response = await multiFetch("");
     if (!response.ok) {
       throw new Error("Error fetching users");
     }
@@ -92,6 +92,7 @@ export const checkUserExists = async (email) => {
     throw error;
   }
 };
+
 
 export const updateUser = async (userId, userData) => {
   try {

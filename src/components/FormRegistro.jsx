@@ -1,19 +1,16 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Mail, Lock, User, Hash, Shield } from "lucide-react";
 import Swal from 'sweetalert2';
-import { registerUser } from "../Services/userService";
 import { checkUserExists } from "../Services/userService.js";
-import FormFisic from "./FormFisic.jsx";
 
-function FormRegistro() {
-  const navigate = useNavigate();
+function FormRegistro({ userData, onNext }) {
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    nombre: "",
-    edad: "",
-    rol: ""
+    email: userData.email,
+    password: userData.password,
+    nombre: userData.nombre,
+    edad: userData.edad,
+    rol: userData.rol
   });
 
   const [loading, setLoading] = useState(false);
@@ -26,7 +23,7 @@ function FormRegistro() {
     }));
   };
 
-  const handleRegister = async (e) => {
+  const handleNext = async (e) => {
     e.preventDefault();
 
     // Simple validacion
@@ -63,26 +60,12 @@ function FormRegistro() {
         return;
       }
 
-      const newUser = await registerUser(formData);
-      localStorage.setItem("userId", newUser.id); // Guardamos el ID para el siguiente paso
-      
-      Swal.fire({
-        icon: 'success',
-        title: 'Usuario registrado correctamente',
-        background: '#171212',
-        color: '#ffffff',
-        iconColor: '#7d2020',
-        timer: 1500,
-        showConfirmButton: false
-      });
-
-      setFormData({ email: "", password: "", nombre: "", edad: "", rol: "" });
-      navigate("/formFisic");
+      onNext(formData);
     } catch {
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'Hubo un error al registrar el usuario. Inténtalo de nuevo.',
+        text: 'Hubo un error al verificar el usuario. Inténtalo de nuevo.',
         background: '#171212',
         color: '#ffffff',
         iconColor: '#7d2020',
@@ -99,7 +82,7 @@ function FormRegistro() {
       <h2 className="auth-title-large">Crear Cuenta</h2>
       <p className="auth-subtitle">Inicia tu viaje fitness hoy mismo</p>
 
-      <form className="auth-form" onSubmit={handleRegister}>
+      <form className="auth-form" onSubmit={handleNext}>
         <div className="auth-form-group">
           <label className="auth-form-label">Nombre Completo</label>
           <div className="auth-input-wrapper">
@@ -190,7 +173,7 @@ function FormRegistro() {
           type="submit"
           disabled={loading}
         >
-          {loading ? "Creando..." : "Crear Cuenta"}
+          {loading ? "Siguiente..." : "Continuar"}
         </button>
       </form>
 
@@ -215,3 +198,4 @@ function FormRegistro() {
 }
 
 export default FormRegistro;
+

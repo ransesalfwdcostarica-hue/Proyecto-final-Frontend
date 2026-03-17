@@ -1,5 +1,5 @@
 import { Zap, Calendar, Utensils, Dumbbell, Activity, TrendingUp } from 'lucide-react';
-import '../styles/Home.css';
+import '../Styles/Home.css';
 import { Link } from 'react-router-dom';
 
 const Home = () => {

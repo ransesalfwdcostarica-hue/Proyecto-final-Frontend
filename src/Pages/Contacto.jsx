@@ -1,6 +1,6 @@
 import { Mail, Phone, Send, MessageSquare, Bot } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import '../styles/Contacto.css';
+import '../Styles/Contacto.css';
 
 const Contacto = () => {
     return (

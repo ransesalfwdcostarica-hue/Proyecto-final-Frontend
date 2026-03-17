@@ -71,6 +71,32 @@
       "pesoMeta": 75,
       "plazoSemanas": 8,
       "deficitEstimado": 450
+    },
+    {
+      "id": "c604",
+      "email": "ransesalfwdcostarica@gmail.com",
+      "password": "R4nses_2008",
+      "nombre": "Ransés Alvir",
+      "edad": "20",
+      "rol": "client"
+    },
+    {
+      "id": "9959",
+      "email": "ransesalvir75@gmail.com",
+      "password": "R4nses_2008",
+      "nombre": "Ransés",
+      "edad": "20",
+      "rol": "client",
+      "edadFisica": "20",
+      "sexo": "m",
+      "altura": "190",
+      "peso": "250",
+      "lugarEntrenamiento": "gym",
+      "alergias": "no",
+      "pesoMeta": 100,
+      "plazoSemanas": 12,
+      "pesoActual": "250",
+      "deficitEstimado": 450
     }
   ],
   "routines": [],

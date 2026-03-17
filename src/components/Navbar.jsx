@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Dumbbell, User, Flame, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import '../styles/Navbar.css';
+import '../Styles/Navbar.css';
 
 const Navbar = () => {
     const navigate = useNavigate();
