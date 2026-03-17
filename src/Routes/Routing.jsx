@@ -7,6 +7,7 @@ import Registro from '../Pages/Registro';
 import Chatbot from '../Pages/Chatbot';
 import DashboardAdmin from '../Pages/DashboardAdmin';
 import DashboardCliente from '../Pages/DashboardCliente';
+import Testimonios from '../Pages/Testimonios';
 
 const Routing = () => {
     return (
@@ -22,6 +23,7 @@ const Routing = () => {
                 <Route path="/plan" element={<div style={{ paddingTop: '100px', textAlign: 'center' }}><h2>Elige tu Plan</h2></div>} />
                 <Route path="/admin" element={<DashboardAdmin />} />
                 <Route path="/dashboard" element={<DashboardCliente />} />
+                <Route path="/comunidad" element={<Testimonios />} />
             </Routes>
         </Router>
     );
