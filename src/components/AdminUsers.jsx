@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getAllUsers, deleteUser } from '../services/userService';
-import { Trash2, UserPlus } from 'lucide-react';
+import { Trash2, UserPlus, AlertTriangle, X } from 'lucide-react';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [userIdToDelete, setUserIdToDelete] = useState(null);
 
   useEffect(() => {
     loadUsers();
@@ -22,14 +24,21 @@ const AdminUsers = () => {
     }
   };
 
-  const handleDelete = async (userId) => {
-    if (window.confirm('¿Estás seguro que deseas eliminar este usuario?')) {
-      try {
-        await deleteUser(userId);
-        setUsers(users.filter(u => u.id !== userId));
-      } catch (error) {
-        alert("Error al eliminar usuario");
-      }
+  const handleDelete = (userId) => {
+    setUserIdToDelete(userId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteUser = async () => {
+    if (!userIdToDelete) return;
+
+    try {
+      await deleteUser(userIdToDelete);
+      setUsers(users.filter(u => u.id !== userIdToDelete));
+      setIsDeleteModalOpen(false);
+      setUserIdToDelete(null);
+    } catch (error) {
+      alert("Error al eliminar usuario");
     }
   };
 
@@ -95,6 +104,23 @@ const AdminUsers = () => {
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Modal de confirmación de eliminación */}
+      {isDeleteModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content confirm-modal animate-fade-in">
+            <div className="confirm-icon-container">
+              <AlertTriangle size={48} color="#ff4d4d" />
+            </div>
+            <h3>¿Eliminar Usuario?</h3>
+            <p>Esta acción es irreversible y el usuario perderá el acceso a la plataforma permanentemente.</p>
+            <div className="modal-actions-column">
+              <button className="btn-cancel-full" onClick={() => setIsDeleteModalOpen(false)}>No, Mantener Usuario</button>
+              <button className="btn-delete-full" onClick={confirmDeleteUser}>Sí, Eliminar Usuario</button>
+            </div>
+          </div>
         </div>
       )}
     </div>
