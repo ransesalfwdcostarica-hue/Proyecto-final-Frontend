@@ -1,4 +1,4 @@
-import { Mail, Phone, Send, MessageSquare, Bot } from 'lucide-react';
+import { Mail, Phone, Send, MessageSquare, Bot, Instagram, Facebook, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import '../styles/Contacto.css';
 
@@ -32,8 +32,27 @@ const Contacto = () => {
                     </div>
                 </div>
 
+                {/* Social Media Section */}
+                <div className="social-section animate-fade-in delay-200">
+                    <h2 className="social-title">Siguenos en Redes</h2>
+                    <div className="social-grid">
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-card instagram">
+                            <Instagram size={32} />
+                            <span>Instagram</span>
+                        </a>
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-card facebook">
+                            <Facebook size={32} />
+                            <span>Facebook</span>
+                        </a>
+                        <a href="https://wa.me/50672694020" target="_blank" rel="noopener noreferrer" className="social-card whatsapp">
+                            <MessageCircle size={32} />
+                            <span>WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+
                 {/* Support Form */}
-                <div className="soporte-section animate-fade-in delay-200">
+                <div className="soporte-section animate-fade-in delay-300">
                     <div className="soporte-form-container">
                         <div className="form-header">
                             <MessageSquare className="text-primary" size={32} />
