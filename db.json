@@ -1,36 +1,22 @@
 {
   "usuarios": [
     {
-      "id": "0d12",
-      "email": "Admin@gmail.com",
-      "password": "12345",
-      "nombre": "Admin",
-      "edad": "100",
-      "rol": "admin"
-    },
-    {
-      "id": "35ae",
-      "email": "adriancamposcisnero@gmail.com",
-      "password": "a",
-      "nombre": "camil",
-      "edad": "64",
-      "rol": "client"
-    },
-    {
-      "id": "f973",
-      "email": "Faaahhh@faaah.com",
-      "password": "fah",
-      "nombre": "Faahhh Jimenez",
-      "edad": "23",
-      "rol": "client"
-    },
-    {
-      "id": "eb3d",
-      "email": "papoi@papoi.com",
-      "password": "papoi",
-      "nombre": "papu",
-      "edad": "22",
-      "rol": "client"
+      "id": "0947",
+      "email": "pepe@pepe",
+      "password": "pepe",
+      "nombre": "pepe",
+      "edad": "20",
+      "rol": "client",
+      "edadFisica": "20",
+      "sexo": "m",
+      "altura": "170",
+      "peso": "130",
+      "lugarEntrenamiento": "gym",
+      "alergias": "no",
+      "pesoMeta": 70,
+      "plazoSemanas": 12,
+      "pesoActual": "130",
+      "deficitEstimado": 450
     }
   ],
   "stories": [
@@ -120,6 +106,15 @@
       "role": "Gurú de la Nutrición",
       "points": "850 pts",
       "avatar": "https://i.pravatar.cc/150?u=tyler"
+    }
+  ],
+  "contactos": [
+    {
+      "id": "8747",
+      "nombre": "Ranses Alvir",
+      "contacto": "ransesalvir@gmail.coom",
+      "mensaje": "Chatbot no responde ",
+      "fecha": "2026-03-17T21:40:48.164Z"
     }
   ]
 }

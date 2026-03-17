@@ -71,7 +71,6 @@ const FormFisic = ({ userData, onNext, onBack }) => {
                     <option value="" disabled>Seleccione una opción</option>
                     <option value="m">Masculino</option>
                     <option value="f">Femenino</option>
-                    <option value="o">Otro</option>
                   </select>
                 </div>
               </div>

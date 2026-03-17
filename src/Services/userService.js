@@ -114,3 +114,24 @@ export const updateUser = async (userId, userData) => {
     throw error;
   }
 };
+
+export const saveContactMessage = async (messageData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/contactos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(messageData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Contact form error:", error);
+    throw error;
+  }
+};

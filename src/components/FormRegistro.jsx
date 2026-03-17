@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, Lock, User, Hash, Shield } from "lucide-react";
-import Swal from 'sweetalert2';
-import { checkUserExists } from "../Services/userService.js";
 
 function FormRegistro({ userData, onNext }) {
   const [formData, setFormData] = useState({
-    email: userData.email || "",
-    password: userData.password || "",
-    nombre: userData.nombre || "",
-    edad: userData.edad || "",
-    rol: userData.rol || ""
+    email: userData?.email || "",
+    password: userData?.password || "",
+    nombre: userData?.nombre || "",
+    edad: userData?.edad || ""
   });
 
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -23,58 +21,22 @@ function FormRegistro({ userData, onNext }) {
     }));
   };
 
-  const handleNext = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
 
     // Simple validacion
-    if (!formData.email || !formData.password || !formData.nombre || !formData.edad || !formData.rol) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Campos incompletos',
-        text: 'Todos los campos son obligatorios.',
-        background: '#171212',
-        color: '#ffffff',
-        iconColor: '#7d2020',
-        timer: 1500,
-        showConfirmButton: false
-      });
+    if (!formData.email || !formData.password || !formData.nombre || !formData.edad) {
+      setError("Todos los campos son obligatorios.");
       return;
     }
 
     setLoading(true);
-    try {
-      // Verificar si el usuario ya existe
-      const exists = await checkUserExists(formData.email);
-      if (exists) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Este correo electrónico ya está registrado.',
-          background: '#171212',
-          color: '#ffffff',
-          iconColor: '#7d2020',
-          timer: 1500,
-          showConfirmButton: false
-        });
-        setLoading(false);
-        return;
-      }
-
-      onNext(formData);
-    } catch {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Hubo un error al verificar el usuario. Inténtalo de nuevo.',
-        background: '#171212',
-        color: '#ffffff',
-        iconColor: '#7d2020',
-        timer: 1500,
-        showConfirmButton: false
-      });
-    } finally {
+    // Simulate a brief loading state for UX
+    setTimeout(() => {
       setLoading(false);
-    }
+      onNext({ ...formData, rol: "client" });
+    }, 500);
   };
 
   return (
@@ -82,7 +44,7 @@ function FormRegistro({ userData, onNext }) {
       <h2 className="auth-title-large">Crear Cuenta</h2>
       <p className="auth-subtitle">Inicia tu viaje fitness hoy mismo</p>
 
-      <form className="auth-form" onSubmit={handleNext}>
+      <form className="auth-form" onSubmit={handleRegister}>
         <div className="auth-form-group">
           <label className="auth-form-label">Nombre Completo</label>
           <div className="auth-input-wrapper">
@@ -143,24 +105,6 @@ function FormRegistro({ userData, onNext }) {
               />
             </div>
           </div>
-
-          <div className="auth-form-group">
-            <label className="auth-form-label">Rol de Cuenta</label>
-            <div className="auth-input-wrapper">
-              <Shield className="auth-input-icon" size={18} />
-              <select
-                className="auth-form-input"
-                name="rol"
-                value={formData.rol}
-                onChange={handleChange}
-                style={{ cursor: 'pointer' }}
-              >
-                <option value="" disabled>Selecciona un rol</option>
-                <option value="admin">Administrador</option>
-                <option value="client">Cliente</option>
-              </select>
-            </div>
-          </div>
         </div>
 
         <label className="terms-checkbox">
@@ -168,12 +112,14 @@ function FormRegistro({ userData, onNext }) {
           <span>Acepto los <Link to="#" className="terms-link">Términos de Servicio</Link> y la <Link to="#" className="terms-link">Política de Privacidad</Link>.</span>
         </label>
 
+        {error && <p className="auth-error-text">{error}</p>}
+
         <button
           className="auth-form-button"
           type="submit"
           disabled={loading}
         >
-          {loading ? "Siguiente..." : "Continuar"}
+          {loading ? "Continuando..." : "Siguiente"}
         </button>
       </form>
 
@@ -197,5 +143,4 @@ function FormRegistro({ userData, onNext }) {
   );
 }
 
-export default FormRegistro;
-
+export default FormRegistro;
