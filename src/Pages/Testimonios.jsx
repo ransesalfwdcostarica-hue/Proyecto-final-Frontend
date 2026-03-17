@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, MessageSquare, ThumbsUp, Share2, Award, TrendingUp, Dumbbell, MoreHorizontal } from 'lucide-react';
+import { Search, Plus, MessageSquare, ThumbsUp, Share2, Award, TrendingUp, Dumbbell, MoreHorizontal, X, Upload, Trash2, AlertTriangle } from 'lucide-react';
 import '../styles/SuccessStories.css';
 
 const Testimonios = () => {
@@ -10,6 +10,116 @@ const Testimonios = () => {
     const [activeTab, setActiveTab] = useState('Todas las Historias');
     const [searchQuery, setSearchQuery] = useState('');
     const [localLikes, setLocalLikes] = useState({});
+
+    // Modal state
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [newStory, setNewStory] = useState({
+        title: '',
+        text: '',
+        category: 'Pérdida de Peso',
+        image: ''
+    });
+
+    // Delete Modal state
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [storyIdToDelete, setStoryIdToDelete] = useState(null);
+
+    const handleOpenModal = () => {
+        const storedUser = localStorage.getItem('user');
+        if (!storedUser) {
+            alert('Debes iniciar sesión para compartir tu historia.');
+            return;
+        }
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setNewStory({ title: '', text: '', category: 'Pérdida de Peso', image: '' });
+    };
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setNewStory({ ...newStory, image: reader.result });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleSubmitStory = async (e) => {
+        e.preventDefault();
+        const storedUserJSON = localStorage.getItem('user');
+        if (!storedUserJSON) {
+            alert('Sesión expirada. Por favor, inicia sesión nuevamente.');
+            return;
+        }
+
+        const user = JSON.parse(storedUserJSON);
+        
+        const storyPayload = {
+            userId: user.id || `u_${Date.now()}`,
+            userName: user.nombre || "Usuario",
+            userAvatar: `https://i.pravatar.cc/150?u=${user.id || Math.random()}`,
+            time: "Justo ahora",
+            tag: newStory.category,
+            title: newStory.title,
+            text: newStory.text,
+            category: newStory.category,
+            image: newStory.image || null,
+            likes: 0,
+            comments: 0
+        };
+
+        try {
+            const response = await fetch('http://localhost:3001/stories', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(storyPayload)
+            });
+
+            if (response.ok) {
+                const createdStory = await response.json();
+                setStories([createdStory, ...stories]);
+                handleCloseModal();
+            } else {
+                alert('Hubo un error al publicar tu historia.');
+            }
+        } catch (error) {
+            console.error('Error post story:', error);
+            alert('Error de red al intentar publicar.');
+        }
+    };
+
+    const handleDeleteStory = (id) => {
+        setStoryIdToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!storyIdToDelete) return;
+
+        try {
+            const response = await fetch(`http://localhost:3001/stories/${storyIdToDelete}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                setStories(stories.filter(story => story.id !== storyIdToDelete));
+                setIsDeleteModalOpen(false);
+                setStoryIdToDelete(null);
+            } else {
+                alert('Hubo un error al eliminar el testimonio.');
+            }
+        } catch (error) {
+            console.error('Error deleting story:', error);
+            alert('Error de red al intentar eliminar.');
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -73,7 +183,7 @@ const Testimonios = () => {
                                 Transformaciones reales de nuestra comunidad dedicada. Inspírate y comparte tu propio viaje.
                             </p>
                         </div>
-                        <button className="btn-share">
+                        <button className="btn-share" onClick={handleOpenModal}>
                             <Plus size={20} />
                             <span>Comparte tu historia</span>
                         </button>
@@ -125,9 +235,20 @@ const Testimonios = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <button className="btn-more">
-                                            <MoreHorizontal size={20} />
-                                        </button>
+                                        <div className="story-header-actions">
+                                            {localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).id === story.userId && (
+                                                <button 
+                                                    className="btn-delete" 
+                                                    onClick={() => handleDeleteStory(story.id)}
+                                                    title="Eliminar testimonio"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            )}
+                                            <button className="btn-more">
+                                                <MoreHorizontal size={20} />
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <div className="story-content">
@@ -229,6 +350,97 @@ const Testimonios = () => {
                     </aside>
                 </div>
             </div>
+
+            {/* Modal para nueva historia */}
+            {isModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content animate-fade-in">
+                        <div className="modal-header">
+                            <h2>Compartir mi Historia</h2>
+                            <button className="btn-close" onClick={handleCloseModal}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <form onSubmit={handleSubmitStory} className="story-form">
+                            <div className="form-group">
+                                <label>Título de tu experiencia</label>
+                                <input 
+                                    type="text" 
+                                    placeholder="Ej: ¡Perdí 5kg y me siento increíble!" 
+                                    value={newStory.title}
+                                    onChange={(e) => setNewStory({...newStory, title: e.target.value})}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Categoría</label>
+                                <select 
+                                    value={newStory.category}
+                                    onChange={(e) => setNewStory({...newStory, category: e.target.value})}
+                                    required
+                                >
+                                    <option value="Pérdida de Peso">Pérdida de Peso</option>
+                                    <option value="Ganancia de Músculo">Ganancia de Músculo</option>
+                                    <option value="Consejos de Expertos">Consejos de Expertos</option>
+                                    <option value="General">General</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Tu historia</label>
+                                <textarea 
+                                    rows="5" 
+                                    placeholder="Cuenta a la comunidad sobre tu progreso..."
+                                    value={newStory.text}
+                                    onChange={(e) => setNewStory({...newStory, text: e.target.value})}
+                                    required
+                                ></textarea>
+                            </div>
+                            <div className="form-group">
+                                <label>Foto de progreso (Opcional)</label>
+                                <div className="upload-container">
+                                    <input 
+                                        type="file" 
+                                        id="image-upload" 
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className="file-input"
+                                    />
+                                    <label htmlFor="image-upload" className="upload-label">
+                                        <Upload size={20} />
+                                        <span>{newStory.image ? 'Cambiar imagen' : 'Subir imagen'}</span>
+                                    </label>
+                                </div>
+                                {newStory.image && (
+                                    <div className="image-preview">
+                                        <img src={newStory.image} alt="Preview" />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="modal-actions">
+                                <button type="button" className="btn-cancel" onClick={handleCloseModal}>Cancelar</button>
+                                <button type="submit" className="btn-submit">Publicar Historia</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de confirmación de eliminación */}
+            {isDeleteModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content confirm-modal animate-fade-in">
+                        <div className="confirm-icon-container">
+                            <AlertTriangle size={48} color="#ff4d4d" />
+                        </div>
+                        <h3>¿Eliminar testimonio?</h3>
+                        <p>Esta acción no se puede deshacer. Tu historia será eliminada permanentemente de la comunidad.</p>
+                        <div className="modal-actions full-width">
+                            <button className="btn-cancel" onClick={() => setIsDeleteModalOpen(false)}>Cancelar</button>
+                            <button className="btn-delete-confirm" onClick={confirmDelete}>Eliminar permanentemente</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

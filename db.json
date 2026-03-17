@@ -1,0 +1,109 @@
+{
+  "usuarios": [
+    {
+      "id": "0d12",
+      "email": "Admin@gmail.com",
+      "password": "12345",
+      "nombre": "Admin",
+      "edad": "100",
+      "rol": "admin"
+    },
+    {
+      "id": "35ae",
+      "email": "adriancamposcisnero@gmail.com",
+      "password": "a",
+      "nombre": "camil",
+      "edad": "64",
+      "rol": "client"
+    }
+  ],
+  "stories": [
+    {
+      "id": "s1",
+      "userId": "u1",
+      "userName": "Sarah Jenkins",
+      "userAvatar": "https://i.pravatar.cc/150?u=sarah",
+      "time": "Hace 2 días",
+      "tag": "Programa de Alta Intensidad",
+      "title": "¡Perdí 10kg en 3 meses! Mi viaje.",
+      "text": "La consistencia fue clave. Seguí el programa de alta intensidad y me mantuve firme con el plan de comidas religiosamente. Las primeras semanas fueron las más difíciles, pero una vez que empecé a ver resultados, no hubo vuelta atrás.",
+      "category": "Pérdida de Peso",
+      "imageBefore": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
+      "imageAfter": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
+      "likes": 142,
+      "comments": 24
+    },
+    {
+      "id": "s2",
+      "userId": "u2",
+      "userName": "David Chen",
+      "userAvatar": "https://i.pravatar.cc/150?u=david",
+      "time": "Hace 5 horas",
+      "tag": "Entrenamiento de Fuerza",
+      "title": "De Delgado a Fuerte: 1 Año de Progreso",
+      "text": "Solía tener problemas para ganar peso. El programa de fuerza personalizado aquí lo cambió todo. Me enfoqué en movimientos compuestos y aumenté mi ingesta calórica. ¡Es un maratón, no un sprint!",
+      "category": "Ganancia de Músculo",
+      "image": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
+      "likes": 89,
+      "comments": 12
+    },
+    {
+      "id": "s3",
+      "userId": "u3",
+      "userName": "Emma Wilson",
+      "userAvatar": "https://i.pravatar.cc/150?u=emma",
+      "time": "Hace 1 semana",
+      "tag": "Guía Nutricional",
+      "title": "Cómo arreglé mi relación con la comida",
+      "text": "Los consejos de expertos me ayudaron a darme cuenta de que la restricción no es la solución. Aprender sobre macros y balance fue un cambio radical por mi salud mental y física.",
+      "category": "Consejos de Expertos",
+      "likes": 210,
+      "comments": 45
+    }
+  ],
+  "trendingTopics": [
+    {
+      "id": 1,
+      "topic": "#AyunoIntermitente",
+      "count": "2.4k miembros"
+    },
+    {
+      "id": 2,
+      "topic": "#EquipoEntrenamientoCasa",
+      "count": "1.8k miembros"
+    },
+    {
+      "id": 3,
+      "topic": "#ObjetivosDeProteina",
+      "count": "890 miembros"
+    },
+    {
+      "id": 4,
+      "topic": "#RetoVerano2024",
+      "count": "3.1k miembros"
+    }
+  ],
+  "topContributors": [
+    {
+      "id": 1,
+      "name": "Marcus V.",
+      "role": "Entrenador de Élite",
+      "points": "1.2k pts",
+      "avatar": "https://i.pravatar.cc/150?u=marcus"
+    },
+    {
+      "id": 2,
+      "name": "Elena Ross",
+      "role": "Experta en Transformación",
+      "points": "980 pts",
+      "avatar": "https://i.pravatar.cc/150?u=elena"
+    },
+    {
+      "id": 3,
+      "name": "Tyler Swift",
+      "role": "Gurú de la Nutrición",
+      "points": "850 pts",
+      "avatar": "https://i.pravatar.cc/150?u=tyler"
+    }
+  ]
+}
