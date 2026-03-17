@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, CheckCircle, X } from "lucide-react";
 import { loginUser } from "../services/userService";
 
 function FormLogin() {
@@ -10,6 +10,8 @@ function FormLogin() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [notificationMsg, setNotificationMsg] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -36,12 +38,18 @@ function FormLogin() {
       // Store user info in localStorage
       localStorage.setItem("user", JSON.stringify(user));
 
-      alert(`¡Bienvenido ${user.nombre || user.email}!`);
-      if (user.rol === "admin") {
-        window.location.href = "/admin";
-      } else {
-        window.location.href = "/dashboard";
-      }
+      setNotificationMsg(`¡Bienvenido ${user.nombre || user.email}!`);
+      setIsNotificationOpen(true);
+
+      // Store a temporary flag for the redirect to wait for the modal if needed, 
+      // but here we can just wait 1.5s or handle on close
+      setTimeout(() => {
+        if (user.rol === "admin") {
+          window.location.href = "/admin";
+        } else {
+          window.location.href = "/dashboard";
+        }
+      }, 1500);
     } catch (err) {
       setError(err.message || "Error al iniciar sesión. Verifica tus credenciales.");
     } finally {
@@ -112,6 +120,20 @@ function FormLogin() {
       <div className="auth-footer-text">
         <p>¿No tienes una cuenta? <Link to="/registro" className="auth-link">Crea una</Link></p>
       </div>
+
+      {/* Modal de Notificación Personalizada */}
+      {isNotificationOpen && (
+        <div className="notification-overlay">
+          <div className="notification-content animate-fade-in success">
+            <div className="notification-icon-container">
+              <CheckCircle size={48} color="#05cd99" />
+            </div>
+            <h3>Inicio de Sesión Exitoso</h3>
+            <p>{notificationMsg}</p>
+            <p className="redirect-hint">Redirigiendo a tu panel...</p>
+          </div>
+        </div>
+      )}
     </>
   );
 }

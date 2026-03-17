@@ -15,6 +15,22 @@
       "nombre": "camil",
       "edad": "64",
       "rol": "client"
+    },
+    {
+      "id": "f973",
+      "email": "Faaahhh@faaah.com",
+      "password": "fah",
+      "nombre": "Faahhh Jimenez",
+      "edad": "23",
+      "rol": "client"
+    },
+    {
+      "id": "eb3d",
+      "email": "papoi@papoi.com",
+      "password": "papoi",
+      "nombre": "papu",
+      "edad": "22",
+      "rol": "client"
     }
   ],
   "stories": [
