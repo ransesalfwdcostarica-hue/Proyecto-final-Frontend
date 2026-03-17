@@ -6,11 +6,11 @@ import { checkUserExists } from "../Services/userService.js";
 
 function FormRegistro({ userData, onNext }) {
   const [formData, setFormData] = useState({
-    email: userData.email,
-    password: userData.password,
-    nombre: userData.nombre,
-    edad: userData.edad,
-    rol: userData.rol
+    email: userData.email || "",
+    password: userData.password || "",
+    nombre: userData.nombre || "",
+    edad: userData.edad || "",
+    rol: userData.rol || ""
   });
 
   const [loading, setLoading] = useState(false);

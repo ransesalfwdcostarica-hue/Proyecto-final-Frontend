@@ -315,3 +315,105 @@ select.auth-form-input {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Modal de Notificación Auth */
+.notification-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.notification-content {
+    background: #1c1515;
+    border: 1px solid #322524;
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+.notification-icon-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(5, 205, 153, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 1.5rem;
+}
+
+.notification-content h3 {
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.notification-content p {
+    color: #9c8e8d;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.redirect-hint {
+    font-size: 0.8rem !important;
+    color: #a83232 !important;
+    font-style: italic;
+    margin-top: -1rem;
+}
+
+.modal-actions-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.btn-notification {
+    background: #7a2a2a;
+    color: white;
+    padding: 0.9rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-notification:hover {
+    background: #963535;
+    transform: translateY(-2px);
+}
+
+.btn-cancel-link {
+    background: transparent;
+    border: none;
+    color: #9c8e8d;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.btn-cancel-link:hover {
+    color: white;
+}
+
+.animate-fade-in {
+    animation: fadeInModal 0.4s ease-out;
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+}
