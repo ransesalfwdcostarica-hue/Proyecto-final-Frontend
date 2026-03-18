@@ -33,19 +33,27 @@
       "rol": "client"
     },
     {
-      "id": "452f",
-      "email": "test_agent@test.com",
-      "password": "12345",
-      "nombre": "Test Agent",
-      "edad": "30",
-      "rol": "client"
-    },
-    {
       "id": "bcca",
       "email": "jaj@jajaj.com",
       "password": "jajaja",
       "nombre": "Jaja",
       "edad": "74",
+      "rol": "client"
+    },
+    {
+      "id": "d3de",
+      "email": "papa@papa.papa",
+      "password": "papa",
+      "nombre": "papa",
+      "edad": "43",
+      "rol": "client"
+    },
+    {
+      "id": "ca14",
+      "email": "pizza@gmail.com",
+      "password": "pizza",
+      "nombre": "jajaja",
+      "edad": "26",
       "rol": "client"
     }
   ],
@@ -137,5 +145,6 @@
       "points": "850 pts",
       "avatar": "https://i.pravatar.cc/150?u=tyler"
     }
-  ]
+  ],
+  "routines": []
 }
