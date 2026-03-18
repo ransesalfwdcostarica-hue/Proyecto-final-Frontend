@@ -1,8 +1,12 @@
 const BASE_URL = "http://localhost:3001";
 
-// Helper to handle endpoint names (usuarios is the one in db.json)
+// Helper to handle multiple endpoint names (users/usuarios)
 const multiFetch = async (endpoint, options = {}) => {
-  return await fetch(`${BASE_URL}/usuarios${endpoint}`, options);
+  let response = await fetch(`${BASE_URL}/users${endpoint}`, options);
+  if (response.status === 404) {
+    response = await fetch(`${BASE_URL}/usuarios${endpoint}`, options);
+  }
+  return response;
 };
 
 export const registerUser = async (userData) => {
@@ -71,63 +75,6 @@ export const deleteUser = async (userId) => {
     }
   } catch (error) {
     console.error("Error deleting user:", error);
-    throw error;
-  }
-};
-
-export const checkUserExists = async (email) => {
-  try {
-    const response = await multiFetch("");
-    if (!response.ok) {
-      throw new Error("Error fetching users");
-    }
-    const users = await response.json();
-    return users.some(user => user.email === email);
-  } catch (error) {
-    console.error("Check user error:", error);
-    throw error;
-  }
-};
-
-
-export const updateUser = async (userId, userData) => {
-  try {
-    const response = await multiFetch(`/${userId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Update error:", error);
-    throw error;
-  }
-};
-
-export const saveContactMessage = async (messageData) => {
-  try {
-    const response = await fetch(`${BASE_URL}/contactos`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(messageData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Contact form error:", error);
     throw error;
   }
 };

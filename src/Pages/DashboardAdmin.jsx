@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import DashboardAdministrador from '../components/DashboardAdministrador';
 import AdminUsers from '../components/AdminUsers';
 import AdminRoutines from '../components/AdminRoutines';
-import '../styles/dashboard.css';
+import '../Styles/dashboard.css';
 
 const DashboardAdmin = () => {
   const [activeTab, setActiveTab] = useState('overview');

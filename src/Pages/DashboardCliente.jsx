@@ -16,7 +16,7 @@ import {
   Home
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import '../styles/DashboardCliente.css';
+import '../Styles/DashboardCliente.css';
 
 const DashboardCliente = () => {
   const [user, setUser] = useState(null);

@@ -297,6 +297,25 @@ select.auth-form-input {
     }
 }
 
+.registration-full-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 /* Modal de Notificación Auth */
 .notification-overlay {
     position: fixed;
@@ -390,10 +409,11 @@ select.auth-form-input {
 }
 
 .animate-fade-in {
-    animation: fadeIn 0.4s ease-out;
+    animation: fadeInModal 0.4s ease-out;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInModal {
     from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }
+}
 }
