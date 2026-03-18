@@ -1,6 +1,14 @@
 {
   "usuarios": [
     {
+      "id": "db34",
+      "email": "Rsalas00@gmail.com",
+      "password": "1234",
+      "nombre": "Ronny Salas ",
+      "edad": "18",
+      "rol": "client"
+    },
+    {
       "id": "0d12",
       "email": "Admin@gmail.com",
       "password": "12345",
@@ -17,6 +25,24 @@
       "rol": "client"
     },
     {
+      "id": "6fcb",
+      "email": "Rsalaspost@gmail.com",
+      "password": "1234",
+      "nombre": "Ronny Salas ",
+      "edad": "17",
+      "rol": "client",
+      "edadFisica": "17",
+      "sexo": "m",
+      "altura": "180",
+      "peso": "70",
+      "lugarEntrenamiento": "gym",
+      "alergias": "ninguno",
+      "pesoMeta": 65,
+      "plazoSemanas": 4,
+      "pesoActual": "70",
+      "deficitEstimado": 450
+    },
+    {
       "id": "f973",
       "email": "Faaahhh@faaah.com",
       "password": "fah",
@@ -30,6 +56,14 @@
       "password": "papoi",
       "nombre": "papu",
       "edad": "22",
+      "rol": "client"
+    },
+    {
+      "id": "452f",
+      "email": "test_agent@test.com",
+      "password": "12345",
+      "nombre": "Test Agent",
+      "edad": "30",
       "rol": "client"
     },
     {

@@ -1,5 +1,5 @@
 .contacto-container {
-    padding: 8rem 2rem;
+    padding: 10rem 2rem 6rem;
     max-width: 1280px;
     margin: 0 auto;
     min-height: 100vh;
@@ -7,6 +7,209 @@
 
 .contacto-header {
     text-align: center;
+    margin-bottom: 4rem;
+}
+
+.contacto-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.contacto-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.contacto-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+/* Info Cards */
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.info-card {
+    background: var(--bg-card);
+    padding: 2.5rem;
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.info-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(255, 77, 77, 0.3);
+    box-shadow: 0 15px 40px rgba(255, 77, 77, 0.1);
+}
+
+.info-icon {
+    width: 70px;
+    height: 70px;
+    background: rgba(255, 77, 77, 0.1);
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.info-card:hover .info-icon {
+    transform: scale(1.1);
+}
+
+.info-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+.info-card p {
+    color: var(--text-muted);
+}
+
+/* Soporte Form */
+.soporte-section {
+    display: flex;
+    justify-content: center;
+}
+
+.soporte-form-container {
+    background: rgba(28, 29, 33, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 3.5rem;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 650px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.soporte-form-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 77, 77, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.form-header .text-primary {
+    margin-bottom: 1rem;
+}
+
+.form-header h2 {
+    font-size: 2.2rem;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.form-header p {
+    color: var(--text-muted);
+}
+
+.soporte-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--text-main);
+    margin-left: 0.25rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #7d2020;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 4px rgba(125, 32, 32, 0.2);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.btn-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    background: #7d2020;
+    color: white;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    box-shadow: 0 4px 15px rgba(125, 32, 32, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    transform: translateY(-3px);
+    background: #5a1515;
+    box-shadow: 0 8px 25px rgba(125, 32, 32, 0.5);
+}
+
+@media (max-width: 900px) {
     margin-bottom: 4rem;
 }
 
@@ -217,6 +420,84 @@
     }
 }
 
+/* About Us Sections Styles */
+.about-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    margin-top: 2rem;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+}
+
+.about-card {
+    background: var(--bg-card);
+    padding: 3rem;
+    border-radius: 25px;
+    border: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 77, 77, 0.2);
+}
+
+.about-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 77, 77, 0.1);
+    color: var(--primary);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-text h2 {
+    font-size: 1.8rem;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.about-text p {
+    color: var(--text-muted);
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
+.about-footer-card {
+    background: linear-gradient(135deg, rgba(255, 77, 77, 0.05), rgba(0,0,0,0.3));
+    padding: 4rem 2rem;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 77, 77, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.about-footer-card h3 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.about-footer-card p {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    max-width: 500px;
+}
+
 /* Social Media Section Styles */
 .social-section {
     text-align: center;
@@ -283,6 +564,12 @@
     color: white;
 }
 
+@media (max-width: 1024px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 768px) {
     .social-grid {
         gap: 1.5rem;
@@ -292,4 +579,4 @@
         padding: 1.25rem 2rem;
         min-width: 130px;
     }
-}
+}

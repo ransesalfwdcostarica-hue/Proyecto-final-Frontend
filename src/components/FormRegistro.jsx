@@ -1,19 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Mail, Lock, User, Hash, Shield, CheckCircle } from "lucide-react";
-import { registerUser } from "../services/userService";
+import { Mail, Lock, User, Hash, Shield } from "lucide-react";
 
-function FormRegistro() {
+function FormRegistro({ userData, onNext }) {
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    nombre: "",
-    edad: ""
+    email: userData?.email || "",
+    password: userData?.password || "",
+    nombre: userData?.nombre || "",
+    edad: userData?.edad || ""
   });
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,15 +32,11 @@ function FormRegistro() {
     }
 
     setLoading(true);
-    try {
-      await registerUser({ ...formData, rol: "client" });
-      setIsNotificationOpen(true);
-      setFormData({ email: "", password: "", nombre: "", edad: "" });
-    } catch (err) {
-      setError("Hubo un error al registrar el usuario. Inténtalo de nuevo.");
-    } finally {
+    // Simulate a brief loading state for UX
+    setTimeout(() => {
       setLoading(false);
-    }
+      onNext({ ...formData, rol: "client" });
+    }, 500);
   };
 
   return (
@@ -125,7 +119,7 @@ function FormRegistro() {
           type="submit"
           disabled={loading}
         >
-          {loading ? "Creando..." : "Crear Cuenta"}
+          {loading ? "Continuando..." : "Siguiente"}
         </button>
       </form>
 
@@ -145,30 +139,8 @@ function FormRegistro() {
       <div className="auth-footer-text">
         <p>¿Ya tienes una cuenta? <Link to="/login" className="auth-link">Iniciar Sesión</Link></p>
       </div>
-
-      {/* Modal de Notificación Personalizada */}
-      {isNotificationOpen && (
-        <div className="notification-overlay">
-          <div className="notification-content animate-fade-in success">
-            <div className="notification-icon-container">
-              <CheckCircle size={48} color="#05cd99" />
-            </div>
-            <h3>¡Cuenta Creada!</h3>
-            <p>Tu registro ha sido exitoso. Ahora puedes iniciar sesión para acceder a tu perfil fitness.</p>
-            <div className="modal-actions-column">
-              <Link to="/login" className="btn-notification">Ir al Inicio de Sesión</Link>
-              <button 
-                className="btn-cancel-link" 
-                onClick={() => setIsNotificationOpen(false)}
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }
 
-export default FormRegistro;
+export default FormRegistro;
