@@ -133,6 +133,20 @@
       "category": "Consejos de Expertos",
       "likes": 210,
       "comments": 45
+    },
+    {
+      "id": "ba76",
+      "userId": "0d12",
+      "userName": "Admin",
+      "userAvatar": "https://i.pravatar.cc/150?u=0d12",
+      "time": "Justo ahora",
+      "tag": "Pérdida de Peso",
+      "title": "Lala",
+      "text": "lala",
+      "category": "Pérdida de Peso",
+      "image": null,
+      "likes": 0,
+      "comments": 0
     }
   ],
   "trendingTopics": [
