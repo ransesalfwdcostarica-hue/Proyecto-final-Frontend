@@ -8,6 +8,7 @@ import Chatbot from '../Pages/Chatbot';
 import DashboardAdmin from '../Pages/DashboardAdmin';
 import DashboardCliente from '../Pages/DashboardCliente';
 import Testimonios from '../Pages/Testimonios';
+import Ejercicios from '../Pages/Ejercicios';
 
 const Routing = () => {
     return (
@@ -15,6 +16,7 @@ const Routing = () => {
             <Navbar />
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/ejercicios" element={<Ejercicios />} />
                 <Route path="/contacto" element={<Contacto />} />
                 <Route path="/dietas" element={<div style={{ paddingTop: '100px', textAlign: 'center' }}><h2>Sección de Dietas en construcción</h2></div>} />
                 <Route path="/login" element={<Login />} />

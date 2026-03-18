@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Users, Activity, Home } from 'lucide-react';
+import { LayoutDashboard, Users, Activity, Home, Dumbbell } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import DashboardAdministrador from './DashboardAdministrador';
 import AdminUsers from './AdminUsers';
 import AdminRoutines from './AdminRoutines';
+import AdminExercises from './AdminExercises';
 import '../Styles/dashboard.css';
 
 const DashAdmin = () => {
@@ -17,6 +18,8 @@ const DashAdmin = () => {
         return <AdminUsers />;
       case 'routines':
         return <AdminRoutines />;
+      case 'exercises':
+        return <AdminExercises />;
       default:
         return <DashboardAdministrador changeTab={setActiveTab} />;
     }
@@ -47,6 +50,13 @@ const DashAdmin = () => {
           >
             <Activity size={20} />
             Rutinas
+          </button>
+          <button 
+            className={`sidebar-btn ${activeTab === 'exercises' ? 'active' : ''}`}
+            onClick={() => setActiveTab('exercises')}
+          >
+            <Dumbbell size={20} />
+            Ejercicios
           </button>
           <hr style={{ margin: '1rem 0', border: 'none', borderTop: '1px solid #e9edff' }} />
           <Link to="/" style={{ textDecoration: 'none' }}>

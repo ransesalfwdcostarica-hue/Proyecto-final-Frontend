@@ -716,3 +716,7 @@
         padding-bottom: 0.5rem;
     }
 }
+
+.login-alert-icon {
+    background-color: rgba(240, 173, 78, 0.1);
+}

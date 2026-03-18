@@ -41,6 +41,47 @@
       "plazoSemanas": 4,
       "pesoActual": "70",
       "deficitEstimado": 450
+    },
+    {
+      "id": "f973",
+      "email": "Faaahhh@faaah.com",
+      "password": "fah",
+      "nombre": "Faahhh Jimenez",
+      "edad": "23",
+      "rol": "client"
+    },
+    {
+      "id": "eb3d",
+      "email": "papoi@papoi.com",
+      "password": "papoi",
+      "nombre": "papu",
+      "edad": "22",
+      "rol": "client"
+    },
+    {
+      "id": "452f",
+      "email": "test_agent@test.com",
+      "password": "12345",
+      "nombre": "Test Agent",
+      "edad": "30",
+      "rol": "client"
+    },
+    {
+      "id": "bcca",
+      "email": "jaj@jajaj.com",
+      "password": "jajaja",
+      "nombre": "Jaja",
+      "edad": "74",
+      "rol": "client"
+    }
+  ],
+  "contactos": [
+    {
+      "id": "bfb6",
+      "nombre": "Ronny Salas ",
+      "contacto": "72694020",
+      "mensaje": "aa",
+      "fecha": "2026-03-18T20:03:52.690Z"
     }
   ],
   "stories": [
@@ -85,6 +126,20 @@
       "category": "Consejos de Expertos",
       "likes": 210,
       "comments": 45
+    },
+    {
+      "id": "ba76",
+      "userId": "0d12",
+      "userName": "Admin",
+      "userAvatar": "https://i.pravatar.cc/150?u=0d12",
+      "time": "Justo ahora",
+      "tag": "Pérdida de Peso",
+      "title": "Lala",
+      "text": "lala",
+      "category": "Pérdida de Peso",
+      "image": null,
+      "likes": 0,
+      "comments": 0
     }
   ],
   "trendingTopics": [
@@ -130,6 +185,72 @@
       "role": "Gurú de la Nutrición",
       "points": "850 pts",
       "avatar": "https://i.pravatar.cc/150?u=tyler"
+    }
+  ],
+  "routines": [],
+  "ejercicios": [
+    {
+      "id": "e1",
+      "nombre": "Press de Banca",
+      "nivel": "AVANZADO",
+      "musculo": "PECHO",
+      "tiempo": "45 SEG",
+      "imagen": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
+      "categoria": "Pecho"
+    },
+    {
+      "id": "e2",
+      "nombre": "Sentadilla Libre",
+      "nivel": "INTERMEDIO",
+      "musculo": "PIERNAS",
+      "tiempo": "60 SEG",
+      "imagen": "https://images.unsplash.com/photo-1574673402653-2a2283082a5d?w=800&q=80",
+      "categoria": "Piernas"
+    },
+    {
+      "id": "e3",
+      "nombre": "Dominadas Pronas",
+      "nivel": "EXPERTO",
+      "musculo": "ESPALDA",
+      "tiempo": "30 SEG",
+      "imagen": "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=800&q=80",
+      "categoria": "Espalda"
+    },
+    {
+      "id": "e4",
+      "nombre": "Peso Muerto",
+      "nivel": "AVANZADO",
+      "musculo": "FULL BODY",
+      "tiempo": "50 SEG",
+      "imagen": "https://images.unsplash.com/photo-1566241477600-ac026ad43874?w=800&q=80",
+      "categoria": "Piernas"
+    },
+    {
+      "id": "e5",
+      "nombre": "Press Militar",
+      "nivel": "INTERMEDIO",
+      "musculo": "HOMBROS",
+      "tiempo": "40 SEG",
+      "imagen": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
+      "categoria": "Hombros"
+    },
+    {
+      "id": "e6",
+      "nombre": "Remo con Barra",
+      "nivel": "AVANZADO",
+      "musculo": "ESPALDA",
+      "tiempo": "45 SEG",
+      "imagen": "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&q=80",
+      "categoria": "Espalda"
+    },
+    {
+      "id": "e7",
+      "nombre": "Curl de Bíceps",
+      "nivel": "PRINCIPIANTE",
+      "musculo": "BRAZOS",
+      "tiempo": "35 SEG",
+      "imagen": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=80",
+      "categoria": "Brazos"
     }
   ]
 }

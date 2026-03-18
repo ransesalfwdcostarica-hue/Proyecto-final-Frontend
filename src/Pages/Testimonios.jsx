@@ -23,11 +23,12 @@ const Testimonios = () => {
     // Delete Modal state
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [storyIdToDelete, setStoryIdToDelete] = useState(null);
+    const [isLoginAlertOpen, setIsLoginAlertOpen] = useState(false);
 
     const handleOpenModal = () => {
         const storedUser = localStorage.getItem('user');
         if (!storedUser) {
-            alert('Debes iniciar sesión para compartir tu historia.');
+            setIsLoginAlertOpen(true);
             return;
         }
         setIsModalOpen(true);
@@ -53,7 +54,7 @@ const Testimonios = () => {
         e.preventDefault();
         const storedUserJSON = localStorage.getItem('user');
         if (!storedUserJSON) {
-            alert('Sesión expirada. Por favor, inicia sesión nuevamente.');
+            setIsLoginAlertOpen(true);
             return;
         }
 
@@ -466,6 +467,22 @@ const Testimonios = () => {
                         <div className="modal-actions full-width">
                             <button className="btn-cancel" onClick={() => setIsDeleteModalOpen(false)}>Cancelar</button>
                             <button className="btn-delete-confirm" onClick={confirmDelete}>Eliminar permanentemente</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* Modal de alerta de inicio de sesión */}
+            {isLoginAlertOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content confirm-modal animate-fade-in">
+                        <div className="confirm-icon-container login-alert-icon">
+                            <AlertTriangle size={48} color="#f0ad4e" />
+                        </div>
+                        <h3>Inicia Sesión</h3>
+                        <p>Debes estar registrado para poder compartir tu historia con la comunidad.</p>
+                        <div className="modal-actions full-width">
+                            <button className="btn-cancel" onClick={() => setIsLoginAlertOpen(false)}>Cerrar</button>
+                            <button className="btn-submit" onClick={() => window.location.href = '/login'}>Ir a Iniciar Sesión</button>
                         </div>
                     </div>
                 </div>

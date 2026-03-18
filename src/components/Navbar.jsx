@@ -8,7 +8,6 @@ const Navbar = () => {
     const location = useLocation();
     const [user, setUser] = useState(null);
     
-    // Check if we are in a dashboard area
     const isDashboard = location.pathname.includes('/dashboard') || location.pathname.includes('/admin');
 
     useEffect(() => {
@@ -33,7 +32,7 @@ const Navbar = () => {
                 </Link>
 
                 <div className="navbar-links">
-                    <Link to="/plan" className="nav-link">Entrenamientos</Link>
+                    <Link to="/ejercicios" className="nav-link">Ejercicios</Link>
                     <Link to="/dietas" className="nav-link">Dietas</Link>
                     <Link to="/comunidad" className="nav-link">Comunidad</Link>
                     <Link to="/contacto" className="nav-link">Sobre Nosotros</Link>

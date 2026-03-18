@@ -385,3 +385,172 @@ hr {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4);
 }
+
+/* Admin Exercises Specific Styles */
+.search-box-admin {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-box-admin input {
+  background: transparent;
+  border: none;
+  color: white;
+  width: 100%;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+}
+
+.exercise-thumb {
+  width: 60px;
+  height: 45px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.exercise-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+}
+
+.empty-state svg {
+  margin-bottom: 1.5rem;
+  opacity: 0.3;
+}
+
+/* Premium Admin Modal */
+.admin-exercise-modal {
+  max-width: 600px !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.modal-header-premium {
+  padding: 1.5rem 2.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-header-premium h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.admin-form-premium {
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group-admin label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group-admin input, .form-group-admin select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  padding: 12px 15px;
+  border-radius: 12px;
+  color: white;
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-group-admin input:focus {
+  border-color: var(--primary);
+}
+
+.form-row-admin {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.input-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon-wrapper svg {
+  position: absolute;
+  left: 15px;
+  color: var(--text-muted);
+}
+
+.input-icon-wrapper input {
+  padding-left: 45px;
+}
+
+.btn-submit-admin {
+  background: linear-gradient(135deg, var(--primary) 0%, #8b0000 100%);
+  color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-submit-admin:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 77, 77, 0.4);
+}
+
+/* Status Badges for Levels */
+.badge.principiante { background: rgba(5, 205, 153, 0.15); color: #05cd99; }
+.badge.intermedio { background: rgba(255, 181, 71, 0.15); color: #ffb547; }
+.badge.avanzado { background: rgba(255, 77, 77, 0.15); color: var(--primary); }
+.badge.experto { background: rgba(139, 0, 0, 0.2); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.2); }
+
+.delete-icon-box {
+  background: rgba(255, 77, 77, 0.1);
+  width: 80px;
+  height: 80px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  margin: 0 auto 1.5rem;
+}
