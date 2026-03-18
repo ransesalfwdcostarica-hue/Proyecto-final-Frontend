@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, Send, MessageSquare, Bot } from 'lucide-react';
+import { Mail, Phone, Send, MessageSquare, Bot, History, Target, Users, Instagram, Facebook, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { saveContactMessage } from '../Services/userService';
@@ -77,9 +77,9 @@ const FormContact = () => {
     return (
         <div className="contacto-container">
             <div className="contacto-header animate-fade-in">
-                <h1 className="contacto-title">Contáctanos</h1>
+                <h1 className="contacto-title">Contáctanos y Sobre Nosotros</h1>
                 <p className="contacto-subtitle">
-                    ¿Tienes dudas sobre tu plan? ¿Problemas técnicos? Estamos aquí para ayudarte.
+                    ¿Tienes dudas sobre tu plan? ¿Problemas técnicos? O simplemente quieres conocernos mejor.
                 </p>
             </div>
 
@@ -103,8 +103,27 @@ const FormContact = () => {
                     </div>
                 </div>
 
+                {/* Social Media Section */}
+                <div className="social-section animate-fade-in delay-200">
+                    <h2 className="social-title">Siguenos en nuestras redes</h2>
+                    <div className="social-grid">
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-card instagram">
+                            <Instagram size={32} />
+                            <span>Instagram</span>
+                        </a>
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-card facebook">
+                            <Facebook size={32} />
+                            <span>Facebook</span>
+                        </a>
+                        <a href="https://wa.me/50672694020" target="_blank" rel="noopener noreferrer" className="social-card whatsapp">
+                            <MessageCircle size={32} />
+                            <span>WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+
                 {/* Support Form */}
-                <div className="soporte-section animate-fade-in delay-200">
+                <div className="soporte-section animate-fade-in delay-300">
                     <div className="soporte-form-container">
                         <div className="form-header">
                             <MessageSquare className="text-primary" size={32} />
@@ -155,7 +174,52 @@ const FormContact = () => {
                         </form>
                     </div>
                 </div>
+                {/* About Us Content: History and Mission */}
+                <div className="about-sections animate-fade-in delay-400">
+                    <div className="about-grid">
+                        {/* History Card */}
+                        <div className="about-card">
+                            <div className="about-icon-wrapper">
+                                <History size={32} />
+                            </div>
+                            <div className="about-text">
+                                <h2>Nuestra Historia</h2>
+                                <p>
+                                    PowerFIT nació en 2026 con el objetivo de transformar la vida de las personas a través del fitness inteligente. 
+                                    Lo que comenzó como una idea para simplificar los planes de entrenamiento, evolucionó en una plataforma 
+                                    integral que combina tecnología avanzada con la pasión por el bienestar físico. 
+                                    Hoy, somos una comunidad en constante crecimiento, unidos por el deseo de superación constante.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Mission Card */}
+                        <div className="about-card">
+                            <div className="about-icon-wrapper">
+                                <Target size={32} />
+                            </div>
+                            <div className="about-text">
+                                <h2>Nuestra Misión</h2>
+                                <p>
+                                   Nuestra misión es proporcionar herramientas personalizadas, precisas y motivadoras para que cualquier persona, sin importar su lugar o nivel inicial, pueda alcanzar la mejor versión de sí misma. Creemos que la salud y el fitness deben estar al alcance de todos.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="about-footer-card">
+                        <Users size={48} className="text-primary" />
+                        <h3>Únete a nuestra comunidad</h3>
+                        <p>
+                            Forma parte de los miles de usuarios que ya están transformando su físico y su mentalidad con PowerFIT.
+                        </p>
+                        <Link to="/registro" className="btn-submit" style={{ textDecoration: 'none', width: 'auto', padding: '1rem 2.5rem' }}>
+                            Comenzar ahora
+                        </Link>
+                    </div>
+                </div>
             </div>
+
         </div>
     );
 };
