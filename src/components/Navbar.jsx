@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Dumbbell, User, Flame, LogOut } from 'lucide-react';
+import { Dumbbell, User, Flame, LogOut, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import '../Styles/Navbar.css';
 
@@ -7,6 +7,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [user, setUser] = useState(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     
     // Check if we are in a dashboard area
     const isDashboard = location.pathname.includes('/dashboard') || location.pathname.includes('/admin');
@@ -32,17 +33,45 @@ const Navbar = () => {
                     <span>Power <span style={{ fontWeight: 300, color: 'var(--text-muted)' }}>FIT</span></span>
                 </Link>
 
-                <div className="navbar-links">
-                    <Link to="/plan" className="nav-link">Entrenamientos</Link>
-                    <Link to="/dietas" className="nav-link">Dietas</Link>
-                    <Link to="/comunidad" className="nav-link">Comunidad</Link>
-                    <Link to="/contacto" className="nav-link">Sobre Nosotros</Link>
+                {/* Mobile Menu Toggle */}
+                <button className="mobile-menu-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                </button>
+
+                <div className={`navbar-links ${isMenuOpen ? 'active' : ''}`}>
+                    <Link to="/plan" className="nav-link" onClick={() => setIsMenuOpen(false)}>Entrenamientos</Link>
+                    <Link to="/dietas" className="nav-link" onClick={() => setIsMenuOpen(false)}>Dietas</Link>
+                    <Link to="/comunidad" className="nav-link" onClick={() => setIsMenuOpen(false)}>Comunidad</Link>
+                    <Link to="/contacto" className="nav-link" onClick={() => setIsMenuOpen(false)}>Sobre Nosotros</Link>
+                    
+                    {/* Mobile Only Actions */}
+                    <div className="mobile-only-actions">
+                        {user ? (
+                            <>
+                                <Link to={user.rol === 'admin' ? "/admin" : "/dashboard"} className="nav-btn-red" onClick={() => setIsMenuOpen(false)}>
+                                    {user.rol === 'admin' ? 'Panel Admin' : 'Mi Perfil'}
+                                </Link>
+                                <button onClick={handleLogout} className="nav-btn-outline">
+                                    Salir
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" className="nav-btn-outline" onClick={() => setIsMenuOpen(false)}>
+                                    Iniciar Sesión
+                                </Link>
+                                <Link to="/registro" className="nav-btn-red" onClick={() => setIsMenuOpen(false)}>
+                                    Empieza Ahora
+                                </Link>
+                            </>
+                        )}
+                    </div>
                 </div>
 
                 <div className="navbar-actions">
                     {user ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                            <span style={{ color: 'white', fontWeight: '500', fontSize: '0.9rem' }}>Hola, {user.nombre || user.email?.split('@')[0]}</span>
+                            <span className="user-greeting">Hola, {user.nombre || user.email?.split('@')[0]}</span>
                             {user.rol === 'admin' ? (
                                 <Link to="/admin" className="nav-btn-red" style={{ padding: '0.5rem 1rem' }}>
                                     Panel Admin

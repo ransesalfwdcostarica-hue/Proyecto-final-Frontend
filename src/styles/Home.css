@@ -369,6 +369,7 @@
     .hero {
         flex-direction: column;
         text-align: left;
+        padding-top: 2rem;
     }
 
     .hero-right {
@@ -376,14 +377,13 @@
         padding-right: 0;
         margin-top: 3rem;
         gap: 1rem;
+        width: 100%;
     }
 
-    .card-top,
-    .card-middle,
-    .card-bottom {
-        margin-right: 0;
+    .glass-stat-card {
         width: 100%;
-        max-width: 400px;
+        max-width: 350px;
+        margin-right: 0 !important;
     }
 
     .hero-title {
@@ -391,6 +391,69 @@
     }
 
     .features-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .home-content {
+        padding-top: 80px;
+    }
+
+    .hero-title {
+        font-size: 2.8rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .features-section {
         grid-template-columns: 1fr;
+        padding: 3rem 0;
+    }
+
+    .footer-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2.2rem;
+    }
+
+    .tag-pill {
+        margin-bottom: 1rem;
+    }
+
+    .social-proof {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .avatar-group {
+        margin-left: 10px;
+    }
+
+    .glass-stat-card {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .stat-value {
+        font-size: 1.3rem;
     }
 }

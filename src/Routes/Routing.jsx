@@ -8,6 +8,7 @@ import Chatbot from '../Pages/Chatbot';
 import DashboardAdmin from '../Pages/DashboardAdmin';
 import DashboardCliente from '../Pages/DashboardCliente';
 import Testimonios from '../Pages/Testimonios';
+import PerfilUsuario from '../Pages/PerfilUsuario';
 
 const Routing = () => {
     return (
@@ -24,6 +25,7 @@ const Routing = () => {
                 <Route path="/admin" element={<DashboardAdmin />} />
                 <Route path="/dashboard" element={<DashboardCliente />} />
                 <Route path="/comunidad" element={<Testimonios />} />
+                <Route path="/perfil/:id" element={<PerfilUsuario />} />
             </Routes>
         </Router>
     );

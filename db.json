@@ -1,45 +1,39 @@
 {
   "usuarios": [
     {
-      "id": "db34",
-      "email": "Rsalas00@gmail.com",
-      "password": "1234",
-      "nombre": "Ronny Salas ",
-      "edad": "18",
-      "rol": "client"
-    },
-    {
-      "id": "0d12",
-      "email": "Admin@gmail.com",
-      "password": "12345",
-      "nombre": "Admin",
-      "edad": "100",
-      "rol": "admin"
-    },
-    {
-      "id": "35ae",
-      "email": "adriancamposcisnero@gmail.com",
-      "password": "a",
-      "nombre": "camil",
-      "edad": "64",
-      "rol": "client"
-    },
-    {
-      "id": "6fcb",
-      "email": "Rsalaspost@gmail.com",
-      "password": "1234",
-      "nombre": "Ronny Salas ",
-      "edad": "17",
+      "id": "0947",
+      "email": "pepe@pepe",
+      "password": "pepe",
+      "nombre": "pepe",
+      "edad": "20",
       "rol": "client",
-      "edadFisica": "17",
+      "edadFisica": "20",
       "sexo": "m",
-      "altura": "180",
-      "peso": "70",
+      "altura": "170",
+      "peso": "130",
       "lugarEntrenamiento": "gym",
-      "alergias": "ninguno",
-      "pesoMeta": 65,
-      "plazoSemanas": 4,
-      "pesoActual": "70",
+      "alergias": "no",
+      "pesoMeta": 70,
+      "plazoSemanas": 12,
+      "pesoActual": "130",
+      "deficitEstimado": 450
+    },
+    {
+      "id": "c695",
+      "email": "ransesalfwdcostarica@gmail.com",
+      "password": "R4nses_2008",
+      "nombre": "Ranses Alvir",
+      "edad": "20",
+      "rol": "client",
+      "edadFisica": "20",
+      "sexo": "m",
+      "altura": "170",
+      "peso": "96",
+      "lugarEntrenamiento": "gym",
+      "alergias": "No",
+      "pesoMeta": 72,
+      "plazoSemanas": 8,
+      "pesoActual": "96",
       "deficitEstimado": 450
     }
   ],
@@ -56,8 +50,8 @@
       "category": "Pérdida de Peso",
       "imageBefore": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
       "imageAfter": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
-      "likes": 142,
-      "comments": 24
+      "likes": 2,
+      "comments": 27
     },
     {
       "id": "s2",
@@ -70,7 +64,7 @@
       "text": "Solía tener problemas para ganar peso. El programa de fuerza personalizado aquí lo cambió todo. Me enfoqué en movimientos compuestos y aumenté mi ingesta calórica. ¡Es un maratón, no un sprint!",
       "category": "Ganancia de Músculo",
       "image": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
-      "likes": 89,
+      "likes": 90,
       "comments": 12
     },
     {
@@ -85,6 +79,20 @@
       "category": "Consejos de Expertos",
       "likes": 210,
       "comments": 45
+    },
+    {
+      "id": "4dca",
+      "userId": "0947",
+      "userName": "pepe",
+      "userAvatar": "https://i.pravatar.cc/150?u=0947",
+      "time": "Justo ahora",
+      "tag": "Ganancia de Músculo",
+      "title": "Press Al fallo 👌",
+      "text": "Aumento de masa muscular en otro nivel 🗣️",
+      "category": "Ganancia de Músculo",
+      "image": null,
+      "likes": 1,
+      "comments": 0
     }
   ],
   "trendingTopics": [
@@ -130,6 +138,51 @@
       "role": "Gurú de la Nutrición",
       "points": "850 pts",
       "avatar": "https://i.pravatar.cc/150?u=tyler"
+    }
+  ],
+  "contactos": [
+    {
+      "id": "8747",
+      "nombre": "Ranses Alvir",
+      "contacto": "ransesalvir@gmail.coom",
+      "mensaje": "Chatbot no responde ",
+      "fecha": "2026-03-17T21:40:48.164Z"
+    },
+    {
+      "id": "5718",
+      "nombre": "Ranses",
+      "contacto": "ransesalvir@gmail.coom",
+      "mensaje": "Hola",
+      "fecha": "2026-03-18T20:12:10.068Z"
+    }
+  ],
+  "comentarios": [
+    {
+      "id": "a2a4",
+      "storyId": "s1",
+      "userId": "0947",
+      "userName": "pepe",
+      "userAvatar": "https://i.pravatar.cc/150?u=0947",
+      "text": "holaaa",
+      "fecha": "2026-03-18T21:09:30.736Z"
+    },
+    {
+      "id": "3287",
+      "storyId": "s1",
+      "userId": "0947",
+      "userName": "pepe",
+      "userAvatar": "https://i.pravatar.cc/150?u=0947",
+      "text": "print (\"Hello World!\")",
+      "fecha": "2026-03-18T21:10:13.221Z"
+    },
+    {
+      "id": "1df3",
+      "storyId": "s1",
+      "userId": "0947",
+      "userName": "pepe",
+      "userAvatar": "https://i.pravatar.cc/150?u=0947",
+      "text": "console.log(\"Acido Desoxirribonucleico\"),",
+      "fecha": "2026-03-18T21:10:57.901Z"
     }
   ]
 }
