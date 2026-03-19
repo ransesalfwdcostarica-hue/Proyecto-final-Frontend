@@ -57,7 +57,15 @@ const Testimonios = () => {
             return;
         }
 
-        const user = JSON.parse(storedUserJSON);
+        let user;
+        try {
+            user = JSON.parse(storedUserJSON);
+        } catch (e) {
+            console.error('Error parsing user:', e);
+            alert('Error en la sesión. Por favor, inicia sesión de nuevo.');
+            return;
+        }
+
         
         const storyPayload = {
             userId: user.id || `u_${Date.now()}`,
@@ -130,24 +138,30 @@ const Testimonios = () => {
                     fetch('http://localhost:3001/trendingTopics')
                 ]);
 
+                if (!storiesRes.ok || !contributorsRes.ok || !topicsRes.ok) {
+                    throw new Error('Error al cargar algunos datos del servidor');
+                }
+
                 const storiesData = await storiesRes.json();
                 const contributorsData = await contributorsRes.json();
                 const topicsData = await topicsRes.json();
 
-                setStories(storiesData);
-                setTopContributors(contributorsData);
-                setTrendingTopics(topicsData);
+                setStories(Array.isArray(storiesData) ? storiesData.reverse() : []);
+                setTopContributors(Array.isArray(contributorsData) ? contributorsData : []);
+                setTrendingTopics(Array.isArray(topicsData) ? topicsData : []);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);
                 setLoading(false);
+                // No alert here to avoid annoying the user if the server is just starting
             }
         };
+
 
         fetchData();
     }, []);
 
-    const categories = ['Todas las Historias', 'Pérdida de Peso', 'Ganancia de Músculo', 'Consejos de Expertos'];
+    const categories = ['Todas las Historias', 'Pérdida de Peso', 'Ganancia de Músculo', 'Consejos de Expertos', 'General'];
 
     const handleLike = (id) => {
         setLocalLikes(prev => ({
@@ -157,11 +171,16 @@ const Testimonios = () => {
     };
 
     const filteredStories = stories.filter(story => {
-        const matchesCategory = activeTab === 'Todas las Historias' || story.category === activeTab;
-        const matchesSearch = story.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                             story.text.toLowerCase().includes(searchQuery.toLowerCase());
+        const title = story.title || '';
+        const text = story.text || '';
+        const category = story.category || 'General';
+        
+        const matchesCategory = activeTab === 'Todas las Historias' || category === activeTab;
+        const matchesSearch = title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                             text.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesCategory && matchesSearch;
     });
+
 
     if (loading) {
         return (
@@ -236,19 +255,29 @@ const Testimonios = () => {
                                             </div>
                                         </div>
                                         <div className="story-header-actions">
-                                            {localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).id === story.userId && (
-                                                <button 
-                                                    className="btn-delete" 
-                                                    onClick={() => handleDeleteStory(story.id)}
-                                                    title="Eliminar testimonio"
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
-                                            )}
+                                            {(() => {
+                                                const storedUser = localStorage.getItem('user');
+                                                if (!storedUser) return null;
+                                                try {
+                                                    const user = JSON.parse(storedUser);
+                                                    return user.id === story.userId ? (
+                                                        <button 
+                                                            className="btn-delete" 
+                                                            onClick={() => handleDeleteStory(story.id)}
+                                                            title="Eliminar testimonio"
+                                                        >
+                                                            <Trash2 size={18} />
+                                                        </button>
+                                                    ) : null;
+                                                } catch (e) {
+                                                    return null;
+                                                }
+                                            })()}
                                             <button className="btn-more">
                                                 <MoreHorizontal size={20} />
                                             </button>
                                         </div>
+
                                     </div>
 
                                     <div className="story-content">

@@ -9,7 +9,6 @@ const Navbar = () => {
     const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     
-    // Check if we are in a dashboard area
     const isDashboard = location.pathname.includes('/dashboard') || location.pathname.includes('/admin');
 
     useEffect(() => {
@@ -33,39 +32,11 @@ const Navbar = () => {
                     <span>Power <span style={{ fontWeight: 300, color: 'var(--text-muted)' }}>FIT</span></span>
                 </Link>
 
-                {/* Mobile Menu Toggle */}
-                <button className="mobile-menu-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                    {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
-                </button>
-
-                <div className={`navbar-links ${isMenuOpen ? 'active' : ''}`}>
-                    <Link to="/plan" className="nav-link" onClick={() => setIsMenuOpen(false)}>Entrenamientos</Link>
-                    <Link to="/dietas" className="nav-link" onClick={() => setIsMenuOpen(false)}>Dietas</Link>
-                    <Link to="/comunidad" className="nav-link" onClick={() => setIsMenuOpen(false)}>Comunidad</Link>
-                    <Link to="/contacto" className="nav-link" onClick={() => setIsMenuOpen(false)}>Sobre Nosotros</Link>
-                    
-                    {/* Mobile Only Actions */}
-                    <div className="mobile-only-actions">
-                        {user ? (
-                            <>
-                                <Link to={user.rol === 'admin' ? "/admin" : "/dashboard"} className="nav-btn-red" onClick={() => setIsMenuOpen(false)}>
-                                    {user.rol === 'admin' ? 'Panel Admin' : 'Mi Perfil'}
-                                </Link>
-                                <button onClick={handleLogout} className="nav-btn-outline">
-                                    Salir
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <Link to="/login" className="nav-btn-outline" onClick={() => setIsMenuOpen(false)}>
-                                    Iniciar Sesión
-                                </Link>
-                                <Link to="/registro" className="nav-btn-red" onClick={() => setIsMenuOpen(false)}>
-                                    Empieza Ahora
-                                </Link>
-                            </>
-                        )}
-                    </div>
+                <div className="navbar-links">
+                    <Link to="/ejercicios" className="nav-link">Ejercicios</Link>
+                    <Link to="/dietas" className="nav-link">Dietas</Link>
+                    <Link to="/comunidad" className="nav-link">Comunidad</Link>
+                    <Link to="/contacto" className="nav-link">Sobre Nosotros</Link>
                 </div>
 
                 <div className="navbar-actions">
