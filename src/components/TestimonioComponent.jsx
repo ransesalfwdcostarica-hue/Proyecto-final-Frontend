@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Search, Plus, MessageSquare, ThumbsUp, Share2, Award, TrendingUp, Dumbbell, MoreHorizontal, X, Upload, Trash2, AlertTriangle, Send, User } from 'lucide-react';
 import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount } from '../Services/testimonioService';
-import { getAllUsers } from '../Services/userService';
+import { getAllUsers } from '../services/userService';
 import { Link } from 'react-router-dom';
 import '../Styles/SuccessStories.css';
 
@@ -37,10 +37,13 @@ const TestimonioComponent = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [storyIdToDelete, setStoryIdToDelete] = useState(null);
 
+    // Login Alert Modal state
+    const [isLoginAlertOpen, setIsLoginAlertOpen] = useState(false);
+
     const handleOpenModal = () => {
         const storedUser = localStorage.getItem('user');
         if (!storedUser) {
-            alert('Debes iniciar sesión para compartir tu historia.');
+            setIsLoginAlertOpen(true);
             return;
         }
         setIsModalOpen(true);
@@ -227,7 +230,7 @@ const TestimonioComponent = () => {
 
         const storedUserJSON = localStorage.getItem('user');
         if (!storedUserJSON) {
-            alert('Debes iniciar sesión para comentar.');
+            setIsLoginAlertOpen(true);
             return;
         }
 
@@ -602,6 +605,27 @@ const TestimonioComponent = () => {
                         <div className="modal-actions full-width">
                             <button className="btn-cancel" onClick={() => setIsDeleteModalOpen(false)}>Cancelar</button>
                             <button className="btn-delete-confirm" onClick={confirmDelete}>Eliminar permanentemente</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Alerta de Inicio de Sesión */}
+            {isLoginAlertOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content confirm-modal animate-fade-in">
+                        <div className="confirm-icon-container" style={{ backgroundColor: 'rgba(255, 77, 77, 0.1)' }}>
+                            <User size={48} color="var(--primary)" />
+                        </div>
+                        <h3>Inicia sesión para interactuar</h3>
+                        <p>Para compartir tu historia, dar me gusta o comentar, necesitas ser parte de nuestra comunidad.</p>
+                        <div className="modal-actions full-width">
+                            <Link to="/login" className="btn-submit" style={{ textAlign: 'center', textDecoration: 'none' }}>
+                                Iniciar Sesión
+                            </Link>
+                            <button className="btn-cancel" onClick={() => setIsLoginAlertOpen(false)}>
+                                Tal vez luego
+                            </button>
                         </div>
                     </div>
                 </div>

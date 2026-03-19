@@ -46,6 +46,14 @@
     },
     {
       "id": "eb3d",
+      "email": "admin@admin.com",
+      "password": "admin",
+      "nombre": "admin",
+      "edad": "22",
+      "rol": "admin"
+    },
+    {
+      "id": "eb3d",
       "email": "papoi@papoi.com",
       "password": "papoi",
       "nombre": "papu",
@@ -132,54 +140,20 @@
       "text": "Aumento de masa muscular en otro nivel 🗣️",
       "category": "Ganancia de Músculo",
       "image": null,
-      "likes": 1,
+      "likes": 2,
       "comments": 0
     }
   ],
   "trendingTopics": [
-    {
-      "id": "1",
-      "topic": "#AyunoIntermitente",
-      "count": "2.4k miembros"
-    },
-    {
-      "id": "2",
-      "topic": "#EquipoEntrenamientoCasa",
-      "count": "1.8k miembros"
-    },
-    {
-      "id": "3",
-      "topic": "#ObjetivosDeProteina",
-      "count": "890 miembros"
-    },
-    {
-      "id": "4",
-      "topic": "#RetoVerano2024",
-      "count": "3.1k miembros"
-    }
+    { "id": "1", "topic": "#AyunoIntermitente", "count": "2.4k miembros" },
+    { "id": "2", "topic": "#EquipoEntrenamientoCasa", "count": "1.8k miembros" },
+    { "id": "3", "topic": "#ObjetivosDeProteina", "count": "890 miembros" },
+    { "id": "4", "topic": "#RetoVerano2024", "count": "3.1k miembros" }
   ],
   "topContributors": [
-    {
-      "id": "1",
-      "name": "Marcus V.",
-      "role": "Entrenador de Élite",
-      "points": "1.2k pts",
-      "avatar": "https://i.pravatar.cc/150?u=marcus"
-    },
-    {
-      "id": "2",
-      "name": "Elena Ross",
-      "role": "Experta en Transformación",
-      "points": "980 pts",
-      "avatar": "https://i.pravatar.cc/150?u=elena"
-    },
-    {
-      "id": "3",
-      "name": "Tyler Swift",
-      "role": "Gurú de la Nutrición",
-      "points": "850 pts",
-      "avatar": "https://i.pravatar.cc/150?u=tyler"
-    }
+    { "id": "1", "name": "Marcus V.", "role": "Entrenador de Élite", "points": "1.2k pts", "avatar": "https://i.pravatar.cc/150?u=marcus" },
+    { "id": "2", "name": "Elena Ross", "role": "Experta en Transformación", "points": "980 pts", "avatar": "https://i.pravatar.cc/150?u=elena" },
+    { "id": "3", "name": "Tyler Swift", "role": "Gurú de la Nutrición", "points": "850 pts", "avatar": "https://i.pravatar.cc/150?u=tyler" }
   ],
   "routines": [],
   "ejercicios": [
@@ -189,7 +163,7 @@
       "nivel": "AVANZADO",
       "musculo": "PECHO",
       "tiempo": "45 SEG",
-      "imagen": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
+      "imagen": "/exercises/bench-press.png",
       "categoria": "Pecho"
     },
     {
@@ -198,7 +172,7 @@
       "nivel": "INTERMEDIO",
       "musculo": "PIERNAS",
       "tiempo": "60 SEG",
-      "imagen": "https://images.unsplash.com/photo-1574673402653-2a2283082a5d?w=800&q=80",
+      "imagen": "/exercises/squat.png",
       "categoria": "Piernas"
     },
     {
@@ -207,7 +181,7 @@
       "nivel": "EXPERTO",
       "musculo": "ESPALDA",
       "tiempo": "30 SEG",
-      "imagen": "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=800&q=80",
+      "imagen": "/exercises/pullups.png",
       "categoria": "Espalda"
     },
     {
@@ -216,7 +190,7 @@
       "nivel": "AVANZADO",
       "musculo": "FULL BODY",
       "tiempo": "50 SEG",
-      "imagen": "https://images.unsplash.com/photo-1566241477600-ac026ad43874?w=800&q=80",
+      "imagen": "/exercises/deadlift.png",
       "categoria": "Piernas"
     },
     {
@@ -225,7 +199,7 @@
       "nivel": "INTERMEDIO",
       "musculo": "HOMBROS",
       "tiempo": "40 SEG",
-      "imagen": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
+      "imagen": "/exercises/military-press.png",
       "categoria": "Hombros"
     },
     {
@@ -234,7 +208,7 @@
       "nivel": "AVANZADO",
       "musculo": "ESPALDA",
       "tiempo": "45 SEG",
-      "imagen": "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&q=80",
+      "imagen": "/exercises/barbell-row.png",
       "categoria": "Espalda"
     },
     {
@@ -243,7 +217,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "BRAZOS",
       "tiempo": "35 SEG",
-      "imagen": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=80",
+      "imagen": "https://images.unsplash.com/photo-1581009881954-3d321f37b1af?w=800&q=80",
       "categoria": "Brazos"
     },
     {
@@ -261,7 +235,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "PECHO",
       "tiempo": "60 SEG",
-      "imagen": "https://images.unsplash.com/photo-1598971639058-fab3c043ff57?w=800&q=80",
+      "imagen": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=80",
       "categoria": "Pecho"
     },
     {
@@ -270,7 +244,7 @@
       "nivel": "INTERMEDIO",
       "musculo": "ESPALDA",
       "tiempo": "40 SEG",
-      "imagen": "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?w=800&q=80",
+      "imagen": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
       "categoria": "Espalda"
     },
     {
@@ -315,7 +289,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "CORE",
       "tiempo": "60 SEG",
-      "imagen": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
+      "imagen": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
       "categoria": "Core"
     },
     {
@@ -324,7 +298,7 @@
       "nivel": "INTERMEDIO",
       "musculo": "GLÚTEOS",
       "tiempo": "45 SEG",
-      "imagen": "https://images.unsplash.com/photo-1590556409324-aa1d726e5c3c?w=800&q=80",
+      "imagen": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80",
       "categoria": "Glúteos"
     },
     {
@@ -333,7 +307,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "PIERNAS",
       "tiempo": "45 SEG",
-      "imagen": "https://images.unsplash.com/photo-1594737625785-3e1c1005226d?w=800&q=80",
+      "imagen": "https://images.unsplash.com/photo-1434608519344-49d77a4195b2?w=800&q=80",
       "categoria": "Piernas"
     },
     {
@@ -342,7 +316,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "CORE",
       "tiempo": "30 SEG",
-      "imagen": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
+      "imagen": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
       "categoria": "Core"
     },
     {
@@ -360,7 +334,7 @@
       "nivel": "AVANZADO",
       "musculo": "FULL BODY",
       "tiempo": "60 SEG",
-      "imagen": "https://images.unsplash.com/photo-1599058917233-57c0e6258d40?w=800&q=80",
+      "imagen": "https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=800&q=80",
       "categoria": "Core"
     },
     {
@@ -405,7 +379,7 @@
       "nivel": "INTERMEDIO",
       "musculo": "HOMBRO POSTERIOR",
       "tiempo": "45 SEG",
-      "imagen": "https://images.unsplash.com/photo-1541534741688-6078c64a55dc?w=800&q=80",
+      "imagen": "https://images.unsplash.com/photo-1620288627223-53302f4e8c74?w=800&q=80",
       "categoria": "Hombros"
     }
   ]
