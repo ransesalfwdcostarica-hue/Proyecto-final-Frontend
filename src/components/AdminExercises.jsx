@@ -61,6 +61,12 @@ const AdminExercises = () => {
 
     const handleCreate = async (e) => {
         e.preventDefault();
+
+        if (!newExercise.nombre?.trim() || !newExercise.musculo?.trim() || !newExercise.tiempo?.trim() || !newExercise.imagen?.trim()) {
+            alert("Por favor, completa todos los campos del ejercicio.");
+            return;
+        }
+
         try {
             const created = await createExercise(newExercise);
             setExercises([...exercises, created]);

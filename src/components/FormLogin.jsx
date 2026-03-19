@@ -27,8 +27,10 @@ function FormLogin() {
     e.preventDefault();
     setError("");
 
-    if (!formData.email || !formData.password) {
-      setError("Por favor, completa todos los campos.");
+    if (!formData.email?.trim() || !formData.password?.trim()) {
+      const msg = "Por favor, completa todos los campos.";
+      setError(msg);
+      alert(msg);
       return;
     }
 

@@ -76,6 +76,12 @@ const DashCliente = () => {
 
   const handleUpdateUser = async (e) => {
     e.preventDefault();
+
+    if (!editForm.pesoActual || !editForm.pesoMeta || !editForm.altura || !editForm.plazoSemanas) {
+        alert("Por favor completa todos los campos del perfil.");
+        return;
+    }
+
     try {
       const updated = await updateUser(user.id, editForm);
       setUser(updated);

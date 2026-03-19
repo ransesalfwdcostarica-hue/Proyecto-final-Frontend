@@ -25,9 +25,11 @@ function FormRegistro({ userData, onNext }) {
     e.preventDefault();
     setError("");
 
-    // Simple validacion
-    if (!formData.email || !formData.password || !formData.nombre || !formData.edad) {
-      setError("Todos los campos son obligatorios.");
+    // Validacion de espacios vacios
+    if (!formData.email?.trim() || !formData.password?.trim() || !formData.nombre?.trim() || !formData.edad) {
+      const msg = "Todos los campos son obligatorios.";
+      setError(msg);
+      alert(msg);
       return;
     }
 

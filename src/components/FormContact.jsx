@@ -24,7 +24,7 @@ const FormContact = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        if (!formData.nombre || !formData.contacto || !formData.mensaje) {
+        if (!formData.nombre?.trim() || !formData.contacto?.trim() || !formData.mensaje?.trim()) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Campos incompletos',

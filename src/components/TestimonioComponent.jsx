@@ -64,6 +64,12 @@ const TestimonioComponent = () => {
 
     const handleSubmitStory = async (e) => {
         e.preventDefault();
+
+        if (!newStory.title.trim() || !newStory.text.trim()) {
+            alert('Por favor, completa el título y el contenido de tu historia.');
+            return;
+        }
+
         const storedUserJSON = localStorage.getItem('user');
         if (!storedUserJSON) {
             alert('Sesión expirada. Por favor, inicia sesión nuevamente.');
@@ -127,6 +133,18 @@ const TestimonioComponent = () => {
             setStories(storiesData);
             setTopContributors(contributorsData);
             setTrendingTopics(topicsData);
+
+            // Inicializar estados de likes locales desde la DB
+            const storedUser = JSON.parse(localStorage.getItem('user'));
+            if (storedUser) {
+                const initialLikes = {};
+                storiesData.forEach(story => {
+                    if (story.likedBy && story.likedBy.includes(storedUser.id)) {
+                        initialLikes[story.id] = true;
+                    }
+                });
+                setLocalLikes(initialLikes);
+            }
         } catch (error) {
             console.error("Error loading data:", error);
         } finally {
@@ -149,28 +167,42 @@ const TestimonioComponent = () => {
         const story = stories.find(s => s.id === id);
         if (!story) return;
 
-        const isCurrentlyLiked = !!localLikes[id];
-        const newLikeValue = isCurrentlyLiked ? story.likes - 1 : story.likes + 1;
+        const storedUserJSON = localStorage.getItem('user');
+        if (!storedUserJSON) {
+            alert('Debes iniciar sesión para reaccionar a una historia.');
+            return;
+        }
 
-        // UI Optimista: Actualizar localLikes inmediatamente
+        const user = JSON.parse(storedUserJSON);
+        const isCurrentlyLiked = !!localLikes[id];
+        
+        let newLikedBy = story.likedBy || [];
+        if (isCurrentlyLiked) {
+            newLikedBy = newLikedBy.filter(userId => userId !== user.id);
+        } else {
+            newLikedBy = [...newLikedBy, user.id];
+        }
+
+        const newLikeValue = newLikedBy.length;
+
+        // UI Optimista
         setLocalLikes(prev => ({
             ...prev,
             [id]: !isCurrentlyLiked
         }));
 
         try {
-            // Actualizar en el servidor
-            await updateStoryLikes(id, newLikeValue);
+            // Actualizar en el servidor con el nuevo array de IDs y el contador
+            await updateStoryLikes(id, newLikeValue, newLikedBy);
 
-            // Actualizar el estado local de la historia para que el contador sea correcto
+            // Actualizar el estado local de la historia
             setStories(prevStories =>
                 prevStories.map(s =>
-                    s.id === id ? { ...s, likes: newLikeValue } : s
+                    s.id === id ? { ...s, likes: newLikeValue, likedBy: newLikedBy } : s
                 )
             );
         } catch (error) {
             console.error('Error updating likes:', error);
-            // Revertir UI optimista en caso de error
             setLocalLikes(prev => ({
                 ...prev,
                 [id]: isCurrentlyLiked
@@ -223,7 +255,10 @@ const TestimonioComponent = () => {
     const handleAddComment = async (e, storyId) => {
         e.preventDefault();
         const text = newCommentText[storyId];
-        if (!text || !text.trim()) return;
+        if (!text || !text.trim()) {
+            alert('El comentario no puede estar vacío.');
+            return;
+        }
 
         const storedUserJSON = localStorage.getItem('user');
         if (!storedUserJSON) {

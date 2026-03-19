@@ -24,7 +24,7 @@
       "password": "R4nses_2008",
       "nombre": "Ranses Alvir",
       "edad": "20",
-      "rol": "admin",
+      "rol": "cliente",
       "edadFisica": "20",
       "sexo": "m",
       "altura": "170",
@@ -78,7 +78,10 @@
       "category": "Pérdida de Peso",
       "imageBefore": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
       "imageAfter": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
-      "likes": 3,
+      "likes": 1,
+      "likedBy": [
+        "c695"
+      ],
       "comments": 27
     },
     {
@@ -93,6 +96,7 @@
       "category": "Ganancia de Músculo",
       "image": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
       "likes": 90,
+      "likedBy": [],
       "comments": 12
     },
     {
@@ -106,6 +110,7 @@
       "text": "Los consejos de expertos me ayudaron a darme cuenta de que la restricción no es la solución. Aprender sobre macros y balance fue un cambio radical por mi salud mental y física.",
       "category": "Consejos de Expertos",
       "likes": 210,
+      "likedBy": [],
       "comments": 45
     },
     {
@@ -120,6 +125,52 @@
       "category": "Ganancia de Músculo",
       "image": null,
       "likes": 1,
+      "likedBy": [],
+      "comments": 1
+    },
+    {
+      "id": "f5d4",
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://i.pravatar.cc/150?u=c695",
+      "time": "Justo ahora",
+      "tag": "Consejos de Expertos",
+      "title": "No a las drogas",
+      "text": "JAJAJAJAJAJAJA",
+      "category": "Consejos de Expertos",
+      "image": null,
+      "likes": 0,
+      "likedBy": [],
+      "comments": 0
+    },
+    {
+      "id": "a2ce",
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://i.pravatar.cc/150?u=c695",
+      "time": "Justo ahora",
+      "tag": "Pérdida de Peso",
+      "title": "hola",
+      "text": "hola",
+      "category": "Pérdida de Peso",
+      "image": null,
+      "likes": 0,
+      "likedBy": [],
+      "comments": 0
+    },
+    {
+      "id": "1780",
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://i.pravatar.cc/150?u=c695",
+      "time": "Justo ahora",
+      "tag": "Pérdida de Peso",
+      "title": "JAJAJAJA",
+      "text": "Risa",
+      "category": "Pérdida de Peso",
+      "image": null,
+      "likes": 0,
+      "likedBy": [],
       "comments": 0
     }
   ],
@@ -387,5 +438,15 @@
       "categoria": "Hombros"
     }
   ],
-  "comentarios": []
+  "comentarios": [
+    {
+      "id": "51a8",
+      "storyId": "4dca",
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://i.pravatar.cc/150?u=c695",
+      "text": "JAJAJAJAJJAA",
+      "fecha": "2026-03-19T21:22:30.081Z"
+    }
+  ]
 }
