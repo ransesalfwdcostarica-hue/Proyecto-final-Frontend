@@ -245,6 +245,168 @@
       "tiempo": "35 SEG",
       "imagen": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=80",
       "categoria": "Brazos"
+    },
+    {
+      "id": "e8",
+      "nombre": "Aperturas con Mancuernas",
+      "nivel": "INTERMEDIO",
+      "musculo": "PECHO",
+      "tiempo": "45 SEG",
+      "imagen": "https://images.unsplash.com/photo-1534367507873-d2d7e24c798f?w=800&q=80",
+      "categoria": "Pecho"
+    },
+    {
+      "id": "e9",
+      "nombre": "Flexiones de Brazos",
+      "nivel": "PRINCIPIANTE",
+      "musculo": "PECHO",
+      "tiempo": "60 SEG",
+      "imagen": "https://images.unsplash.com/photo-1598971639058-fab3c043ff57?w=800&q=80",
+      "categoria": "Pecho"
+    },
+    {
+      "id": "e10",
+      "nombre": "Jalón al Pecho",
+      "nivel": "INTERMEDIO",
+      "musculo": "ESPALDA",
+      "tiempo": "40 SEG",
+      "imagen": "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?w=800&q=80",
+      "categoria": "Espalda"
+    },
+    {
+      "id": "e11",
+      "nombre": "Prensa de Piernas",
+      "nivel": "INTERMEDIO",
+      "musculo": "CUÁDRICEPS",
+      "tiempo": "50 SEG",
+      "imagen": "https://images.unsplash.com/photo-1532384748853-8f54a8f476e2?w=800&q=80",
+      "categoria": "Piernas"
+    },
+    {
+      "id": "e12",
+      "nombre": "Elevaciones Laterales",
+      "nivel": "PRINCIPIANTE",
+      "musculo": "HOMBROS",
+      "tiempo": "45 SEG",
+      "imagen": "https://images.unsplash.com/photo-1541534741688-6078c64a55dc?w=800&q=80",
+      "categoria": "Hombros"
+    },
+    {
+      "id": "e13",
+      "nombre": "Press Arnold",
+      "nivel": "AVANZADO",
+      "musculo": "HOMBROS",
+      "tiempo": "40 SEG",
+      "imagen": "https://images.unsplash.com/photo-1532029837206-abbe2b7620e3?w=800&q=80",
+      "categoria": "Hombros"
+    },
+    {
+      "id": "e14",
+      "nombre": "Press Francés",
+      "nivel": "INTERMEDIO",
+      "musculo": "TRÍCEPS",
+      "tiempo": "40 SEG",
+      "imagen": "https://images.unsplash.com/photo-1530822847156-5df684ec5313?w=800&q=80",
+      "categoria": "Brazos"
+    },
+    {
+      "id": "e15",
+      "nombre": "Plancha Abdominal",
+      "nivel": "PRINCIPIANTE",
+      "musculo": "CORE",
+      "tiempo": "60 SEG",
+      "imagen": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
+      "categoria": "Core"
+    },
+    {
+      "id": "e16",
+      "nombre": "Hip Thrust",
+      "nivel": "INTERMEDIO",
+      "musculo": "GLÚTEOS",
+      "tiempo": "45 SEG",
+      "imagen": "https://images.unsplash.com/photo-1590556409324-aa1d726e5c3c?w=800&q=80",
+      "categoria": "Glúteos"
+    },
+    {
+      "id": "e17",
+      "nombre": "Zancadas (Lunges)",
+      "nivel": "PRINCIPIANTE",
+      "musculo": "PIERNAS",
+      "tiempo": "45 SEG",
+      "imagen": "https://images.unsplash.com/photo-1594737625785-3e1c1005226d?w=800&q=80",
+      "categoria": "Piernas"
+    },
+    {
+      "id": "e18",
+      "nombre": "Crunch Abdominal",
+      "nivel": "PRINCIPIANTE",
+      "musculo": "CORE",
+      "tiempo": "30 SEG",
+      "imagen": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
+      "categoria": "Core"
+    },
+    {
+      "id": "e19",
+      "nombre": "Patada de Glúteo",
+      "nivel": "PRINCIPIANTE",
+      "musculo": "GLÚTEOS",
+      "tiempo": "50 SEG",
+      "imagen": "https://images.unsplash.com/photo-1518611012118-2960520ee4ea?w=800&q=80",
+      "categoria": "Glúteos"
+    },
+    {
+      "id": "e20",
+      "nombre": "Burpees",
+      "nivel": "AVANZADO",
+      "musculo": "FULL BODY",
+      "tiempo": "60 SEG",
+      "imagen": "https://images.unsplash.com/photo-1599058917233-57c0e6258d40?w=800&q=80",
+      "categoria": "Core"
+    },
+    {
+      "id": "e21",
+      "nombre": "Russian Twists",
+      "nivel": "INTERMEDIO",
+      "musculo": "OBLICUOS",
+      "tiempo": "45 SEG",
+      "imagen": "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&q=80",
+      "categoria": "Core"
+    },
+    {
+      "id": "e22",
+      "nombre": "Martillo con Mancuernas",
+      "nivel": "PRINCIPIANTE",
+      "musculo": "BÍCEPS",
+      "tiempo": "40 SEG",
+      "imagen": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=80",
+      "categoria": "Brazos"
+    },
+    {
+      "id": "e23",
+      "nombre": "Remo en Polea Baja",
+      "nivel": "INTERMEDIO",
+      "musculo": "ESPALDA",
+      "tiempo": "45 SEG",
+      "imagen": "https://images.unsplash.com/photo-1590487988256-9ed24133863e?w=800&q=80",
+      "categoria": "Espalda"
+    },
+    {
+      "id": "e24",
+      "nombre": "Extensión de Cuádriceps",
+      "nivel": "PRINCIPIANTE",
+      "musculo": "CUÁDRICEPS",
+      "tiempo": "40 SEG",
+      "imagen": "https://images.unsplash.com/photo-1591544200892-04e40292723c?w=800&q=80",
+      "categoria": "Piernas"
+    },
+    {
+      "id": "e25",
+      "nombre": "Face Pulls",
+      "nivel": "INTERMEDIO",
+      "musculo": "HOMBRO POSTERIOR",
+      "tiempo": "45 SEG",
+      "imagen": "https://images.unsplash.com/photo-1541534741688-6078c64a55dc?w=800&q=80",
+      "categoria": "Hombros"
     }
   ]
 }
