@@ -1,18 +1,15 @@
 import { useState, useEffect } from 'react';
 import { 
   Search, 
-  Filter, 
   Heart, 
   Play, 
   Dumbbell, 
   Home, 
-  Plus, 
-  Trash2, 
-  X, 
-  Image as ImageIcon 
+  Trash2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getAllExercises, createExercise, deleteExercise } from '../services/exerciseService';
+import { getAllExercises, deleteExercise } from '../services/exerciseService';
+import Swal from 'sweetalert2';
 import '../styles/Ejercicios.css';
 
 const Ejercicios = () => {
@@ -23,18 +20,7 @@ const Ejercicios = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState('Todos');
     const [user, setUser] = useState(null);
-    const [showAddModal, setShowAddModal] = useState(false);
     
-    // Form state
-    const [newExercise, setNewExercise] = useState({
-        nombre: '',
-        nivel: 'PRINCIPIANTE',
-        musculo: '',
-        tiempo: '',
-        imagen: '',
-        categoria: 'Pecho'
-    });
-
     const categories = ['Todos', 'Pecho', 'Espalda', 'Piernas', 'Hombros', 'Brazos', 'Core', 'Glúteos'];
 
     useEffect(() => {
@@ -76,32 +62,41 @@ const Ejercicios = () => {
     }, [searchTerm, activeCategory, exercises]);
 
     const handleDelete = async (id) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar este ejercicio?')) {
+        const result = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esta acción",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#8b0000',
+            cancelButtonColor: '#333',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            background: '#171212',
+            color: '#fff'
+        });
+
+        if (result.isConfirmed) {
             try {
                 await deleteExercise(id);
                 setExercises(exercises.filter(ex => ex.id !== id));
+                Swal.fire({
+                    title: 'Eliminado',
+                    text: 'El ejercicio ha sido borrado.',
+                    icon: 'success',
+                    background: '#171212',
+                    color: '#fff',
+                    confirmButtonColor: '#8b0000'
+                });
             } catch (error) {
-                alert("Error al eliminar el ejercicio");
+                Swal.fire({
+                    title: 'Error',
+                    text: 'No se pudo eliminar el ejercicio.',
+                    icon: 'error',
+                    background: '#171212',
+                    color: '#fff',
+                    confirmButtonColor: '#8b0000'
+                });
             }
-        }
-    };
-
-    const handleCreate = async (e) => {
-        e.preventDefault();
-        try {
-            const created = await createExercise(newExercise);
-            setExercises([...exercises, created]);
-            setShowAddModal(false);
-            setNewExercise({
-                nombre: '',
-                nivel: 'PRINCIPIANTE',
-                musculo: '',
-                tiempo: '',
-                imagen: '',
-                categoria: 'Pecho'
-            });
-        } catch (error) {
-            alert("Error al crear el ejercicio");
         }
     };
 
@@ -126,12 +121,6 @@ const Ejercicios = () => {
                     <p>Optimiza tu entrenamiento con nuestra guía experta de movimientos y rutinas.</p>
                 </div>
                 <div className="title-right">
-                    {isAdmin && (
-                        <button className="btn-add-exercise" onClick={() => setShowAddModal(true)}>
-                            <Plus size={18} />
-                            Añadir Ejercicio
-                        </button>
-                    )}
                     <button className="btn-home" onClick={() => navigate('/')}>
                         <Home size={18} />
                         Home
@@ -205,96 +194,6 @@ const Ejercicios = () => {
             {filteredExercises.length === 0 && (
                 <div style={{ textAlign: 'center', padding: '50px', color: 'var(--text-dim)' }}>
                     <p>No se encontraron ejercicios con esos filtros.</p>
-                </div>
-            )}
-
-            {/* Modal de Añadir Ejercicio */}
-            {showAddModal && (
-                <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
-                    <div className="modal-content animate-fade-up" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2>Añadir Nuevo Ejercicio</h2>
-                            <button className="close-btn" onClick={() => setShowAddModal(false)}>
-                                <X size={24} />
-                            </button>
-                        </div>
-                        <form className="add-exercise-form" onSubmit={handleCreate}>
-                            <div className="form-group">
-                                <label>Nombre del Ejercicio</label>
-                                <input 
-                                    type="text" 
-                                    required 
-                                    placeholder="Ej: Press de Banca"
-                                    value={newExercise.nombre}
-                                    onChange={e => setNewExercise({...newExercise, nombre: e.target.value})}
-                                />
-                            </div>
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label>Nivel</label>
-                                    <select 
-                                        value={newExercise.nivel} 
-                                        onChange={e => setNewExercise({...newExercise, nivel: e.target.value})}
-                                    >
-                                        <option value="PRINCIPIANTE">PRINCIPIANTE</option>
-                                        <option value="INTERMEDIO">INTERMEDIO</option>
-                                        <option value="AVANZADO">AVANZADO</option>
-                                        <option value="EXPERTO">EXPERTO</option>
-                                    </select>
-                                </div>
-                                <div className="form-group">
-                                    <label>Categoría</label>
-                                    <select 
-                                        value={newExercise.categoria} 
-                                        onChange={e => setNewExercise({...newExercise, categoria: e.target.value})}
-                                    >
-                                        {categories.filter(c => c !== 'Todos').map(c => (
-                                            <option key={c} value={c}>{c}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label>Músculo Secundario</label>
-                                    <input 
-                                        type="text" 
-                                        required 
-                                        placeholder="Ej: PECHO, TRÍCEPS" 
-                                        value={newExercise.musculo}
-                                        onChange={e => setNewExercise({...newExercise, musculo: e.target.value})}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Tiempo Sugerido (Ej: 45 SEG)</label>
-                                    <input 
-                                        type="text" 
-                                        required 
-                                        placeholder="Ej: 45 SEG"
-                                        value={newExercise.tiempo}
-                                        onChange={e => setNewExercise({...newExercise, tiempo: e.target.value})}
-                                    />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label>URL de Imagen</label>
-                                <div className="input-with-icon">
-                                    <ImageIcon size={18} />
-                                    <input 
-                                        type="url" 
-                                        required 
-                                        placeholder="https://images.unsplash.com/..." 
-                                        value={newExercise.imagen}
-                                        onChange={e => setNewExercise({...newExercise, imagen: e.target.value})}
-                                    />
-                                </div>
-                            </div>
-                            <button type="submit" className="submit-btn-premium">
-                                <Plus size={18} />
-                                Crear Ejercicio
-                            </button>
-                        </form>
-                    </div>
                 </div>
             )}
         </div>

@@ -5,23 +5,74 @@ import DashboardAdministrador from './DashboardAdministrador';
 import AdminUsers from './AdminUsers';
 import AdminRoutines from './AdminRoutines';
 import AdminExercises from './AdminExercises';
+import { createExercise } from '../services/exerciseService';
+import { Plus, X, Image as ImageIcon } from 'lucide-react';
+import Swal from 'sweetalert2';
 import '../Styles/dashboard.css';
 
 const DashAdmin = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newExercise, setNewExercise] = useState({
+      nombre: '',
+      nivel: 'PRINCIPIANTE',
+      musculo: '',
+      tiempo: '',
+      imagen: '',
+      categoria: 'Pecho'
+  });
+
+  const handleCreateExercise = async (e) => {
+      e.preventDefault();
+      try {
+          await createExercise(newExercise);
+          setShowAddModal(false);
+          setNewExercise({
+              nombre: '',
+              nivel: 'PRINCIPIANTE',
+              musculo: '',
+              tiempo: '',
+              imagen: '',
+              categoria: 'Pecho'
+          });
+          
+          // Trigger refresh in other components
+          window.dispatchEvent(new CustomEvent('refreshExercises'));
+          
+          Swal.fire({
+              title: '¡Éxito!',
+              text: 'El ejercicio ha sido agregado a la biblioteca.',
+              icon: 'success',
+              background: '#171212',
+              color: '#fff',
+              confirmButtonColor: '#8b0000'
+          });
+      } catch (error) {
+          Swal.fire({
+              title: 'Error',
+              text: 'No se pudo agregar el ejercicio.',
+              icon: 'error',
+              background: '#171212',
+              color: '#fff',
+              confirmButtonColor: '#8b0000'
+          });
+      }
+  };
 
   const renderContent = () => {
+    const openAddModal = () => setShowAddModal(true);
+    
     switch (activeTab) {
       case 'overview':
-        return <DashboardAdministrador changeTab={setActiveTab} />;
+        return <DashboardAdministrador changeTab={setActiveTab} openAddModal={openAddModal} />;
       case 'users':
         return <AdminUsers />;
       case 'routines':
         return <AdminRoutines />;
       case 'exercises':
-        return <AdminExercises />;
+        return <AdminExercises openAddModal={openAddModal} />;
       default:
-        return <DashboardAdministrador changeTab={setActiveTab} />;
+        return <DashboardAdministrador changeTab={setActiveTab} openAddModal={openAddModal} />;
     }
   };
 
@@ -71,6 +122,98 @@ const DashAdmin = () => {
       <main className="admin-content">
         {renderContent()}
       </main>
+
+      {/* Global Add Exercise Modal */}
+      {showAddModal && (
+          <div className="modal-overlay" onClick={() => setShowAddModal(false)} style={{ zIndex: 2000 }}>
+              <div className="modal-content admin-exercise-modal animate-fade-in" onClick={e => e.stopPropagation()}>
+                  <div className="modal-header-premium">
+                      <h2>Agregar Nuevo Ejercicio</h2>
+                      <button className="close-btn" onClick={() => setShowAddModal(false)}><X size={24} /></button>
+                  </div>
+                  <form onSubmit={handleCreateExercise} className="admin-form-premium">
+                      <div className="form-group-admin">
+                          <label>Nombre del Ejercicio</label>
+                          <input 
+                              type="text" 
+                              required 
+                              placeholder="Ej: Press de Banca Plano"
+                              value={newExercise.nombre}
+                              onChange={e => setNewExercise({...newExercise, nombre: e.target.value})}
+                          />
+                      </div>
+                      <div className="form-row-admin">
+                          <div className="form-group-admin">
+                              <label>Categoría</label>
+                              <select 
+                                  value={newExercise.categoria}
+                                  onChange={e => setNewExercise({...newExercise, categoria: e.target.value})}
+                              >
+                                  <option value="Pecho">Pecho</option>
+                                  <option value="Espalda">Espalda</option>
+                                  <option value="Piernas">Piernas</option>
+                                  <option value="Hombros">Hombros</option>
+                                  <option value="Brazos">Brazos</option>
+                                  <option value="Core">Core</option>
+                                  <option value="Glúteos">Glúteos</option>
+                              </select>
+                          </div>
+                          <div className="form-group-admin">
+                              <label>Nivel de Dificultad</label>
+                              <select 
+                                  value={newExercise.nivel}
+                                  onChange={e => setNewExercise({...newExercise, nivel: e.target.value})}
+                              >
+                                  <option value="PRINCIPIANTE">Principiante</option>
+                                  <option value="INTERMEDIO">Intermedio</option>
+                                  <option value="AVANZADO">Avanzado</option>
+                                  <option value="EXPERTO">Experto</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div className="form-row-admin">
+                          <div className="form-group-admin">
+                              <label>Músculo</label>
+                              <input 
+                                  type="text" 
+                                  placeholder="Ej: PECHO" 
+                                  required 
+                                  value={newExercise.musculo}
+                                  onChange={e => setNewExercise({...newExercise, musculo: e.target.value})}
+                              />
+                          </div>
+                          <div className="form-group-admin">
+                              <label>Tiempo</label>
+                              <input 
+                                  type="text" 
+                                  placeholder="Ej: 45 SEG" 
+                                  required 
+                                  value={newExercise.tiempo}
+                                  onChange={e => setNewExercise({...newExercise, tiempo: e.target.value})}
+                              />
+                          </div>
+                      </div>
+                      <div className="form-group-admin">
+                          <label>URL de Imagen Ilustrativa</label>
+                          <div className="input-icon-wrapper">
+                              <ImageIcon size={18} />
+                              <input 
+                                  type="url" 
+                                  required 
+                                  placeholder="https://images.unsplash.com/..."
+                                  value={newExercise.imagen}
+                                  onChange={e => setNewExercise({...newExercise, imagen: e.target.value})}
+                              />
+                          </div>
+                      </div>
+                      <button type="submit" className="btn-submit-admin">
+                          <Plus size={20} />
+                          Agregar Ejercicio
+                      </button>
+                  </form>
+              </div>
+          </div>
+      )}
     </div>
   );
 };
