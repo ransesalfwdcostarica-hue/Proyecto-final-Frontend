@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Dumbbell, User, Flame, LogOut } from 'lucide-react';
+import { Dumbbell, User, Flame, LogOut, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import '../Styles/Navbar.css';
 
@@ -7,6 +7,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [user, setUser] = useState(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     
     const isDashboard = location.pathname.includes('/dashboard') || location.pathname.includes('/admin');
 
@@ -41,7 +42,7 @@ const Navbar = () => {
                 <div className="navbar-actions">
                     {user ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                            <span style={{ color: 'white', fontWeight: '500', fontSize: '0.9rem' }}>Hola, {user.nombre || user.email?.split('@')[0]}</span>
+                            <span className="user-greeting">Hola, {user.nombre || user.email?.split('@')[0]}</span>
                             {user.rol === 'admin' ? (
                                 <Link to="/admin" className="nav-btn-red" style={{ padding: '0.5rem 1rem' }}>
                                     Panel Admin
