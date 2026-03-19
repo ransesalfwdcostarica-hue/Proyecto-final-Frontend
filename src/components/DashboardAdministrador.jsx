@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Users, Activity, CheckCircle, Clock } from 'lucide-react';
 import { getAllUsers } from '../services/userService';
-import { getAllRoutines } from '../Services/routineService';
+import { getAllRoutines } from '../services/routineService';
+import { getAllExercises } from '../services/exerciseService';
 
 
 const DashboardAdministrador = ({ changeTab }) => {
@@ -9,7 +10,8 @@ const DashboardAdministrador = ({ changeTab }) => {
         totalUsers: 0,
         totalRoutines: 0,
         pendingRoutines: 0,
-        approvedRoutines: 0
+        approvedRoutines: 0,
+        totalExercises: 0
     });
 
     useEffect(() => {
@@ -17,6 +19,7 @@ const DashboardAdministrador = ({ changeTab }) => {
             try {
                 const users = await getAllUsers();
                 const routines = await getAllRoutines();
+                const exercises = await getAllExercises();
 
                 const pending = routines.filter(r => r.status === 'pending').length;
                 const approved = routines.filter(r => r.status === 'approved').length;
@@ -25,7 +28,8 @@ const DashboardAdministrador = ({ changeTab }) => {
                     totalUsers: users.length,
                     totalRoutines: routines.length,
                     pendingRoutines: pending,
-                    approvedRoutines: approved
+                    approvedRoutines: approved,
+                    totalExercises: exercises.length
                 });
             } catch (error) {
                 console.error("Error fetching stats:", error);
@@ -70,6 +74,16 @@ const DashboardAdministrador = ({ changeTab }) => {
                     <div className="widget-info">
                         <h3>Rutinas Aprobadas</h3>
                         <p>{stats.approvedRoutines}</p>
+                    </div>
+                </div>
+
+                <div className="widget-card" onClick={() => changeTab('exercises')} style={{ cursor: 'pointer' }}>
+                    <div className="widget-icon" style={{ backgroundColor: 'rgba(139, 0, 0, 0.1)', color: '#8b0000' }}>
+                        <Activity size={28} />
+                    </div>
+                    <div className="widget-info">
+                        <h3>Ejercicios en Biblioteca</h3>
+                        <p>{stats.totalExercises}</p>
                     </div>
                 </div>
 

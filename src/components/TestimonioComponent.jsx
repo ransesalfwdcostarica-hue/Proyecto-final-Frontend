@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Search, Plus, MessageSquare, ThumbsUp, Share2, Award, TrendingUp, Dumbbell, MoreHorizontal, X, Upload, Trash2, AlertTriangle, Send, User } from 'lucide-react';
-import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount } from '../Services/testimonioService';
-import { getAllUsers } from '../Services/userService';
+import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount } from '../services/testimonioService';
+import { getAllUsers } from '../services/userService';
 import { Link } from 'react-router-dom';
-import '../Styles/SuccessStories.css';
+import '../styles/SuccessStories.css';
 
 const TestimonioComponent = () => {
     const [stories, setStories] = useState([]);

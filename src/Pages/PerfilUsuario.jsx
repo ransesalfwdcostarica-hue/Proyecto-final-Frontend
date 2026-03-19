@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getUserById } from '../Services/userService';
-import { getStoriesByUserId } from '../Services/testimonioService';
+import { getUserById } from '../services/userService';
+import { getStoriesByUserId } from '../services/testimonioService';
 import { ThumbsUp, MessageSquare, Award, ArrowLeft, Grid, Bookmark } from 'lucide-react';
-import '../Styles/SuccessStories.css'; // Reutilizamos estilos base y añadimos de perfil
+import '../styles/SuccessStories.css'; // Reutilizamos estilos base y añadimos de perfil
 
 const PerfilUsuario = () => {
     const { id } = useParams();

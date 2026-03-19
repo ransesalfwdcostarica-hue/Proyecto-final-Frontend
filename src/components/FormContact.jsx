@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Phone, Send, MessageSquare, Bot, History, Target, Users, Instagram, Facebook, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { saveContactMessage } from '../Services/userService';
+import { saveContactMessage } from '../services/userService';
 import '../Styles/Contacto.css';
 
 const FormContact = () => {
@@ -225,3 +225,4 @@ const FormContact = () => {
 };
 
 export default FormContact;
+ 
