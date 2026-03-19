@@ -24,7 +24,7 @@
       "password": "R4nses_2008",
       "nombre": "Ranses Alvir",
       "edad": "20",
-      "rol": "client",
+      "rol": "admin",
       "edadFisica": "20",
       "sexo": "m",
       "altura": "170",
@@ -50,7 +50,7 @@
       "category": "Pérdida de Peso",
       "imageBefore": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
       "imageAfter": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
-      "likes": 2,
+      "likes": 3,
       "comments": 27
     },
     {
