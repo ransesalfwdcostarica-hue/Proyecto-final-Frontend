@@ -17,62 +17,22 @@
       "rol": "admin"
     },
     {
-      "id": "35ae",
+      "id": "0e3d",
       "email": "adriancamposcisnero@gmail.com",
-      "password": "a",
-      "nombre": "camil",
-      "edad": "64",
-      "rol": "client"
-    },
-    {
-      "id": "6fcb",
-      "email": "Rsalaspost@gmail.com",
-      "password": "1234",
+      "password": "123456",
       "nombre": "Ronny Salas ",
-      "edad": "17",
+      "edad": "76",
       "rol": "client",
-      "edadFisica": "17",
-      "sexo": "m",
-      "altura": "180",
-      "peso": "70",
+      "edadFisica": "33",
+      "sexo": "f",
+      "altura": "190",
+      "peso": "66",
       "lugarEntrenamiento": "gym",
-      "alergias": "ninguno",
-      "pesoMeta": 65,
-      "plazoSemanas": 4,
-      "pesoActual": "70",
+      "alergias": "mani",
+      "pesoMeta": 0,
+      "plazoSemanas": 8,
+      "pesoActual": "66",
       "deficitEstimado": 450
-    },
-    {
-      "id": "f973",
-      "email": "Faaahhh@faaah.com",
-      "password": "fah",
-      "nombre": "Faahhh Jimenez",
-      "edad": "23",
-      "rol": "client"
-    },
-    {
-      "id": "eb3d",
-      "email": "papoi@papoi.com",
-      "password": "papoi",
-      "nombre": "papu",
-      "edad": "22",
-      "rol": "client"
-    },
-    {
-      "id": "452f",
-      "email": "test_agent@test.com",
-      "password": "12345",
-      "nombre": "Test Agent",
-      "edad": "30",
-      "rol": "client"
-    },
-    {
-      "id": "bcca",
-      "email": "jaj@jajaj.com",
-      "password": "jajaja",
-      "nombre": "Jaja",
-      "edad": "74",
-      "rol": "client"
     }
   ],
   "contactos": [
