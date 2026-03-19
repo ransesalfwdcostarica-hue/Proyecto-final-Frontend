@@ -131,3 +131,16 @@ export const saveContactMessage = async (messageData) => {
     throw error;
   }
 };
+
+export const getUserById = async (userId) => {
+  try {
+    const response = await multiFetch(`/${userId}`);
+    if (!response.ok) {
+      throw new Error("Error fetching user");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    throw error;
+  }
+};

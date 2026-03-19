@@ -528,3 +528,66 @@
   font-size: 0.75rem;
   color: #aebdb5;
 }
+
+/* Responsive Extensions */
+@media (max-width: 1024px) {
+  .chatbot-sidebar-right {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .chatbot-sidebar-left {
+    display: none;
+  }
+
+  .chatbot-header {
+    padding: 0 16px;
+  }
+
+  .header-right .system-status {
+    display: none;
+  }
+
+  .chat-messages {
+    padding: 20px 16px;
+  }
+
+  .msg-row {
+    gap: 10px;
+  }
+
+  .msg-bubble {
+    padding: 16px;
+  }
+
+  .chat-input-container {
+    padding: 0 16px 20px;
+  }
+
+  .action-chips {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .action-chip {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .chatbot-logo-area span {
+    display: none;
+  }
+  
+  .chat-input {
+    font-size: 0.9rem;
+    padding: 14px 45px 14px 40px;
+  }
+  
+  .attach-btn {
+    left: 12px;
+  }
+}

@@ -201,7 +201,7 @@ const FormContact = () => {
                             <div className="about-text">
                                 <h2>Nuestra Misión</h2>
                                 <p>
-                                   Nuestra misión es proporcionar herramientas personalizadas, precisas y motivadoras para que cualquier persona, sin importar su lugar o nivel inicial, pueda alcanzar la mejor versión de sí misma. Creemos que la salud y el fitness deben estar al alcance de todos.
+                                Nuestra misión es proporcionar herramientas personalizadas, precisas y motivadoras para que cualquier persona, sin importar su lugar o nivel inicial, pueda alcanzar la mejor versión de sí misma. Creemos que la salud y el fitness deben estar al alcance de todos.
                                 </p>
                             </div>
                         </div>
