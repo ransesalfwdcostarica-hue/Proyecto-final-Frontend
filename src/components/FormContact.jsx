@@ -9,9 +9,11 @@ const FormContact = () => {
     const [formData, setFormData] = useState({
         nombre: '',
         contacto: '',
+        email: '',
         mensaje: ''
     });
     const [loading, setLoading] = useState(false);
+    const [texto, setTexto] = useState('');
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -21,10 +23,12 @@ const FormContact = () => {
         }));
     };
 
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        if (!formData.nombre?.trim() || !formData.contacto?.trim() || !formData.mensaje?.trim()) {
+        if (!formData.nombre?.trim() || !formData.contacto?.trim() || !formData.mensaje?.trim() || !formData.email?.trim()) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Campos incompletos',
@@ -145,12 +149,24 @@ const FormContact = () => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="contacto">Correo o Número de Teléfono</label>
+                                <label htmlFor="contacto">Celular</label>
                                 <input 
-                                    type="text" 
+                                    type="number" 
                                     id="contacto" 
-                                    placeholder="Tu email o celular" 
+                                    placeholder="Celular" 
                                     value={formData.contacto}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="email">Correo</label>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    placeholder="Correo" 
+                                    value={formData.email}
                                     onChange={handleChange}
                                     required 
                                 />
@@ -163,9 +179,14 @@ const FormContact = () => {
                                     rows="5" 
                                     placeholder="Describe tu problema o duda técnica..." 
                                     value={formData.mensaje}
-                                    onChange={handleChange}
+                                    onChange={(e) => {
+                                        handleChange(e);
+                                        setTexto(e.target.value);
+                                    }}
                                     required
+                                    maxLength={1000}
                                 ></textarea>
+                                <p className="text-gray-500 text-sm">{formData.mensaje.length}/1000</p>
                             </div>
 
                             <button type="submit" className="btn-submit" disabled={loading}>
@@ -225,4 +246,3 @@ const FormContact = () => {
 };
 
 export default FormContact;
- 

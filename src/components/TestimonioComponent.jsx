@@ -94,7 +94,13 @@ const TestimonioComponent = () => {
 
         try {
             const createdStory = await createStory(storyPayload);
-            setStories([createdStory, ...stories]);
+            const updatedStories = [createdStory, ...stories];
+            setStories(updatedStories);
+            
+            // Recalcular colaboradores destacados
+            const updatedContributors = calculateTopContributors(updatedStories, allUsers);
+            setTopContributors(updatedContributors);
+            
             handleCloseModal();
         } catch (error) {
             console.error('Error post story:', error);
@@ -112,7 +118,13 @@ const TestimonioComponent = () => {
 
         try {
             await deleteStory(storyIdToDelete);
-            setStories(stories.filter(story => story.id !== storyIdToDelete));
+            const updatedStories = stories.filter(story => story.id !== storyIdToDelete);
+            setStories(updatedStories);
+            
+            // Recalcular colaboradores destacados
+            const updatedContributors = calculateTopContributors(updatedStories, allUsers);
+            setTopContributors(updatedContributors);
+            
             setIsDeleteModalOpen(false);
             setStoryIdToDelete(null);
         } catch (error) {
@@ -121,18 +133,44 @@ const TestimonioComponent = () => {
         }
     };
 
+    const calculateTopContributors = (storiesData, usersData) => {
+        const counts = {};
+        storiesData.forEach(story => {
+            counts[story.userId] = (counts[story.userId] || 0) + 1;
+        });
+
+        const contributors = Object.keys(counts).map(userId => {
+            const user = usersData.find(u => String(u.id) === String(userId));
+            const lastStory = storiesData.find(s => String(s.userId) === String(userId));
+            
+            return {
+                id: userId,
+                name: user ? user.nombre : (lastStory ? lastStory.userName : 'Usuario'),
+                avatar: user ? (user.avatar || `https://i.pravatar.cc/150?u=${user.id}`) : (lastStory ? lastStory.userAvatar : `https://i.pravatar.cc/150?u=${userId}`),
+                role: user ? (user.rol === 'admin' ? 'Coach' : 'Atleta') : (lastStory ? (lastStory.tag || 'Miembro') : 'Miembro'),
+                points: counts[userId]
+            };
+        });
+
+        return contributors.sort((a, b) => b.points - a.points).slice(0, 5);
+    };
+
     useEffect(() => {
         loadData();
-        loadAllUsers();
     }, []);
 
     const loadData = async () => {
         setLoading(true);
         try {
-            const { storiesData, contributorsData, topicsData } = await fetchStoriesData();
+            const { storiesData, topicsData } = await fetchStoriesData();
+            const usersData = await getAllUsers();
+            
             setStories(storiesData);
-            setTopContributors(contributorsData);
+            setAllUsers(usersData);
             setTrendingTopics(topicsData);
+
+            const dynamicContributors = calculateTopContributors(storiesData, usersData);
+            setTopContributors(dynamicContributors);
 
             // Inicializar estados de likes locales desde la DB
             const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -149,15 +187,6 @@ const TestimonioComponent = () => {
             console.error("Error loading data:", error);
         } finally {
             setLoading(false);
-        }
-    };
-
-    const loadAllUsers = async () => {
-        try {
-            const data = await getAllUsers();
-            setAllUsers(data);
-        } catch (error) {
-            console.error("Error loading users:", error);
         }
     };
 
@@ -519,7 +548,10 @@ const TestimonioComponent = () => {
                                                 <p>{contributor.role}</p>
                                             </div>
                                         </div>
-                                        <div className="contributor-points">{contributor.points}</div>
+                                        <div className="contributor-points">
+                                            <span>{contributor.points}</span>
+                                            <small style={{ fontSize: '0.65rem', display: 'block', opacity: 0.7 }}>Publicaciones</small>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

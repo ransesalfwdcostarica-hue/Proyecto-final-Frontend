@@ -24,19 +24,53 @@ const Navbar = () => {
         navigate('/');
     };
 
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    const closeMenu = () => setIsMenuOpen(false);
+
     return (
         <nav className={`navbar ${isDashboard ? 'navbar-solid' : ''}`}>
             <div className="navbar-container">
-                <Link to="/" className="navbar-logo">
+                <Link to="/" className="navbar-logo" onClick={closeMenu}>
                     <Dumbbell className="logo-icon" size={26} />
                     <span>Power <span style={{ fontWeight: 300, color: 'var(--text-muted)' }}>FIT</span></span>
                 </Link>
 
-                <div className="navbar-links">
-                    <Link to="/ejercicios" className="nav-link">Ejercicios</Link>
-                    <Link to="/dietas" className="nav-link">Dietas</Link>
-                    <Link to="/comunidad" className="nav-link">Comunidad</Link>
-                    <Link to="/contacto" className="nav-link">Sobre Nosotros</Link>
+                <button 
+                    className="mobile-menu-toggle" 
+                    onClick={toggleMenu}
+                    aria-label="Toggle menu"
+                >
+                    {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                </button>
+
+                <div className={`navbar-links ${isMenuOpen ? 'active' : ''}`}>
+                    <Link to="/ejercicios" className="nav-link" onClick={closeMenu}>Ejercicios</Link>
+                    <Link to="/dietas" className="nav-link" onClick={closeMenu}>Dietas</Link>
+                    <Link to="/comunidad" className="nav-link" onClick={closeMenu}>Comunidad</Link>
+                    <Link to="/contacto" className="nav-link" onClick={closeMenu}>Sobre Nosotros</Link>
+                    
+                    {/* Mobile Only Actions */}
+                    <div className="mobile-only-actions">
+                        {user ? (
+                            <>
+                                <span className="user-greeting">Hola, {user.nombre || user.email?.split('@')[0]}</span>
+                                {user.rol === 'admin' ? (
+                                    <Link to="/admin" className="nav-btn-red" onClick={closeMenu}>Panel Admin</Link>
+                                ) : (
+                                    <Link to="/dashboard" className="nav-btn-outline" onClick={closeMenu}>Ver Perfil</Link>
+                                )
+                                }
+                                <button onClick={() => { handleLogout(); closeMenu(); }} className="nav-btn-outline">
+                                    Salir
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" className="nav-btn-outline" onClick={closeMenu}>Iniciar Sesión</Link>
+                                <Link to="/registro" className="nav-btn-red" onClick={closeMenu}>Empieza Ahora</Link>
+                            </>
+                        )}
+                    </div>
                 </div>
 
                 <div className="navbar-actions">

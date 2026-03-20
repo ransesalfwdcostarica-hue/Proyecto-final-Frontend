@@ -1,30 +1,12 @@
 {
   "usuarios": [
     {
-      "id": "0947",
-      "email": "pepe@pepe",
-      "password": "pepe",
-      "nombre": "pepe",
-      "edad": "20",
-      "rol": "admin",
-      "edadFisica": "20",
-      "sexo": "m",
-      "altura": "170",
-      "peso": "130",
-      "lugarEntrenamiento": "gym",
-      "alergias": "no",
-      "pesoMeta": 70,
-      "plazoSemanas": 12,
-      "pesoActual": "130",
-      "deficitEstimado": 450
-    },
-    {
       "id": "c695",
       "email": "ransesalfwdcostarica@gmail.com",
       "password": "R4nses_2008",
       "nombre": "Ranses Alvir",
       "edad": "20",
-      "rol": "cliente",
+      "rol": "admin",
       "edadFisica": "20",
       "sexo": "m",
       "altura": "170",
@@ -63,6 +45,13 @@
       "contacto": "72694020",
       "mensaje": "aa",
       "fecha": "2026-03-18T20:03:52.690Z"
+    },
+    {
+      "id": "0aee",
+      "nombre": "chkgwcj2e",
+      "contacto": "ranses",
+      "mensaje": "ewcwec",
+      "fecha": "2026-03-20T19:23:09.184Z"
     }
   ],
   "stories": [
@@ -82,7 +71,7 @@
       "likedBy": [
         "c695"
       ],
-      "comments": 27
+      "comments": 28
     },
     {
       "id": "s2",
@@ -447,6 +436,15 @@
       "userAvatar": "https://i.pravatar.cc/150?u=c695",
       "text": "JAJAJAJAJJAA",
       "fecha": "2026-03-19T21:22:30.081Z"
+    },
+    {
+      "id": "6349",
+      "storyId": "s1",
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://i.pravatar.cc/150?u=c695",
+      "text": "hola JAJAJAJAJAJA",
+      "fecha": "2026-03-20T14:24:24.986Z"
     }
   ]
 }
