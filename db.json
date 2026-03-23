@@ -120,7 +120,7 @@
       "category": "Ganancia de Músculo",
       "image": null,
       "likes": 1,
-      "comments": 0
+      "comments": 1
     }
   ],
   "trendingTopics": [
@@ -387,5 +387,15 @@
       "categoria": "Hombros"
     }
   ],
-  "comentarios": []
-}   
+  "comentarios": [
+    {
+      "id": "b01a",
+      "storyId": "4dca",
+      "userId": "0e67",
+      "userName": "Ronny Salas ",
+      "userAvatar": "https://i.pravatar.cc/150?u=0e67",
+      "text": "puto",
+      "fecha": "2026-03-19T20:09:40.232Z"
+    }
+  ]
+}
