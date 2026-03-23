@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Apple, Scale, Target, Activity, ChevronRight, Info, Utensils, Flame } from 'lucide-react';
-import '../Styles/Dietas.css';
+import '../styles/Dietas.css';
 
 const DietasComponent = () => {
     const [formData, setFormData] = useState({
@@ -72,10 +72,10 @@ const DietasComponent = () => {
                                 </h3>
                                 <div className="category-grid">
                                     {categories.map(cat => (
-                                        <div 
-                                            key={cat.id} 
+                                        <div
+                                            key={cat.id}
                                             className={`category-card ${formData.dietPreference === cat.id ? 'active' : ''}`}
-                                            onClick={() => setFormData({...formData, dietPreference: cat.id})}
+                                            onClick={() => setFormData({ ...formData, dietPreference: cat.id })}
                                         >
                                             <div className="cat-icon">{cat.icon}</div>
                                             <div className="cat-info">

@@ -9,7 +9,7 @@ import { createExercise } from '../services/exerciseService';
 import { Plus, X, Image as ImageIcon } from 'lucide-react';
 import Swal from 'sweetalert2';
 import AdminMessages from './AdminMessages';
-import '../Styles/dashboard.css';
+import '../styles/dashboard.css';
 
 const DashAdmin = () => {
   const [activeTab, setActiveTab] = useState('overview');
