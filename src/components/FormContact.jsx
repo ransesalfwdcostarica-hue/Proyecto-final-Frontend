@@ -3,7 +3,7 @@ import { Mail, Phone, Send, MessageSquare, Bot, History, Target, Users, Instagra
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { saveContactMessage } from '../services/userService';
-import '../Styles/Contacto.css';
+import '../styles/Contacto.css';
 
 const FormContact = () => {
     const [formData, setFormData] = useState({
@@ -54,7 +54,7 @@ const FormContact = () => {
             });
             return;
         }
-        
+
         if (!formData.nombre?.trim() || !formData.contacto?.trim() || !formData.mensaje?.trim() || !formData.email?.trim()) {
             Swal.fire({
                 icon: 'warning',
@@ -183,34 +183,34 @@ const FormContact = () => {
                         <form className="soporte-form" onSubmit={handleSubmit}>
                             <div className="form-group">
                                 <label htmlFor="nombre">Nombre completo</label>
-                                <input 
-                                    type="text" 
-                                    id="nombre" 
-                                    placeholder="Ingresa tu nombre" 
+                                <input
+                                    type="text"
+                                    id="nombre"
+                                    placeholder="Ingresa tu nombre"
                                     value={formData.nombre}
                                     onChange={handleChange}
-                                    required 
+                                    required
                                 />
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="pais">Pais</label>
-                                <input 
-                                    type="text" 
-                                    id="pais" 
-                                    placeholder="Ingresa tu pais" 
+                                <input
+                                    type="text"
+                                    id="pais"
+                                    placeholder="Ingresa tu pais"
                                     value={formData.pais}
                                     onChange={handleChange}
-                                    required 
+                                    required
                                 />
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="contacto">Celular</label>
-                                <input 
-                                    type="number" 
-                                    id="contacto" 
-                                    placeholder="Celular" 
+                                <input
+                                    type="number"
+                                    id="contacto"
+                                    placeholder="Celular"
                                     value={formData.contacto}
                                     onChange={handleChange}
                                     required
@@ -219,22 +219,22 @@ const FormContact = () => {
 
                             <div className="form-group">
                                 <label htmlFor="email">Correo</label>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    placeholder="Correo" 
+                                <input
+                                    type="email"
+                                    id="email"
+                                    placeholder="Correo"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    required 
+                                    required
                                 />
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="mensaje">Mensaje</label>
-                                <textarea 
-                                    id="mensaje" 
-                                    rows="5" 
-                                    placeholder="Describe tu problema o duda técnica..." 
+                                <textarea
+                                    id="mensaje"
+                                    rows="5"
+                                    placeholder="Describe tu problema o duda técnica..."
                                     value={formData.mensaje}
                                     onChange={(e) => {
                                         handleChange(e);
@@ -263,9 +263,9 @@ const FormContact = () => {
                             <div className="about-text">
                                 <h2>Nuestra Historia</h2>
                                 <p>
-                                    PowerFIT nació en 2026 con el objetivo de transformar la vida de las personas a través del fitness inteligente. 
-                                    Lo que comenzó como una idea para simplificar los planes de entrenamiento, evolucionó en una plataforma 
-                                    integral que combina tecnología avanzada con la pasión por el bienestar físico. 
+                                    PowerFIT nació en 2026 con el objetivo de transformar la vida de las personas a través del fitness inteligente.
+                                    Lo que comenzó como una idea para simplificar los planes de entrenamiento, evolucionó en una plataforma
+                                    integral que combina tecnología avanzada con la pasión por el bienestar físico.
                                     Hoy, somos una comunidad en constante crecimiento, unidos por el deseo de superación constante.
                                 </p>
                             </div>
@@ -279,7 +279,7 @@ const FormContact = () => {
                             <div className="about-text">
                                 <h2>Nuestra Misión</h2>
                                 <p>
-                                Nuestra misión es proporcionar herramientas personalizadas, precisas y motivadoras para que cualquier persona, sin importar su lugar o nivel inicial, pueda alcanzar la mejor versión de sí misma. Creemos que la salud y el fitness deben estar al alcance de todos.
+                                    Nuestra misión es proporcionar herramientas personalizadas, precisas y motivadoras para que cualquier persona, sin importar su lugar o nivel inicial, pueda alcanzar la mejor versión de sí misma. Creemos que la salud y el fitness deben estar al alcance de todos.
                                 </p>
                             </div>
                         </div>

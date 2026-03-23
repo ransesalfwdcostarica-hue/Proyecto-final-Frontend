@@ -1,14 +1,14 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Dumbbell, User, Flame, LogOut, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import '../Styles/Navbar.css';
+import '../styles/Navbar.css';
 
 const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    
+
     const isDashboard = location.pathname.includes('/dashboard') || location.pathname.includes('/admin');
 
     useEffect(() => {
@@ -35,8 +35,8 @@ const Navbar = () => {
                     <span>Power <span style={{ fontWeight: 300, color: 'var(--text-muted)' }}>FIT</span></span>
                 </Link>
 
-                <button 
-                    className="mobile-menu-toggle" 
+                <button
+                    className="mobile-menu-toggle"
                     onClick={toggleMenu}
                     aria-label="Toggle menu"
                 >
@@ -45,10 +45,10 @@ const Navbar = () => {
 
                 <div className={`navbar-links ${isMenuOpen ? 'active' : ''}`}>
                     <Link to="/ejercicios" className="nav-link" onClick={closeMenu}>Ejercicios</Link>
-                    <Link to="/dietas" className="nav-link" onClick={closeMenu}>Dietas</Link>
+                    <Link to="/dietas" className="nav-link" onClick={closeMenu}>Alimentacion</Link>
                     <Link to="/comunidad" className="nav-link" onClick={closeMenu}>Comunidad</Link>
                     <Link to="/contacto" className="nav-link" onClick={closeMenu}>Sobre Nosotros</Link>
-                    
+
                     {/* Mobile Only Actions */}
                     <div className="mobile-only-actions">
                         {user ? (

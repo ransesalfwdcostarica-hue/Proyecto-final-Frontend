@@ -9,8 +9,10 @@ import {
     AlertTriangle
 } from 'lucide-react';
 import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
+import { getAllExercises, createExercise, deleteExercise } from '../services/exerciseService';
+import Swal from 'sweetalert2';
 
-const AdminExercises = () => {
+const AdminExercises = ({ openAddModal }) => {
     const [exercises, setExercises] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -30,6 +32,13 @@ const AdminExercises = () => {
 
     useEffect(() => {
         loadExercises();
+
+        const handleRefresh = () => {
+            loadExercises();
+        };
+
+        window.addEventListener('refreshExercises', handleRefresh);
+        return () => window.removeEventListener('refreshExercises', handleRefresh);
     }, []);
 
     const loadExercises = async () => {
@@ -45,42 +54,45 @@ const AdminExercises = () => {
     };
 
     const handleDeleteClick = (id) => {
-        setExerciseToDelete(id);
-        setIsDeleteModalOpen(true);
+        Swal.fire({
+            title: '¿Eliminar Ejercicio?',
+            text: "Esta acción no se puede deshacer y el ejercicio se borrará de la base de datos.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#8b0000',
+            cancelButtonColor: '#333',
+            confirmButtonText: 'Eliminar Definitivamente',
+            cancelButtonText: 'Cancelar',
+            background: '#171212',
+            color: '#fff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                confirmDelete(id);
+            }
+        });
     };
 
-    const confirmDelete = async () => {
+    const confirmDelete = async (id) => {
         try {
-            await eliminarEjercicio(exerciseToDelete);
-            setExercises(exercises.filter(ex => ex.id !== exerciseToDelete));
-            setIsDeleteModalOpen(false);
-        } catch (error) {
-            alert("Error al eliminar");
-        }
-    };
-
-    const handleCreate = async (e) => {
-        e.preventDefault();
-
-        if (!newExercise.nombre?.trim() || !newExercise.musculo?.trim() || !newExercise.tiempo?.trim() || !newExercise.imagen?.trim()) {
-            alert("Por favor, completa todos los campos del ejercicio.");
-            return;
-        }
-
-        try {
-            const created = await crearEjercicio(newExercise);
-            setExercises([...exercises, created]);
-            setShowModal(false);
-            setNewExercise({
-                nombre: '',
-                nivel: 'PRINCIPIANTE',
-                musculo: '',
-                tiempo: '',
-                imagen: '',
-                categoria: 'Pecho'
+            await deleteExercise(id);
+            setExercises(exercises.filter(ex => ex.id !== id));
+            Swal.fire({
+                title: 'Eliminado',
+                text: 'El ejercicio ha sido borrado correctamente.',
+                icon: 'success',
+                background: '#171212',
+                color: '#fff',
+                confirmButtonColor: '#8b0000'
             });
         } catch (error) {
-            alert("Error al crear");
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo eliminar el ejercicio.',
+                icon: 'error',
+                background: '#171212',
+                color: '#fff',
+                confirmButtonColor: '#8b0000'
+            });
         }
     };
 
@@ -106,9 +118,9 @@ const AdminExercises = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <button className="btn-primary" onClick={() => setShowModal(true)}>
+                <button className="btn-primary" onClick={openAddModal}>
                     <Plus size={18} />
-                    Nuevo Ejercicio
+                    Agregar Ejercicios
                 </button>
             </div>
 
@@ -154,8 +166,6 @@ const AdminExercises = () => {
                     </div>
                 )}
             </div>
-
-            {/* Modal de Añadir */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal-content admin-exercise-modal animate-fade-in">
@@ -240,29 +250,14 @@ const AdminExercises = () => {
                             </div>
                             <button type="submit" className="btn-submit-admin">
                                 <Plus size={20} />
-                                Guardar Ejercicio
+                                Agregar Ejercicios
                             </button>
                         </form>
                     </div>
                 </div>
             )}
 
-            {/* Modal de Eliminación */}
-            {isDeleteModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-content delete-confirm-modal animate-fade-in">
-                        <div className="delete-icon-box">
-                            <AlertTriangle size={48} />
-                        </div>
-                        <h3>¿Eliminar Ejercicio?</h3>
-                        <p>Esta acción no se puede deshacer y el ejercicio se borrará de la base de datos.</p>
-                        <div className="modal-actions-column">
-                            <button className="btn-delete-full" onClick={confirmDelete}>Eliminar Definitivamente</button>
-                            <button className="btn-cancel-full" onClick={() => setIsDeleteModalOpen(false)}>Cancelar</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+
         </div>
     );
 };

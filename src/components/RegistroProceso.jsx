@@ -2,7 +2,7 @@ import { useState } from "react";
 import FormRegistro from "./FormRegistro";
 import FormFisic from "./FormFisic";
 import MetaUsuario from "./MetaUsuario";
-import "../Styles/Login.css";
+import "../styles/Login.css";
 
 function RegistroProceso() {
   const [step, setStep] = useState(1);
@@ -45,25 +45,25 @@ function RegistroProceso() {
             </div>
           </div>
           <div className="auth-form-side" style={{ overflowY: 'auto', display: 'block', padding: '2rem' }}>
-            <FormRegistro 
-              userData={userData} 
-              onNext={nextStep} 
+            <FormRegistro
+              userData={userData}
+              onNext={nextStep}
             />
           </div>
         </div>
       ) : (
         <div className="registration-full-container fade-in">
           {step === 2 && (
-            <FormFisic 
-              userData={userData} 
-              onNext={nextStep} 
-              onBack={prevStep} 
+            <FormFisic
+              userData={userData}
+              onNext={nextStep}
+              onBack={prevStep}
             />
           )}
           {step === 3 && (
-            <MetaUsuario 
-              userData={userData} 
-              onBack={prevStep} 
+            <MetaUsuario
+              userData={userData}
+              onBack={prevStep}
             />
           )}
         </div>

@@ -12,7 +12,12 @@ import {
     Image as ImageIcon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+<<<<<<< HEAD
 import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
+=======
+import { getAllExercises, createExercise, deleteExercise } from '../services/exerciseService';
+import Swal from 'sweetalert2';
+>>>>>>> 220409add12fc17b9ee0197d5805644a2d1c31d6
 import '../styles/Ejercicios.css';
 
 const EjerciciosComponent = () => {
@@ -76,12 +81,40 @@ const EjerciciosComponent = () => {
     }, [searchTerm, activeCategory, exercises]);
 
     const handleDelete = async (id) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar este ejercicio?')) {
+        const result = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esta acción",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#8b0000',
+            cancelButtonColor: '#333',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            background: '#171212',
+            color: '#fff'
+        });
+
+        if (result.isConfirmed) {
             try {
                 await eliminarEjercicio(id);
                 setExercises(exercises.filter(ex => ex.id !== id));
+                Swal.fire({
+                    title: 'Eliminado',
+                    text: 'El ejercicio ha sido borrado.',
+                    icon: 'success',
+                    background: '#171212',
+                    color: '#fff',
+                    confirmButtonColor: '#8b0000'
+                });
             } catch (error) {
-                alert("Error al eliminar el ejercicio");
+                Swal.fire({
+                    title: 'Error',
+                    text: 'No se pudo eliminar el ejercicio.',
+                    icon: 'error',
+                    background: '#171212',
+                    color: '#fff',
+                    confirmButtonColor: '#8b0000'
+                });
             }
         }
     };
@@ -90,7 +123,14 @@ const EjerciciosComponent = () => {
         e.preventDefault();
 
         if (!newExercise.nombre?.trim() || !newExercise.musculo?.trim() || !newExercise.tiempo?.trim() || !newExercise.imagen?.trim()) {
-            alert("Por favor, completa todos los campos del ejercicio.");
+            Swal.fire({
+                title: 'Atención',
+                text: 'Por favor, completa todos los campos del ejercicio.',
+                icon: 'warning',
+                background: '#171212',
+                color: '#fff',
+                confirmButtonColor: '#8b0000'
+            });
             return;
         }
 
@@ -106,8 +146,23 @@ const EjerciciosComponent = () => {
                 imagen: '',
                 categoria: 'Pecho'
             });
+            Swal.fire({
+                title: '¡Éxito!',
+                text: 'El ejercicio ha sido agregado a la biblioteca.',
+                icon: 'success',
+                background: '#171212',
+                color: '#fff',
+                confirmButtonColor: '#8b0000'
+            });
         } catch (error) {
-            alert("Error al crear el ejercicio");
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo agregar el ejercicio.',
+                icon: 'error',
+                background: '#171212',
+                color: '#fff',
+                confirmButtonColor: '#8b0000'
+            });
         }
     };
 

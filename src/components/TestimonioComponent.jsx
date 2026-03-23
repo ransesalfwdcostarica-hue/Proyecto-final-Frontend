@@ -42,10 +42,13 @@ const TestimonioComponent = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [storyIdToDelete, setStoryIdToDelete] = useState(null);
 
+    // Login Alert Modal state
+    const [isLoginAlertOpen, setIsLoginAlertOpen] = useState(false);
+
     const handleOpenModal = () => {
         const storedUser = localStorage.getItem('user');
         if (!storedUser) {
-            alert('Debes iniciar sesión para compartir tu historia.');
+            setIsLoginAlertOpen(true);
             return;
         }
         setIsModalOpen(true);
@@ -63,10 +66,10 @@ const TestimonioComponent = () => {
     const handleCloudinaryAvatarUpload = async (imageUrl) => {
         if (!currentUser) return;
         setAvatarUploading(true);
-        
+
         // Preview inmediato
         setCurrentUser(prev => ({ ...prev, avatar: imageUrl }));
-        
+
         try {
             const updated = await updateUser(currentUser.id, { ...currentUser, avatar: imageUrl });
             setCurrentUser(updated);
@@ -121,11 +124,11 @@ const TestimonioComponent = () => {
             const createdStory = await createStory(storyPayload);
             const updatedStories = [createdStory, ...stories];
             setStories(updatedStories);
-            
+
             // Recalcular colaboradores destacados
             const updatedContributors = calculateTopContributors(updatedStories, allUsers);
             setTopContributors(updatedContributors);
-            
+
             handleCloseModal();
         } catch (error) {
             console.error('Error post story:', error);
@@ -145,11 +148,11 @@ const TestimonioComponent = () => {
             await deleteStory(storyIdToDelete);
             const updatedStories = stories.filter(story => story.id !== storyIdToDelete);
             setStories(updatedStories);
-            
+
             // Recalcular colaboradores destacados
             const updatedContributors = calculateTopContributors(updatedStories, allUsers);
             setTopContributors(updatedContributors);
-            
+
             setIsDeleteModalOpen(false);
             setStoryIdToDelete(null);
         } catch (error) {
@@ -167,7 +170,7 @@ const TestimonioComponent = () => {
         const contributors = Object.keys(counts).map(userId => {
             const user = usersData.find(u => String(u.id) === String(userId));
             const lastStory = storiesData.find(s => String(s.userId) === String(userId));
-            
+
             return {
                 id: userId,
                 name: user ? user.nombre : (lastStory ? lastStory.userName : 'Usuario'),
@@ -189,7 +192,7 @@ const TestimonioComponent = () => {
         try {
             const { storiesData, topicsData } = await fetchStoriesData();
             const usersData = await getAllUsers();
-            
+
             setStories(storiesData);
             setAllUsers(usersData);
             setTrendingTopics(topicsData);
@@ -229,7 +232,7 @@ const TestimonioComponent = () => {
 
         const user = JSON.parse(storedUserJSON);
         const isCurrentlyLiked = !!localLikes[id];
-        
+
         let newLikedBy = story.likedBy || [];
         if (isCurrentlyLiked) {
             newLikedBy = newLikedBy.filter(userId => userId !== user.id);
@@ -277,7 +280,7 @@ const TestimonioComponent = () => {
         setSearchQuery(query);
 
         if (query.trim()) {
-            const results = allUsers.filter(user => 
+            const results = allUsers.filter(user =>
                 user.nombre?.toLowerCase().includes(query.toLowerCase()) ||
                 user.email?.toLowerCase().includes(query.toLowerCase())
             );
@@ -316,7 +319,7 @@ const TestimonioComponent = () => {
 
         const storedUserJSON = localStorage.getItem('user');
         if (!storedUserJSON) {
-            alert('Debes iniciar sesión para comentar.');
+            setIsLoginAlertOpen(true);
             return;
         }
 
@@ -335,7 +338,7 @@ const TestimonioComponent = () => {
         try {
             const createdComment = await addComment(commentPayload);
             const newCount = (story.comments || 0) + 1;
-            
+
             await updateStoryCommentsCount(storyId, newCount);
 
             // Actualizar estado local
@@ -497,7 +500,7 @@ const TestimonioComponent = () => {
                                                 <ThumbsUp size={18} />
                                                 <span>Útil ({story.likes})</span>
                                             </button>
-                                            <button 
+                                            <button
                                                 className={`btn-action ${showComments[story.id] ? 'active' : ''}`}
                                                 onClick={() => toggleComments(story.id)}
                                             >
@@ -733,6 +736,27 @@ const TestimonioComponent = () => {
                         <div className="modal-actions full-width">
                             <button className="btn-cancel" onClick={() => setIsDeleteModalOpen(false)}>Cancelar</button>
                             <button className="btn-delete-confirm" onClick={confirmDelete}>Eliminar permanentemente</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Alerta de Inicio de Sesión */}
+            {isLoginAlertOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content confirm-modal animate-fade-in">
+                        <div className="confirm-icon-container" style={{ backgroundColor: 'rgba(255, 77, 77, 0.1)' }}>
+                            <User size={48} color="var(--primary)" />
+                        </div>
+                        <h3>Inicia sesión para interactuar</h3>
+                        <p>Para compartir tu historia, dar me gusta o comentar, necesitas ser parte de nuestra comunidad.</p>
+                        <div className="modal-actions full-width">
+                            <Link to="/login" className="btn-submit" style={{ textAlign: 'center', textDecoration: 'none' }}>
+                                Iniciar Sesión
+                            </Link>
+                            <button className="btn-cancel" onClick={() => setIsLoginAlertOpen(false)}>
+                                Tal vez luego
+                            </button>
                         </div>
                     </div>
                 </div>

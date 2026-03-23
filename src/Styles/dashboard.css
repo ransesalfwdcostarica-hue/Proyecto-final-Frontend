@@ -143,6 +143,27 @@
   margin: 0;
 }
 
+.add-shortcut-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
+}
+
+.add-shortcut-btn:hover {
+  transform: scale(1.1);
+  background: #ff6666;
+  box-shadow: 0 6px 15px rgba(255, 77, 77, 0.5);
+}
+
 /* Tables & Lists */
 .admin-panel {
   background: var(--bg-card);

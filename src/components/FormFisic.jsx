@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User, Utensils, Lock, ChevronRight } from 'lucide-react';
-import '../Styles/FormFisic.css';
+import '../styles/FormFisic.css';
 
 const FormFisic = ({ userData, onNext, onBack }) => {
   const [formData, setFormData] = useState({
@@ -24,8 +24,8 @@ const FormFisic = ({ userData, onNext, onBack }) => {
     e.preventDefault();
 
     if (!formData.edadFisica || !formData.sexo || !formData.altura || !formData.peso || !formData.lugarEntrenamiento) {
-        alert("Por favor complete todos los campos obligatorios.");
-        return;
+      alert("Por favor complete todos los campos obligatorios.");
+      return;
     }
 
     onNext(formData);
@@ -53,10 +53,10 @@ const FormFisic = ({ userData, onNext, onBack }) => {
               <div className="form-group">
                 <label>EDAD</label>
                 <div className="input-wrapper">
-                  <input 
+                  <input
                     name="edadFisica"
-                    type="number" 
-                    placeholder="Ej. 28" 
+                    type="number"
+                    placeholder="Ej. 28"
                     value={formData.edadFisica}
                     onChange={handleChange}
                     required
@@ -68,7 +68,7 @@ const FormFisic = ({ userData, onNext, onBack }) => {
               <div className="form-group">
                 <label>SEXO</label>
                 <div className="select-wrapper">
-                  <select 
+                  <select
                     name="sexo"
                     value={formData.sexo}
                     onChange={handleChange}
@@ -84,10 +84,10 @@ const FormFisic = ({ userData, onNext, onBack }) => {
               <div className="form-group">
                 <label>ALTURA (CM)</label>
                 <div className="input-wrapper">
-                  <input 
+                  <input
                     name="altura"
-                    type="number" 
-                    placeholder="Ej. 175" 
+                    type="number"
+                    placeholder="Ej. 175"
                     value={formData.altura}
                     onChange={handleChange}
                     required
@@ -99,11 +99,11 @@ const FormFisic = ({ userData, onNext, onBack }) => {
               <div className="form-group">
                 <label>PESO (KG)</label>
                 <div className="input-wrapper">
-                  <input 
+                  <input
                     name="peso"
-                    type="number" 
-                    step="0.1" 
-                    placeholder="Ej. 74.5" 
+                    type="number"
+                    step="0.1"
+                    placeholder="Ej. 74.5"
                     value={formData.peso}
                     onChange={handleChange}
                     required
@@ -115,7 +115,7 @@ const FormFisic = ({ userData, onNext, onBack }) => {
               <div className="form-group full-width">
                 <label>LUGAR DE ENTRENAMIENTO</label>
                 <div className="select-wrapper">
-                  <select 
+                  <select
                     name="lugarEntrenamiento"
                     value={formData.lugarEntrenamiento}
                     onChange={handleChange}
@@ -141,7 +141,7 @@ const FormFisic = ({ userData, onNext, onBack }) => {
 
             <div className="form-group full-width">
               <label>ALERGIAS O INTOLERANCIAS ALIMENTARIAS</label>
-              <textarea 
+              <textarea
                 name="alergias"
                 placeholder="Describa cualquier alergia (ej. frutos secos, lactosa, gluten) o restricción dietética..."
                 rows="4"
@@ -159,9 +159,9 @@ const FormFisic = ({ userData, onNext, onBack }) => {
               * Sus datos están protegidos y se usan exclusivamente para su plan.
             </span>
             <div style={{ display: 'flex', gap: '1rem' }}>
-              <button 
-                type="button" 
-                onClick={() => onBack(formData)} 
+              <button
+                type="button"
+                onClick={() => onBack(formData)}
                 className="btn-back"
               >
                 Atrás

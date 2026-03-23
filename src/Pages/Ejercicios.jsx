@@ -8,4 +8,4 @@ function Ejercicios() {
     )
 }
 
-export default Ejercicios
+export default Ejercicios;

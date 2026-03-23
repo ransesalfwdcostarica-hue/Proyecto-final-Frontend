@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { registerUser } from '../services/userService.js';
-import { 
-  Home, 
-  Target, 
-  BarChart3, 
-  User, 
-  Flame, 
-  Utensils, 
+import {
+  Home,
+  Target,
+  BarChart3,
+  User,
+  Flame,
+  Utensils,
   Info,
   ChevronRight,
   CheckCircle
 } from 'lucide-react';
-import '../Styles/MetaUsuario.css';
+import '../styles/MetaUsuario.css';
 
 const MetaUsuario = ({ userData, onBack }) => {
   const navigate = useNavigate();
@@ -37,9 +37,9 @@ const MetaUsuario = ({ userData, onBack }) => {
     setLoading(true);
     try {
       await registerUser(finalData);
-      
+
       setIsNotificationOpen(true);
-      
+
       setTimeout(() => {
         navigate("/login");
       }, 3000);
@@ -70,7 +70,7 @@ const MetaUsuario = ({ userData, onBack }) => {
               <span className="section-label">MI SALUD</span>
               <span className="section-sublabel">Plan Personalizado</span>
             </div>
-            
+
             <nav className="sidebar-nav">
               <button className="nav-item">
                 <Home size={20} />
@@ -109,17 +109,17 @@ const MetaUsuario = ({ userData, onBack }) => {
               <div className="weight-inputs">
                 <div className="input-group">
                   <label>Peso actual (kg)</label>
-                  <input 
-                    type="number" 
-                    value={currentWeight} 
+                  <input
+                    type="number"
+                    value={currentWeight}
                     onChange={(e) => setCurrentWeight(Number(e.target.value))}
                   />
                 </div>
                 <div className="input-group">
                   <label>Meta de peso (kg)</label>
-                  <input 
-                    type="number" 
-                    value={targetWeight} 
+                  <input
+                    type="number"
+                    value={targetWeight}
                     onChange={(e) => setTargetWeight(Number(e.target.value))}
                   />
                 </div>
@@ -131,11 +131,11 @@ const MetaUsuario = ({ userData, onBack }) => {
                   <span className="lose-amount">{weightToLose} kg</span>
                 </div>
                 <div className="range-container">
-                  <input 
-                    type="range" 
+                  <input
+                    type="range"
                     className="weight-range"
-                    min="0" 
-                    max="20" 
+                    min="0"
+                    max="20"
                     step="0.5"
                     value={weightToLose}
                     readOnly
@@ -147,7 +147,7 @@ const MetaUsuario = ({ userData, onBack }) => {
                 <label>Plazo deseado</label>
                 <div className="duration-grid">
                   {[4, 8, 12].map((weeks) => (
-                    <button 
+                    <button
                       key={weeks}
                       className={`duration-card ${duration === weeks ? 'active' : ''}`}
                       onClick={() => setDuration(weeks)}
@@ -175,15 +175,15 @@ const MetaUsuario = ({ userData, onBack }) => {
               </div>
 
               <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                <button 
-                  className="btn-start-plan" 
+                <button
+                  className="btn-start-plan"
                   onClick={() => onBack({ peso: currentWeight, pesoMeta: targetWeight, plazoSemanas: duration })}
                   style={{ background: '#333', flex: 1 }}
                 >
                   Atrás
                 </button>
-                <button 
-                  className="btn-start-plan" 
+                <button
+                  className="btn-start-plan"
                   onClick={handleStartPlan}
                   disabled={loading}
                   style={{ flex: 2 }}
@@ -228,8 +228,8 @@ const MetaUsuario = ({ userData, onBack }) => {
             <p>Tu registro ha sido exitoso. Ahora puedes iniciar sesión para acceder a tu perfil fitness.</p>
             <div className="modal-actions-column">
               <Link to="/login" className="btn-notification">Ir al Inicio de Sesión</Link>
-              <button 
-                className="btn-cancel-link" 
+              <button
+                className="btn-cancel-link"
                 onClick={() => setIsNotificationOpen(false)}
               >
                 Cerrar
