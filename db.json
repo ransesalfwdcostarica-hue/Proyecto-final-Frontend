@@ -217,7 +217,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "BRAZOS",
       "tiempo": "35 SEG",
-      "imagen": "https://images.unsplash.com/photo-1581009881954-3d321f37b1af?w=800&q=80",
+      "imagen": "/exercises/curl-biceps.jpg",
       "categoria": "Brazos"
     },
     {
@@ -226,7 +226,7 @@
       "nivel": "INTERMEDIO",
       "musculo": "PECHO",
       "tiempo": "45 SEG",
-      "imagen": "https://images.unsplash.com/photo-1534367507873-d2d7e24c798f?w=800&q=80",
+      "imagen": "/exercises/aperturas-mancuernas.jpg",
       "categoria": "Pecho"
     },
     {
@@ -244,7 +244,7 @@
       "nivel": "INTERMEDIO",
       "musculo": "ESPALDA",
       "tiempo": "40 SEG",
-      "imagen": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
+      "imagen": "/exercises/jalon-pecho.jpg",
       "categoria": "Espalda"
     },
     {
@@ -253,7 +253,7 @@
       "nivel": "INTERMEDIO",
       "musculo": "CUÁDRICEPS",
       "tiempo": "50 SEG",
-      "imagen": "https://images.unsplash.com/photo-1532384748853-8f54a8f476e2?w=800&q=80",
+      "imagen": "/exercises/prensa-piernas.jpg",
       "categoria": "Piernas"
     },
     {
@@ -262,7 +262,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "HOMBROS",
       "tiempo": "45 SEG",
-      "imagen": "https://images.unsplash.com/photo-1541534741688-6078c64a55dc?w=800&q=80",
+      "imagen": "/exercises/elevaciones-laterales.jpg",
       "categoria": "Hombros"
     },
     {
@@ -271,7 +271,7 @@
       "nivel": "AVANZADO",
       "musculo": "HOMBROS",
       "tiempo": "40 SEG",
-      "imagen": "https://images.unsplash.com/photo-1532029837206-abbe2b7620e3?w=800&q=80",
+      "imagen": "/exercises/press-arnold.jpg",
       "categoria": "Hombros"
     },
     {
@@ -280,7 +280,7 @@
       "nivel": "INTERMEDIO",
       "musculo": "TRÍCEPS",
       "tiempo": "40 SEG",
-      "imagen": "https://images.unsplash.com/photo-1530822847156-5df684ec5313?w=800&q=80",
+      "imagen": "/exercises/press-frances.jpg",
       "categoria": "Brazos"
     },
     {
@@ -289,7 +289,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "CORE",
       "tiempo": "60 SEG",
-      "imagen": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
+      "imagen": "/exercises/plancha.jpg",
       "categoria": "Core"
     },
     {
@@ -298,7 +298,7 @@
       "nivel": "INTERMEDIO",
       "musculo": "GLÚTEOS",
       "tiempo": "45 SEG",
-      "imagen": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80",
+      "imagen": "/exercises/hip-thrust.jpg",
       "categoria": "Glúteos"
     },
     {
@@ -307,7 +307,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "PIERNAS",
       "tiempo": "45 SEG",
-      "imagen": "https://images.unsplash.com/photo-1434608519344-49d77a4195b2?w=800&q=80",
+      "imagen": "/exercises/zancadas.jpg",
       "categoria": "Piernas"
     },
     {
@@ -316,7 +316,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "CORE",
       "tiempo": "30 SEG",
-      "imagen": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
+      "imagen": "/exercises/crunch.jpg",
       "categoria": "Core"
     },
     {
@@ -325,7 +325,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "GLÚTEOS",
       "tiempo": "50 SEG",
-      "imagen": "https://images.unsplash.com/photo-1518611012118-2960520ee4ea?w=800&q=80",
+      "imagen": "/exercises/patada-gluteo.jpg",
       "categoria": "Glúteos"
     },
     {
@@ -370,7 +370,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "CUÁDRICEPS",
       "tiempo": "40 SEG",
-      "imagen": "https://images.unsplash.com/photo-1591544200892-04e40292723c?w=800&q=80",
+      "imagen": "/exercises/extension-cuadriceps.jpg",
       "categoria": "Piernas"
     },
     {
@@ -379,8 +379,9 @@
       "nivel": "INTERMEDIO",
       "musculo": "HOMBRO POSTERIOR",
       "tiempo": "45 SEG",
-      "imagen": "https://images.unsplash.com/photo-1620288627223-53302f4e8c74?w=800&q=80",
+      "imagen": "/exercises/face-pull.jpg",
       "categoria": "Hombros"
     }
   ]
 }
+
