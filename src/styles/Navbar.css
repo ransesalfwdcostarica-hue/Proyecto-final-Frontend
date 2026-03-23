@@ -110,7 +110,13 @@
     border: none;
     color: white;
     cursor: pointer;
-    z-index: 1001;
+    z-index: 1100; /* Higher than navbar-links */
+    padding: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+    color: var(--primary);
 }
 
 .mobile-only-actions {
@@ -126,16 +132,19 @@
         position: fixed;
         top: 0;
         right: -100%;
-        width: 80%;
-        max-width: 300px;
+        width: 100%;
+        max-width: 320px;
         height: 100vh;
         background-color: #0c0c0c;
         flex-direction: column;
+        justify-content: flex-start;
         padding: 6rem 2rem 2rem;
-        gap: 2rem;
+        gap: 1.5rem;
         transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
         border-left: 1px solid rgba(255, 255, 255, 0.05);
+        z-index: 1050;
+        overflow-y: auto;
     }
 
     .navbar-links.active {
@@ -143,7 +152,9 @@
     }
 
     .mobile-menu-toggle {
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .navbar-actions {
@@ -153,21 +164,32 @@
     .mobile-only-actions {
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1rem;
         margin-top: 1rem;
         padding-top: 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+    }
+
+    .mobile-only-actions .user-greeting {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
     }
 
     .mobile-only-actions .nav-btn-red,
     .mobile-only-actions .nav-btn-outline {
         text-align: center;
         width: 100%;
+        padding: 0.8rem;
+        font-size: 1rem;
     }
 
     .nav-link {
         font-size: 1.1rem;
         letter-spacing: 1px;
+        padding: 0.5rem 0;
+        width: 100%;
     }
 }
 
@@ -179,6 +201,10 @@
     .logo-icon {
         width: 22px;
         height: 22px;
+    }
+
+    .navbar-links {
+        width: 85%;
     }
 }
 

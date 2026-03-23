@@ -22,6 +22,12 @@ const FormFisic = ({ userData, onNext, onBack }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!formData.edadFisica || !formData.sexo || !formData.altura || !formData.peso || !formData.lugarEntrenamiento) {
+        alert("Por favor complete todos los campos obligatorios.");
+        return;
+    }
+
     onNext(formData);
   };
 

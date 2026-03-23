@@ -144,3 +144,30 @@ export const getUserById = async (userId) => {
     throw error;
   }
 };
+
+export const getAllContactMessages = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/contactos`);
+    if (!response.ok) {
+      throw new Error("Error fetching contact messages");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching contact messages:", error);
+    throw error;
+  }
+};
+
+export const deleteContactMessage = async (messageId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/contactos/${messageId}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      throw new Error("Error deleting contact message");
+    }
+  } catch (error) {
+    console.error("Error deleting contact message:", error);
+    throw error;
+  }
+};

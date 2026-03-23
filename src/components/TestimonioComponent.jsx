@@ -64,6 +64,12 @@ const TestimonioComponent = () => {
 
     const handleSubmitStory = async (e) => {
         e.preventDefault();
+
+        if (!newStory.title.trim() || !newStory.text.trim()) {
+            alert('Por favor, completa el título y el contenido de tu historia.');
+            return;
+        }
+
         const storedUserJSON = localStorage.getItem('user');
         if (!storedUserJSON) {
             alert('Sesión expirada. Por favor, inicia sesión nuevamente.');
@@ -88,7 +94,13 @@ const TestimonioComponent = () => {
 
         try {
             const createdStory = await createStory(storyPayload);
-            setStories([createdStory, ...stories]);
+            const updatedStories = [createdStory, ...stories];
+            setStories(updatedStories);
+            
+            // Recalcular colaboradores destacados
+            const updatedContributors = calculateTopContributors(updatedStories, allUsers);
+            setTopContributors(updatedContributors);
+            
             handleCloseModal();
         } catch (error) {
             console.error('Error post story:', error);
@@ -106,7 +118,13 @@ const TestimonioComponent = () => {
 
         try {
             await deleteStory(storyIdToDelete);
-            setStories(stories.filter(story => story.id !== storyIdToDelete));
+            const updatedStories = stories.filter(story => story.id !== storyIdToDelete);
+            setStories(updatedStories);
+            
+            // Recalcular colaboradores destacados
+            const updatedContributors = calculateTopContributors(updatedStories, allUsers);
+            setTopContributors(updatedContributors);
+            
             setIsDeleteModalOpen(false);
             setStoryIdToDelete(null);
         } catch (error) {
@@ -115,31 +133,60 @@ const TestimonioComponent = () => {
         }
     };
 
+    const calculateTopContributors = (storiesData, usersData) => {
+        const counts = {};
+        storiesData.forEach(story => {
+            counts[story.userId] = (counts[story.userId] || 0) + 1;
+        });
+
+        const contributors = Object.keys(counts).map(userId => {
+            const user = usersData.find(u => String(u.id) === String(userId));
+            const lastStory = storiesData.find(s => String(s.userId) === String(userId));
+            
+            return {
+                id: userId,
+                name: user ? user.nombre : (lastStory ? lastStory.userName : 'Usuario'),
+                avatar: user ? (user.avatar || `https://i.pravatar.cc/150?u=${user.id}`) : (lastStory ? lastStory.userAvatar : `https://i.pravatar.cc/150?u=${userId}`),
+                role: user ? (user.rol === 'admin' ? 'Coach' : 'Atleta') : (lastStory ? (lastStory.tag || 'Miembro') : 'Miembro'),
+                points: counts[userId]
+            };
+        });
+
+        return contributors.sort((a, b) => b.points - a.points).slice(0, 5);
+    };
+
     useEffect(() => {
         loadData();
-        loadAllUsers();
     }, []);
 
     const loadData = async () => {
         setLoading(true);
         try {
-            const { storiesData, contributorsData, topicsData } = await fetchStoriesData();
+            const { storiesData, topicsData } = await fetchStoriesData();
+            const usersData = await getAllUsers();
+            
             setStories(storiesData);
-            setTopContributors(contributorsData);
+            setAllUsers(usersData);
             setTrendingTopics(topicsData);
+
+            const dynamicContributors = calculateTopContributors(storiesData, usersData);
+            setTopContributors(dynamicContributors);
+
+            // Inicializar estados de likes locales desde la DB
+            const storedUser = JSON.parse(localStorage.getItem('user'));
+            if (storedUser) {
+                const initialLikes = {};
+                storiesData.forEach(story => {
+                    if (story.likedBy && story.likedBy.includes(storedUser.id)) {
+                        initialLikes[story.id] = true;
+                    }
+                });
+                setLocalLikes(initialLikes);
+            }
         } catch (error) {
             console.error("Error loading data:", error);
         } finally {
             setLoading(false);
-        }
-    };
-
-    const loadAllUsers = async () => {
-        try {
-            const data = await getAllUsers();
-            setAllUsers(data);
-        } catch (error) {
-            console.error("Error loading users:", error);
         }
     };
 
@@ -149,28 +196,42 @@ const TestimonioComponent = () => {
         const story = stories.find(s => s.id === id);
         if (!story) return;
 
-        const isCurrentlyLiked = !!localLikes[id];
-        const newLikeValue = isCurrentlyLiked ? story.likes - 1 : story.likes + 1;
+        const storedUserJSON = localStorage.getItem('user');
+        if (!storedUserJSON) {
+            alert('Debes iniciar sesión para reaccionar a una historia.');
+            return;
+        }
 
-        // UI Optimista: Actualizar localLikes inmediatamente
+        const user = JSON.parse(storedUserJSON);
+        const isCurrentlyLiked = !!localLikes[id];
+        
+        let newLikedBy = story.likedBy || [];
+        if (isCurrentlyLiked) {
+            newLikedBy = newLikedBy.filter(userId => userId !== user.id);
+        } else {
+            newLikedBy = [...newLikedBy, user.id];
+        }
+
+        const newLikeValue = newLikedBy.length;
+
+        // UI Optimista
         setLocalLikes(prev => ({
             ...prev,
             [id]: !isCurrentlyLiked
         }));
 
         try {
-            // Actualizar en el servidor
-            await updateStoryLikes(id, newLikeValue);
+            // Actualizar en el servidor con el nuevo array de IDs y el contador
+            await updateStoryLikes(id, newLikeValue, newLikedBy);
 
-            // Actualizar el estado local de la historia para que el contador sea correcto
+            // Actualizar el estado local de la historia
             setStories(prevStories =>
                 prevStories.map(s =>
-                    s.id === id ? { ...s, likes: newLikeValue } : s
+                    s.id === id ? { ...s, likes: newLikeValue, likedBy: newLikedBy } : s
                 )
             );
         } catch (error) {
             console.error('Error updating likes:', error);
-            // Revertir UI optimista en caso de error
             setLocalLikes(prev => ({
                 ...prev,
                 [id]: isCurrentlyLiked
@@ -223,7 +284,10 @@ const TestimonioComponent = () => {
     const handleAddComment = async (e, storyId) => {
         e.preventDefault();
         const text = newCommentText[storyId];
-        if (!text || !text.trim()) return;
+        if (!text || !text.trim()) {
+            alert('El comentario no puede estar vacío.');
+            return;
+        }
 
         const storedUserJSON = localStorage.getItem('user');
         if (!storedUserJSON) {
@@ -484,7 +548,10 @@ const TestimonioComponent = () => {
                                                 <p>{contributor.role}</p>
                                             </div>
                                         </div>
-                                        <div className="contributor-points">{contributor.points}</div>
+                                        <div className="contributor-points">
+                                            <span>{contributor.points}</span>
+                                            <small style={{ fontSize: '0.65rem', display: 'block', opacity: 0.7 }}>Publicaciones</small>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

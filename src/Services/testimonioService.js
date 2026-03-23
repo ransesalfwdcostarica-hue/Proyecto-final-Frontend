@@ -34,13 +34,16 @@ export const createStory = async (storyPayload) => {
     return await response.json();
 };
 
-export const updateStoryLikes = async (storyId, newLikes) => {
+export const updateStoryLikes = async (storyId, newLikes, likedBy) => {
     const response = await fetch(`${API_URL}/stories/${storyId}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ likes: newLikes })
+        body: JSON.stringify({ 
+            likes: newLikes,
+            likedBy: likedBy
+        })
     });
 
     if (!response.ok) {

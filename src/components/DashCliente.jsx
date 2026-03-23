@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { 
-  LayoutDashboard, 
-  Dumbbell, 
-  Utensils, 
-  BarChart2, 
-  Settings, 
-  Plus, 
-  Flame, 
+import {
+  LayoutDashboard,
+  Dumbbell,
+  Utensils,
+  BarChart2,
+  Settings,
+  Plus,
+  Flame,
   ChevronRight,
   LogOut,
   Home,
@@ -76,6 +76,12 @@ const DashCliente = () => {
 
   const handleUpdateUser = async (e) => {
     e.preventDefault();
+
+    if (!editForm.pesoActual || !editForm.pesoMeta || !editForm.altura || !editForm.plazoSemanas) {
+      alert("Por favor completa todos los campos del perfil.");
+      return;
+    }
+
     try {
       const updated = await updateUser(user.id, editForm);
       setUser(updated);
@@ -112,7 +118,7 @@ const DashCliente = () => {
     }
   };
 
-  if (!user) return <div className="client-dashboard" style={{color: 'white', textAlign: 'center', padding: '100px'}}>Cargando...</div>;
+  if (!user) return <div className="client-dashboard" style={{ color: 'white', textAlign: 'center', padding: '100px' }}>Cargando...</div>;
 
   const imc = calculateIMC();
 
@@ -127,28 +133,28 @@ const DashCliente = () => {
         </div>
 
         <nav className="sidebar-menu">
-          <button 
+          <button
             className={`menu-item ${activeTab === 'dashboard' ? 'active' : ''}`}
             onClick={() => setActiveTab('dashboard')}
           >
             <LayoutDashboard size={20} />
             Dashboard
           </button>
-          <button 
+          <button
             className={`menu-item ${activeTab === 'training' ? 'active' : ''}`}
             onClick={() => setActiveTab('training')}
           >
             <Dumbbell size={20} />
             Entrenamientos
           </button>
-          <button 
+          <button
             className={`menu-item ${activeTab === 'nutrition' ? 'active' : ''}`}
             onClick={() => setActiveTab('nutrition')}
           >
             <Utensils size={20} />
             Nutrición
           </button>
-          <button 
+          <button
             className={`menu-item ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('settings')}
           >
@@ -169,10 +175,10 @@ const DashCliente = () => {
         </nav>
 
         <div className="sidebar-profile">
-          <img 
-            src={user.avatar || `https://i.pravatar.cc/150?u=${user.id}`} 
-            alt="Avatar" 
-            className="profile-avatar" 
+          <img
+            src={user.avatar || `https://i.pravatar.cc/150?u=${user.id}`}
+            alt="Avatar"
+            className="profile-avatar"
           />
           <div className="profile-info">
             <h4>{user.nombre || 'Usuario'}</h4>
@@ -185,9 +191,9 @@ const DashCliente = () => {
       <main className="client-main">
         <header className="client-header">
           <div className="header-title">
-            <h1>{activeTab === 'dashboard' ? 'Panel de Rendimiento' : 
-                 activeTab === 'training' ? 'Biblioteca de Entrenamiento' : 
-                 activeTab === 'nutrition' ? 'Plan Nutricional' : 'Ajustes de Cuenta'}</h1>
+            <h1>{activeTab === 'dashboard' ? 'Panel de Rendimiento' :
+              activeTab === 'training' ? 'Biblioteca de Entrenamiento' :
+                activeTab === 'nutrition' ? 'Plan Nutricional' : 'Ajustes de Cuenta'}</h1>
             <p>¡Hola {user.nombre}! Estas {activeTab === 'dashboard' ? 'son tus estadísticas del día.' : 'es tu sección personalizada.'}</p>
           </div>
           <div className="header-actions">
@@ -340,25 +346,25 @@ const DashCliente = () => {
 
         {activeTab === 'nutrition' && (
           <section className="nutrition-view animate-fade-in">
-             <div className="nutrition-info-card">
-                <div className="info-icon-large"><Utensils size={40} /></div>
-                <h2>Tu Plan Nutricional</h2>
-                <p>Basado en tu objetivo de <strong>{user.pesoMeta}kg</strong>, tu déficit diario es de <strong>{user.deficitEstimado} kcal</strong>.</p>
-                <div className="nutrition-tips">
-                  <div className="tip-item">
-                    <div className="tip-dot"></div>
-                    <p>Bebe al menos 3 litros de agua al día para mantenerte hidratado.</p>
-                  </div>
-                  <div className="tip-item">
-                    <div className="tip-dot"></div>
-                    <p>Prioriza el consumo de proteínas en cada comida ({Math.round(parseFloat(user.pesoActual) * 2)}g totales).</p>
-                  </div>
-                  <div className="tip-item">
-                    <div className="tip-dot"></div>
-                    <p>Evita alimentos ultraprocesados y enfócate en comida real.</p>
-                  </div>
+            <div className="nutrition-info-card">
+              <div className="info-icon-large"><Utensils size={40} /></div>
+              <h2>Tu Plan Nutricional</h2>
+              <p>Basado en tu objetivo de <strong>{user.pesoMeta}kg</strong>, tu déficit diario es de <strong>{user.deficitEstimado} kcal</strong>.</p>
+              <div className="nutrition-tips">
+                <div className="tip-item">
+                  <div className="tip-dot"></div>
+                  <p>Bebe al menos 3 litros de agua al día para mantenerte hidratado.</p>
                 </div>
-             </div>
+                <div className="tip-item">
+                  <div className="tip-dot"></div>
+                  <p>Prioriza el consumo de proteínas en cada comida ({Math.round(parseFloat(user.pesoActual) * 2)}g totales).</p>
+                </div>
+                <div className="tip-item">
+                  <div className="tip-dot"></div>
+                  <p>Evita alimentos ultraprocesados y enfócate en comida real.</p>
+                </div>
+              </div>
+            </div>
           </section>
         )}
 
@@ -370,7 +376,7 @@ const DashCliente = () => {
                   <h2>Editar mi Perfil</h2>
                   <p>Gestiona tu información personal y apariencia.</p>
                 </div>
-                <button 
+                <button
                   className={`btn-toggle-edit ${isEditing ? 'editing' : ''}`}
                   onClick={() => setIsEditing(!isEditing)}
                 >
@@ -380,29 +386,29 @@ const DashCliente = () => {
 
               <div className="avatar-edit-section">
                 <div className="avatar-preview-container">
-                    <img 
-                      src={editForm.avatar || user.avatar || `https://i.pravatar.cc/150?u=${user.id}`} 
-                      alt="Avatar Preview" 
-                      className="avatar-large-preview"
-                    />
-                    {isEditing && (
-                      <div className="avatar-overlay">
-                        <label htmlFor="avatar-upload" className="upload-icon-label">
-                          <Upload size={24} />
-                          <input 
-                            type="file" 
-                            id="avatar-upload" 
-                            hidden 
-                            accept="image/*" 
-                            onChange={handleAvatarUpload}
-                          />
-                        </label>
-                      </div>
-                    )}
+                  <img
+                    src={editForm.avatar || user.avatar || `https://i.pravatar.cc/150?u=${user.id}`}
+                    alt="Avatar Preview"
+                    className="avatar-large-preview"
+                  />
+                  {isEditing && (
+                    <div className="avatar-overlay">
+                      <label htmlFor="avatar-upload" className="upload-icon-label">
+                        <Upload size={24} />
+                        <input
+                          type="file"
+                          id="avatar-upload"
+                          hidden
+                          accept="image/*"
+                          onChange={handleAvatarUpload}
+                        />
+                      </label>
+                    </div>
+                  )}
                 </div>
                 <div className="avatar-tips">
-                    <h3>Foto de Perfil</h3>
-                    <p>Sube una imagen cuadrada para mejores resultados.</p>
+                  <h3>Foto de Perfil</h3>
+                  <p>Sube una imagen cuadrada para mejores resultados.</p>
                 </div>
               </div>
 
@@ -410,41 +416,41 @@ const DashCliente = () => {
                 <div className="form-settings-grid">
                   <div className="form-field">
                     <label>Peso Actual (kg)</label>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       readOnly={!isEditing}
                       value={editForm.pesoActual}
-                      onChange={e => setEditForm({...editForm, pesoActual: e.target.value})}
+                      onChange={e => setEditForm({ ...editForm, pesoActual: e.target.value })}
                       className={!isEditing ? 'readonly' : ''}
                     />
                   </div>
                   <div className="form-field">
                     <label>Peso Meta (kg)</label>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       readOnly={!isEditing}
                       value={editForm.pesoMeta}
-                      onChange={e => setEditForm({...editForm, pesoMeta: e.target.value})}
+                      onChange={e => setEditForm({ ...editForm, pesoMeta: e.target.value })}
                       className={!isEditing ? 'readonly' : ''}
                     />
                   </div>
                   <div className="form-field">
                     <label>Altura (cm)</label>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       readOnly={!isEditing}
                       value={editForm.altura}
-                      onChange={e => setEditForm({...editForm, altura: e.target.value})}
+                      onChange={e => setEditForm({ ...editForm, altura: e.target.value })}
                       className={!isEditing ? 'readonly' : ''}
                     />
                   </div>
                   <div className="form-field">
                     <label>Plazo Semanas</label>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       readOnly={!isEditing}
                       value={editForm.plazoSemanas}
-                      onChange={e => setEditForm({...editForm, plazoSemanas: e.target.value})}
+                      onChange={e => setEditForm({ ...editForm, plazoSemanas: e.target.value })}
                       className={!isEditing ? 'readonly' : ''}
                     />
                   </div>
