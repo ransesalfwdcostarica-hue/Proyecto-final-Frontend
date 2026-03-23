@@ -12,7 +12,7 @@ import {
     Image as ImageIcon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getAllExercises, createExercise, deleteExercise } from '../services/exerciseService';
+import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
 import '../styles/Ejercicios.css';
 
 const EjerciciosComponent = () => {
@@ -48,7 +48,7 @@ const EjerciciosComponent = () => {
     const loadExercises = async () => {
         try {
             setLoading(true);
-            const data = await getAllExercises();
+            const data = await obtenerTodosEjercicios();
             setExercises(data);
             setFilteredExercises(data);
         } catch (error) {
@@ -78,7 +78,7 @@ const EjerciciosComponent = () => {
     const handleDelete = async (id) => {
         if (window.confirm('¿Estás seguro de que deseas eliminar este ejercicio?')) {
             try {
-                await deleteExercise(id);
+                await eliminarEjercicio(id);
                 setExercises(exercises.filter(ex => ex.id !== id));
             } catch (error) {
                 alert("Error al eliminar el ejercicio");
@@ -95,7 +95,7 @@ const EjerciciosComponent = () => {
         }
 
         try {
-            const created = await createExercise(newExercise);
+            const created = await crearEjercicio(newExercise);
             setExercises([...exercises, created]);
             setShowAddModal(false);
             setNewExercise({

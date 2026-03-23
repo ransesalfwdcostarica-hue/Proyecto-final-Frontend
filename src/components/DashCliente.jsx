@@ -21,9 +21,10 @@ import {
   User as UserIcon
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getAllExercises } from '../services/exerciseService';
+import { obtenerTodosEjercicios } from '../services/exerciseService';
 import { updateUser } from '../services/userService';
 import Swal from 'sweetalert2';
+import SubirImagen from './SubirImagen';
 import '../styles/DashboardCliente.css';
 
 const DashCliente = () => {
@@ -46,7 +47,7 @@ const DashCliente = () => {
 
   const loadExercises = async () => {
     try {
-      const data = await getAllExercises();
+      const data = await obtenerTodosEjercicios();
       setExercises(data.slice(0, 6)); // Solo mostramos algunos destacados
       setLoading(false);
     } catch (error) {
@@ -107,14 +108,34 @@ const DashCliente = () => {
     }
   };
 
-  const handleAvatarUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setEditForm({ ...editForm, avatar: reader.result });
-      };
-      reader.readAsDataURL(file);
+  const handleCloudinaryUpload = async (imageUrl) => {
+    setEditForm(prev => ({ ...prev, avatar: imageUrl }));
+
+    try {
+      const updated = await updateUser(user.id, { ...user, avatar: imageUrl });
+
+      setUser(updated);
+      localStorage.setItem('user', JSON.stringify(updated));
+
+      Swal.fire({
+        icon: 'success',
+        title: '¡Foto actualizada!',
+        text: 'Tu foto de perfil se guardó correctamente.',
+        background: '#171212',
+        color: '#fff',
+        confirmButtonColor: '#8b0000',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    } catch {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo guardar la foto.',
+        background: '#171212',
+        color: '#fff',
+        confirmButtonColor: '#8b0000'
+      });
     }
   };
 
@@ -393,16 +414,11 @@ const DashCliente = () => {
                   />
                   {isEditing && (
                     <div className="avatar-overlay">
-                      <label htmlFor="avatar-upload" className="upload-icon-label">
-                        <Upload size={24} />
-                        <input
-                          type="file"
-                          id="avatar-upload"
-                          hidden
-                          accept="image/*"
-                          onChange={handleAvatarUpload}
-                        />
-                      </label>
+                      <SubirImagen onImageUpload={handleCloudinaryUpload}>
+                        <label className="upload-icon-label" style={{ cursor: 'pointer' }}>
+                          <Upload size={24} />
+                        </label>
+                      </SubirImagen>
                     </div>
                   )}
                 </div>

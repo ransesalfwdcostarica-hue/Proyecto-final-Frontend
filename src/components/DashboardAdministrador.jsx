@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Users, Activity, CheckCircle, Clock } from 'lucide-react';
 import { getAllUsers } from '../services/userService';
 import { getAllRoutines } from '../services/routineService';
-import { getAllExercises } from '../services/exerciseService';
+import { obtenerTodosEjercicios, obtenerEjerciciosPorCategoria, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
 
 
 const DashboardAdministrador = ({ changeTab }) => {
@@ -19,7 +19,7 @@ const DashboardAdministrador = ({ changeTab }) => {
             try {
                 const users = await getAllUsers();
                 const routines = await getAllRoutines();
-                const exercises = await getAllExercises();
+                const exercises = await obtenerTodosEjercicios();
 
                 const pending = routines.filter(r => r.status === 'pending').length;
                 const approved = routines.filter(r => r.status === 'approved').length;

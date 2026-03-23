@@ -29,7 +29,7 @@ export const registerUser = async (userData) => {
 export const loginUser = async (email, password) => {
   try {
     const response = await multiFetch("");
-    
+
     if (!response.ok) {
       throw new Error(`Error del servidor (${response.status}). Asegúrate de que npm run backend esté activo.`);
     }
@@ -168,6 +168,32 @@ export const deleteContactMessage = async (messageId) => {
     }
   } catch (error) {
     console.error("Error deleting contact message:", error);
+    throw error;
+  }
+};
+export const actualizarImg = async (userId, imageUrl) => {
+  try {
+    if (!imageUrl || imageUrl.startsWith("data:")) {
+      throw new Error("La imagen no es una URL válida");
+    }
+
+    const response = await fetch(`http://localhost:3001/usuarios/${userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        avatar: imageUrl,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error actualizando imagen:", error);
     throw error;
   }
 };

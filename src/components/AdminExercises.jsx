@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Trash2, 
-  Plus, 
-  Search, 
-  Dumbbell, 
-  X, 
-  Image as ImageIcon,
-  AlertTriangle
+import {
+    Trash2,
+    Plus,
+    Search,
+    Dumbbell,
+    X,
+    Image as ImageIcon,
+    AlertTriangle
 } from 'lucide-react';
-import { getAllExercises, createExercise, deleteExercise } from '../services/exerciseService';
+import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
 
 const AdminExercises = () => {
     const [exercises, setExercises] = useState([]);
@@ -17,7 +17,7 @@ const AdminExercises = () => {
     const [showModal, setShowModal] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [exerciseToDelete, setExerciseToDelete] = useState(null);
-    
+
     // Form state
     const [newExercise, setNewExercise] = useState({
         nombre: '',
@@ -35,7 +35,7 @@ const AdminExercises = () => {
     const loadExercises = async () => {
         try {
             setLoading(true);
-            const data = await getAllExercises();
+            const data = await obtenerTodosEjercicios();
             setExercises(data);
         } catch (error) {
             console.error("Error loading exercises:", error);
@@ -51,7 +51,7 @@ const AdminExercises = () => {
 
     const confirmDelete = async () => {
         try {
-            await deleteExercise(exerciseToDelete);
+            await eliminarEjercicio(exerciseToDelete);
             setExercises(exercises.filter(ex => ex.id !== exerciseToDelete));
             setIsDeleteModalOpen(false);
         } catch (error) {
@@ -68,7 +68,7 @@ const AdminExercises = () => {
         }
 
         try {
-            const created = await createExercise(newExercise);
+            const created = await crearEjercicio(newExercise);
             setExercises([...exercises, created]);
             setShowModal(false);
             setNewExercise({
@@ -84,7 +84,7 @@ const AdminExercises = () => {
         }
     };
 
-    const filtered = exercises.filter(ex => 
+    const filtered = exercises.filter(ex =>
         ex.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
         ex.categoria.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -99,9 +99,9 @@ const AdminExercises = () => {
             <div className="panel-header">
                 <div className="search-box-admin">
                     <Search size={18} />
-                    <input 
-                        type="text" 
-                        placeholder="Buscar por nombre o categoría..." 
+                    <input
+                        type="text"
+                        placeholder="Buscar por nombre o categoría..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -166,20 +166,20 @@ const AdminExercises = () => {
                         <form onSubmit={handleCreate} className="admin-form-premium">
                             <div className="form-group-admin">
                                 <label>Nombre del Ejercicio</label>
-                                <input 
-                                    type="text" 
-                                    required 
+                                <input
+                                    type="text"
+                                    required
                                     placeholder="Ej: Press de Banca Plano"
                                     value={newExercise.nombre}
-                                    onChange={e => setNewExercise({...newExercise, nombre: e.target.value})}
+                                    onChange={e => setNewExercise({ ...newExercise, nombre: e.target.value })}
                                 />
                             </div>
                             <div className="form-row-admin">
                                 <div className="form-group-admin">
                                     <label>Categoría</label>
-                                    <select 
+                                    <select
                                         value={newExercise.categoria}
-                                        onChange={e => setNewExercise({...newExercise, categoria: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, categoria: e.target.value })}
                                     >
                                         <option value="Pecho">Pecho</option>
                                         <option value="Espalda">Espalda</option>
@@ -192,9 +192,9 @@ const AdminExercises = () => {
                                 </div>
                                 <div className="form-group-admin">
                                     <label>Nivel de Dificultad</label>
-                                    <select 
+                                    <select
                                         value={newExercise.nivel}
-                                        onChange={e => setNewExercise({...newExercise, nivel: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, nivel: e.target.value })}
                                     >
                                         <option value="PRINCIPIANTE">Principiante</option>
                                         <option value="INTERMEDIO">Intermedio</option>
@@ -206,22 +206,22 @@ const AdminExercises = () => {
                             <div className="form-row-admin">
                                 <div className="form-group-admin">
                                     <label>Músculo</label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="Ej: PECHO" 
-                                        required 
+                                    <input
+                                        type="text"
+                                        placeholder="Ej: PECHO"
+                                        required
                                         value={newExercise.musculo}
-                                        onChange={e => setNewExercise({...newExercise, musculo: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, musculo: e.target.value })}
                                     />
                                 </div>
                                 <div className="form-group-admin">
                                     <label>Tiempo</label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="Ej: 45 SEG" 
-                                        required 
+                                    <input
+                                        type="text"
+                                        placeholder="Ej: 45 SEG"
+                                        required
                                         value={newExercise.tiempo}
-                                        onChange={e => setNewExercise({...newExercise, tiempo: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, tiempo: e.target.value })}
                                     />
                                 </div>
                             </div>
@@ -229,12 +229,12 @@ const AdminExercises = () => {
                                 <label>URL de Imagen Ilustrativa</label>
                                 <div className="input-icon-wrapper">
                                     <ImageIcon size={18} />
-                                    <input 
-                                        type="url" 
-                                        required 
+                                    <input
+                                        type="url"
+                                        required
                                         placeholder="https://images.unsplash.com/..."
                                         value={newExercise.imagen}
-                                        onChange={e => setNewExercise({...newExercise, imagen: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, imagen: e.target.value })}
                                     />
                                 </div>
                             </div>
