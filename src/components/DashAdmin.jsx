@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Users, Activity, Home, Dumbbell } from 'lucide-react';
+import { LayoutDashboard, Users, Activity, Home, Dumbbell, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import DashboardAdministrador from './DashboardAdministrador';
 import AdminUsers from './AdminUsers';
 import AdminRoutines from './AdminRoutines';
 import AdminExercises from './AdminExercises';
+import AdminMessages from './AdminMessages';
 import '../Styles/dashboard.css';
 
 const DashAdmin = () => {
@@ -20,6 +21,8 @@ const DashAdmin = () => {
         return <AdminRoutines />;
       case 'exercises':
         return <AdminExercises />;
+      case 'messages':
+        return <AdminMessages />;
       default:
         return <DashboardAdministrador changeTab={setActiveTab} />;
     }
@@ -50,6 +53,13 @@ const DashAdmin = () => {
           >
             <Activity size={20} />
             Rutinas
+          </button>
+          <button 
+            className={`sidebar-btn ${activeTab === 'messages' ? 'active' : ''}`}
+            onClick={() => setActiveTab('messages')}
+          >
+            <Mail size={20} />
+            Mensajes
           </button>
           <button 
             className={`sidebar-btn ${activeTab === 'exercises' ? 'active' : ''}`}

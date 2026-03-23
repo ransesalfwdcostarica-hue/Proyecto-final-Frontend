@@ -6,7 +6,7 @@
       "password": "R4nses_2008",
       "nombre": "Ranses Alvir",
       "edad": "20",
-      "rol": "admin",
+      "rol": "client",
       "edadFisica": "20",
       "sexo": "m",
       "altura": "170",
@@ -22,9 +22,9 @@
       "id": "0e67",
       "email": "Rsalasfwdcostarica@gmail.com",
       "password": "1234",
-      "nombre": "Ronny Salas ",
+      "nombre": "Ronny Salas Editado",
       "edad": "17",
-      "rol": "client",
+      "rol": "admin",
       "edadFisica": "17",
       "sexo": "m",
       "altura": "180",
@@ -40,18 +40,13 @@
   ],
   "contactos": [
     {
-      "id": "bfb6",
-      "nombre": "Ronny Salas ",
-      "contacto": "72694020",
-      "mensaje": "aa",
-      "fecha": "2026-03-18T20:03:52.690Z"
-    },
-    {
-      "id": "0aee",
-      "nombre": "chkgwcj2e",
-      "contacto": "ranses",
-      "mensaje": "ewcwec",
-      "fecha": "2026-03-20T19:23:09.184Z"
+      "id": "3a7a",
+      "nombre": "Ransés",
+      "contacto": "60184472",
+      "email": "ransesalvir75@gmail.com",
+      "mensaje": "No sé",
+      "pais": "Costa Rica",
+      "fecha": "2026-03-20T20:49:35.162Z"
     }
   ],
   "stories": [

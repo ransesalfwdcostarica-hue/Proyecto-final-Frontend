@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Send, MessageSquare, Bot, History, Target, Users, Instagram, Facebook, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -10,10 +10,19 @@ const FormContact = () => {
         nombre: '',
         contacto: '',
         email: '',
-        mensaje: ''
+        mensaje: '',
+        pais: ''
     });
     const [loading, setLoading] = useState(false);
     const [texto, setTexto] = useState('');
+    const [currentUser, setCurrentUser] = useState(null);
+
+    useEffect(() => {
+        const stored = localStorage.getItem('user');
+        if (stored) {
+            try { setCurrentUser(JSON.parse(stored)); } catch { setCurrentUser(null); }
+        }
+    }, []);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -27,6 +36,24 @@ const FormContact = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!currentUser) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Inicia sesión primero',
+                text: 'Debes estar logueado para enviar un mensaje.',
+                background: '#171212',
+                color: '#ffffff',
+                iconColor: '#7d2020',
+                confirmButtonColor: '#7d2020',
+                confirmButtonText: 'Ir al Login'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/login';
+                }
+            });
+            return;
+        }
         
         if (!formData.nombre?.trim() || !formData.contacto?.trim() || !formData.mensaje?.trim() || !formData.email?.trim()) {
             Swal.fire({
@@ -128,6 +155,24 @@ const FormContact = () => {
 
                 {/* Support Form */}
                 <div className="soporte-section animate-fade-in delay-300">
+                    {!currentUser && (
+                        <div style={{
+                            background: 'rgba(125,32,32,0.15)',
+                            border: '1px solid #7d2020',
+                            borderRadius: '12px',
+                            padding: '1rem 1.5rem',
+                            marginBottom: '1rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            color: '#f87171'
+                        }}>
+                            <span style={{ fontSize: '1.4rem' }}>🔒</span>
+                            <span>
+                                Debes <Link to="/login" style={{ color: '#f87171', fontWeight: 700, textDecoration: 'underline' }}>iniciar sesión</Link> para poder enviar un mensaje.
+                            </span>
+                        </div>
+                    )}
                     <div className="soporte-form-container">
                         <div className="form-header">
                             <MessageSquare className="text-primary" size={32} />
@@ -143,6 +188,18 @@ const FormContact = () => {
                                     id="nombre" 
                                     placeholder="Ingresa tu nombre" 
                                     value={formData.nombre}
+                                    onChange={handleChange}
+                                    required 
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="pais">Pais</label>
+                                <input 
+                                    type="text" 
+                                    id="pais" 
+                                    placeholder="Ingresa tu pais" 
+                                    value={formData.pais}
                                     onChange={handleChange}
                                     required 
                                 />
