@@ -1,17 +1,14 @@
 import { useState, useEffect, useContext } from 'react';
+import { UserContext } from '../context/UserContext';
 import { Search, Plus, MessageSquare, ThumbsUp, Share2, Award, TrendingUp, Dumbbell, MoreHorizontal, X, Upload, Trash2, AlertTriangle, Send, User } from 'lucide-react';
 import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount } from '../services/testimonioService';
 import { getAllUsers, updateUser } from '../services/userService';
 import { Link } from 'react-router-dom';
-<<<<<<< HEAD
-import { UserContext } from '../context/UserContext';
-=======
 import SubirImagen from './SubirImagen';
->>>>>>> 7f5008c4df97890f30c37e0f505389d5ab76fde7
 import '../styles/SuccessStories.css';
 
 const TestimonioComponent = () => {
-    const { user: currentUser } = useContext(UserContext);
+    const { user: currentUser, refreshUser } = useContext(UserContext);
     const [stories, setStories] = useState([]);
     const [topContributors, setTopContributors] = useState([]);
     const [trendingTopics, setTrendingTopics] = useState([]);
@@ -36,12 +33,7 @@ const TestimonioComponent = () => {
     const [commentsData, setCommentsData] = useState({});
     const [newCommentText, setNewCommentText] = useState({});
     const [loadingComments, setLoadingComments] = useState({});
-<<<<<<< HEAD
-=======
-    // Current logged-in user
-    const [currentUser, setCurrentUser] = useState(null);
     const [avatarUploading, setAvatarUploading] = useState(false);
->>>>>>> 7f5008c4df97890f30c37e0f505389d5ab76fde7
 
     // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -67,26 +59,16 @@ const TestimonioComponent = () => {
         setIsModalOpen(true);
     };
 
-    // Load current user from localStorage
-    useEffect(() => {
-        const stored = localStorage.getItem('user');
-        if (stored) {
-            try { setCurrentUser(JSON.parse(stored)); } catch { setCurrentUser(null); }
-        }
-    }, []);
+
 
     // Avatar upload handler (Cloudinary)
     const handleCloudinaryAvatarUpload = async (imageUrl) => {
         if (!currentUser) return;
         setAvatarUploading(true);
 
-        // Preview inmediato
-        setCurrentUser(prev => ({ ...prev, avatar: imageUrl }));
-
         try {
             const updated = await updateUser(currentUser.id, { ...currentUser, avatar: imageUrl });
-            setCurrentUser(updated);
-            localStorage.setItem('user', JSON.stringify(updated));
+            refreshUser(updated);
         } catch (err) {
             console.error('Error saving avatar:', err);
         } finally {
@@ -117,15 +99,9 @@ const TestimonioComponent = () => {
         }
 
         const storyPayload = {
-<<<<<<< HEAD
             userId: currentUser.id || `u_${Date.now()}`,
             userName: currentUser.nombre || "Usuario",
             userAvatar: currentUser.avatar || `https://i.pravatar.cc/150?u=${currentUser.id || Math.random()}`,
-=======
-            userId: user.id || `u_${Date.now()}`,
-            userName: user.nombre || "Usuario",
-            userAvatar: user.avatar || `https://i.pravatar.cc/150?u=${user.id || Math.random()}`,
->>>>>>> 7f5008c4df97890f30c37e0f505389d5ab76fde7
             time: "Justo ahora",
             tag: newStory.category,
             title: newStory.title,
@@ -339,15 +315,9 @@ const TestimonioComponent = () => {
 
         const commentPayload = {
             storyId,
-<<<<<<< HEAD
             userId: currentUser.id,
             userName: currentUser.nombre || "Usuario",
             userAvatar: currentUser.avatar || `https://i.pravatar.cc/150?u=${currentUser.id}`,
-=======
-            userId: user.id,
-            userName: user.nombre || "Usuario",
-            userAvatar: user.avatar || `https://i.pravatar.cc/150?u=${user.id}`,
->>>>>>> 7f5008c4df97890f30c37e0f505389d5ab76fde7
             text: text.trim(),
             fecha: new Date().toISOString()
         };

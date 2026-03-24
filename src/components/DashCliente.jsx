@@ -112,46 +112,6 @@ const DashCliente = () => {
     }
   };
 
-<<<<<<< HEAD
-  const handleAvatarUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const img = new Image();
-        img.onload = () => {
-          // Resize image to max 400x400 for efficiency
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 400;
-          const MAX_HEIGHT = 400;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-
-          // Get compressed data URL
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-          setEditForm(prev => ({ ...prev, avatar: compressedDataUrl }));
-        };
-        img.src = reader.result;
-      };
-      reader.readAsDataURL(file);
-=======
   const handleCloudinaryUpload = async (imageUrl) => {
     setEditForm(prev => ({ ...prev, avatar: imageUrl }));
 
@@ -180,7 +140,6 @@ const DashCliente = () => {
         color: '#fff',
         confirmButtonColor: '#8b0000'
       });
->>>>>>> 7f5008c4df97890f30c37e0f505389d5ab76fde7
     }
   };
 

@@ -75,11 +75,7 @@ const PerfilUser = () => {
 
                 <div className="profile-header animate-fade-in">
                     <div className="profile-main-info">
-<<<<<<< HEAD
-                        <div className="profile-avatar-container">
-=======
                         <div className="profile-avatar-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
->>>>>>> 7f5008c4df97890f30c37e0f505389d5ab76fde7
                             <img
                                 src={user.avatar || `https://i.pravatar.cc/150?u=${user.id}`}
                                 alt={user.nombre}
