@@ -5,6 +5,31 @@ import { getAllUsers } from '../services/userService';
 import { Link } from 'react-router-dom';
 import '../Styles/SuccessStories.css';
 
+const getTimeAgo = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+
+    const seconds = Math.floor((new Date() - date) / 1000);
+
+    let interval = seconds / 31536000;
+    if (interval > 1) return `hace ${Math.floor(interval)} año${Math.floor(interval) !== 1 ? 's' : ''}`;
+    
+    interval = seconds / 2592000;
+    if (interval > 1) return `hace ${Math.floor(interval)} mes${Math.floor(interval) !== 1 ? 'es' : ''}`;
+    
+    interval = Math.floor(seconds / 86400);
+    if (interval >= 1) return interval === 1 ? 'hace 1 día' : `hace ${interval} días`;
+    
+    interval = Math.floor(seconds / 3600);
+    if (interval >= 1) return interval === 1 ? 'hace 1 hora' : `hace ${interval} horas`;
+    
+    interval = Math.floor(seconds / 60);
+    if (interval >= 1) return interval === 1 ? 'hace 1 minuto' : `hace ${interval} minutos`;
+    
+    return 'hace unos segundos';
+};
+
 const TestimonioComponent = () => {
     const [stories, setStories] = useState([]);
     const [topContributors, setTopContributors] = useState([]);
@@ -80,6 +105,7 @@ const TestimonioComponent = () => {
             userName: user.nombre || "Usuario",
             userAvatar: `https://i.pravatar.cc/150?u=${user.id || Math.random()}`,
             time: "Justo ahora",
+            fecha: new Date().toISOString(),
             tag: newStory.category,
             title: newStory.title,
             text: newStory.text,
@@ -194,7 +220,7 @@ const TestimonioComponent = () => {
         setSearchQuery(query);
 
         if (query.trim()) {
-            const results = allUsers.filter(user => 
+            const results = allUsers.filter(user =>
                 user.nombre?.toLowerCase().includes(query.toLowerCase()) ||
                 user.email?.toLowerCase().includes(query.toLowerCase())
             );
@@ -249,8 +275,6 @@ const TestimonioComponent = () => {
         try {
             const createdComment = await addComment(commentPayload);
             const newCount = (story.comments || 0) + 1;
-            
-            await updateStoryCommentsCount(storyId, newCount);
 
             // Actualizar estado local
             setCommentsData(prev => ({
@@ -323,9 +347,9 @@ const TestimonioComponent = () => {
                                     </div>
                                     {userSearchResults.map(user => (
                                         <Link to={`/perfil/${user.id}`} key={user.id} className="search-result-item">
-                                            <img 
-                                                src={`https://i.pravatar.cc/150?u=${user.id}`} 
-                                                alt={user.nombre} 
+                                            <img
+                                                src={`https://i.pravatar.cc/150?u=${user.id}`}
+                                                alt={user.nombre}
                                                 className="search-result-avatar"
                                             />
                                             <div className="search-result-info">
@@ -358,7 +382,7 @@ const TestimonioComponent = () => {
                                             <div className="user-details">
                                                 <h4>{story.userName}</h4>
                                                 <div className="story-meta">
-                                                    {story.time} • {story.tag}
+                                                    {getTimeAgo(story.fecha || story.time)} • {story.tag}
                                                 </div>
                                             </div>
                                         </div>
@@ -411,7 +435,7 @@ const TestimonioComponent = () => {
                                                 <ThumbsUp size={18} />
                                                 <span>Útil ({story.likes})</span>
                                             </button>
-                                            <button 
+                                            <button
                                                 className={`btn-action ${showComments[story.id] ? 'active' : ''}`}
                                                 onClick={() => toggleComments(story.id)}
                                             >
@@ -437,7 +461,7 @@ const TestimonioComponent = () => {
                                                             <div className="comment-content">
                                                                 <div className="comment-header">
                                                                     <span className="comment-user">{comment.userName}</span>
-                                                                    <span className="comment-date">{new Date(comment.fecha).toLocaleDateString()}</span>
+                                                                    <span className="comment-date">{getTimeAgo(comment.fecha)}</span>
                                                                 </div>
                                                                 <p className="comment-text">{comment.text}</p>
                                                             </div>

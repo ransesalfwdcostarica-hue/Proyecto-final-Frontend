@@ -75,6 +75,24 @@
       "nombre": "Jaja",
       "edad": "74",
       "rol": "client"
+    },
+    {
+      "id": "ac2b",
+      "email": "jporrasfwdcostarica@gmail.com",
+      "password": "j1234",
+      "nombre": "Jheycob",
+      "edad": "22",
+      "rol": "client",
+      "edadFisica": "22",
+      "sexo": "m",
+      "altura": "180",
+      "peso": "76",
+      "lugarEntrenamiento": "gym",
+      "alergias": "Alergia a todo",
+      "pesoMeta": 70,
+      "plazoSemanas": 8,
+      "pesoActual": "76",
+      "deficitEstimado": 450
     }
   ],
   "contactos": [
@@ -100,7 +118,7 @@
       "imageBefore": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
       "imageAfter": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
       "likes": 2,
-      "comments": 27
+      "comments": 29
     },
     {
       "id": "s2",
@@ -126,7 +144,7 @@
       "title": "Cómo arreglé mi relación con la comida",
       "text": "Los consejos de expertos me ayudaron a darme cuenta de que la restricción no es la solución. Aprender sobre macros y balance fue un cambio radical por mi salud mental y física.",
       "category": "Consejos de Expertos",
-      "likes": 210,
+      "likes": 211,
       "comments": 45
     },
     {
@@ -140,20 +158,54 @@
       "text": "Aumento de masa muscular en otro nivel 🗣️",
       "category": "Ganancia de Músculo",
       "image": null,
-      "likes": 2,
-      "comments": 0
+      "likes": 5,
+      "comments": 1
     }
   ],
   "trendingTopics": [
-    { "id": "1", "topic": "#AyunoIntermitente", "count": "2.4k miembros" },
-    { "id": "2", "topic": "#EquipoEntrenamientoCasa", "count": "1.8k miembros" },
-    { "id": "3", "topic": "#ObjetivosDeProteina", "count": "890 miembros" },
-    { "id": "4", "topic": "#RetoVerano2024", "count": "3.1k miembros" }
+    {
+      "id": "1",
+      "topic": "#AyunoIntermitente",
+      "count": "2.4k miembros"
+    },
+    {
+      "id": "2",
+      "topic": "#EquipoEntrenamientoCasa",
+      "count": "1.8k miembros"
+    },
+    {
+      "id": "3",
+      "topic": "#ObjetivosDeProteina",
+      "count": "890 miembros"
+    },
+    {
+      "id": "4",
+      "topic": "#RetoVerano2024",
+      "count": "3.1k miembros"
+    }
   ],
   "topContributors": [
-    { "id": "1", "name": "Marcus V.", "role": "Entrenador de Élite", "points": "1.2k pts", "avatar": "https://i.pravatar.cc/150?u=marcus" },
-    { "id": "2", "name": "Elena Ross", "role": "Experta en Transformación", "points": "980 pts", "avatar": "https://i.pravatar.cc/150?u=elena" },
-    { "id": "3", "name": "Tyler Swift", "role": "Gurú de la Nutrición", "points": "850 pts", "avatar": "https://i.pravatar.cc/150?u=tyler" }
+    {
+      "id": "1",
+      "name": "Marcus V.",
+      "role": "Entrenador de Élite",
+      "points": "1.2k pts",
+      "avatar": "https://i.pravatar.cc/150?u=marcus"
+    },
+    {
+      "id": "2",
+      "name": "Elena Ross",
+      "role": "Experta en Transformación",
+      "points": "980 pts",
+      "avatar": "https://i.pravatar.cc/150?u=elena"
+    },
+    {
+      "id": "3",
+      "name": "Tyler Swift",
+      "role": "Gurú de la Nutrición",
+      "points": "850 pts",
+      "avatar": "https://i.pravatar.cc/150?u=tyler"
+    }
   ],
   "routines": [],
   "ejercicios": [
@@ -382,6 +434,34 @@
       "imagen": "/exercises/face-pull.jpg",
       "categoria": "Hombros"
     }
+  ],
+  "comentarios": [
+    {
+      "id": "aed1",
+      "storyId": "s1",
+      "userId": "eb3d",
+      "userName": "admin",
+      "userAvatar": "https://i.pravatar.cc/150?u=eb3d",
+      "text": "No",
+      "fecha": "2026-03-23T19:42:10.829Z"
+    },
+    {
+      "id": "18f0",
+      "storyId": "4dca",
+      "userId": "eb3d",
+      "userName": "admin",
+      "userAvatar": "https://i.pravatar.cc/150?u=eb3d",
+      "text": "No jodas bro",
+      "fecha": "2026-03-23T19:42:29.517Z"
+    },
+    {
+      "id": "5535",
+      "storyId": "s1",
+      "userId": "ac2b",
+      "userName": "Jheycob",
+      "userAvatar": "https://i.pravatar.cc/150?u=ac2b",
+      "text": "aaaaaa",
+      "fecha": "2026-03-23T21:41:02.190Z"
+    }
   ]
 }
-
