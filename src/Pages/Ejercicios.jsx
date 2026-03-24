@@ -25,6 +25,7 @@ const Ejercicios = () => {
     const [user, setUser] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showTechniqueModal, setShowTechniqueModal] = useState(false);
+    const [favorites, setFavorites] = useState([]);
     
     // Form state
     const [newExercise, setNewExercise] = useState({
@@ -36,12 +37,16 @@ const Ejercicios = () => {
         categoria: 'Pecho'
     });
 
-    const categories = ['Todos', 'Pecho', 'Espalda', 'Piernas', 'Hombros', 'Brazos', 'Core', 'Glúteos'];
+    const categories = ['Todos', 'Favoritos', 'Pecho', 'Espalda', 'Piernas', 'Hombros', 'Brazos', 'Core', 'Glúteos'];
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
+        }
+        const storedFavorites = localStorage.getItem('favorites');
+        if (storedFavorites) {
+            setFavorites(JSON.parse(storedFavorites));
         }
         loadExercises();
     }, []);
@@ -62,7 +67,9 @@ const Ejercicios = () => {
     useEffect(() => {
         let result = exercises;
 
-        if (activeCategory !== 'Todos') {
+        if (activeCategory === 'Favoritos') {
+            result = result.filter(ex => favorites.includes(ex.id));
+        } else if (activeCategory !== 'Todos') {
             result = result.filter(ex => ex.categoria === activeCategory);
         }
 
@@ -74,7 +81,18 @@ const Ejercicios = () => {
         }
 
         setFilteredExercises(result);
-    }, [searchTerm, activeCategory, exercises]);
+    }, [searchTerm, activeCategory, exercises, favorites]);
+
+    const toggleFavorite = (id) => {
+        let updatedFavorites;
+        if (favorites.includes(id)) {
+            updatedFavorites = favorites.filter(favId => favId !== id);
+        } else {
+            updatedFavorites = [...favorites, id];
+        }
+        setFavorites(updatedFavorites);
+        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    };
 
     const handleDelete = async (id) => {
         if (window.confirm('¿Estás seguro de que deseas eliminar este ejercicio?')) {
@@ -160,7 +178,9 @@ const Ejercicios = () => {
                             key={cat} 
                             className={`category-tag ${activeCategory === cat ? 'active' : ''}`}
                             onClick={() => setActiveCategory(cat)}
+                            style={cat === 'Favoritos' ? { display: 'flex', alignItems: 'center', gap: '4px' } : {}}
                         >
+                            {cat === 'Favoritos' && <Heart size={16} fill={activeCategory === 'Favoritos' ? "currentColor" : "none"} />}
                             {cat}
                         </button>
                     ))}
@@ -186,8 +206,12 @@ const Ejercicios = () => {
                         <div className="card-info">
                             <div className="card-header-row">
                                 <h3>{exercise.nombre}</h3>
-                                <button className="heart-btn">
-                                    <Heart size={20} />
+                                <button 
+                                    className={`heart-btn ${favorites.includes(exercise.id) ? 'active' : ''}`}
+                                    onClick={() => toggleFavorite(exercise.id)}
+                                    style={favorites.includes(exercise.id) ? { color: '#ef4444' } : {}}
+                                >
+                                    <Heart size={20} fill={favorites.includes(exercise.id) ? "currentColor" : "none"} />
                                 </button>
                             </div>
                             <div className="tags-row">
