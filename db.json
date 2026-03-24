@@ -6,7 +6,7 @@
       "password": "R4nses_2008",
       "nombre": "Ranses Alvir",
       "edad": "20",
-      "rol": "client",
+      "rol": "admin",
       "edadFisica": "20",
       "sexo": "m",
       "altura": "170",
@@ -16,7 +16,8 @@
       "pesoMeta": 72,
       "plazoSemanas": 8,
       "pesoActual": "96",
-      "deficitEstimado": 450
+      "deficitEstimado": 450,
+      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774294985/zg1lbikveirdjmc2orli.jpg"
     },
     {
       "id": "0e67",
@@ -98,7 +99,7 @@
       "likedBy": [
         "c695"
       ],
-      "comments": 28
+      "comments": 2
     },
     {
       "id": "s2",
@@ -113,7 +114,7 @@
       "image": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
       "likes": 90,
       "likedBy": [],
-      "comments": 12
+      "comments": 0
     },
     {
       "id": "s3",
@@ -127,7 +128,7 @@
       "category": "Consejos de Expertos",
       "likes": 210,
       "likedBy": [],
-      "comments": 45
+      "comments": 0
     },
     {
       "id": "4dca",
@@ -144,6 +145,7 @@
       "comments": 0
     },
     {
+<<<<<<< HEAD
       "id": "53f8",
       "userId": "0df6",
       "userName": "Ronny Salas ",
@@ -153,6 +155,17 @@
       "title": "puto",
       "text": "el que lo lea",
       "category": "General",
+=======
+      "id": "9d31",
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://i.pravatar.cc/150?u=c695",
+      "time": "Justo ahora",
+      "tag": "Pérdida de Peso",
+      "title": "fdsfsfsfs",
+      "text": "sdfssdf",
+      "category": "Pérdida de Peso",
+>>>>>>> 7f5008c4df97890f30c37e0f505389d5ab76fde7
       "image": null,
       "likes": 0,
       "comments": 0
@@ -449,6 +462,15 @@
       "userAvatar": "https://i.pravatar.cc/150?u=c695",
       "text": "hola JAJAJAJAJAJA",
       "fecha": "2026-03-20T14:24:24.986Z"
+    },
+    {
+      "id": "8787",
+      "storyId": "s1",
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://i.pravatar.cc/150?u=c695",
+      "text": "jhols",
+      "fecha": "2026-03-23T14:52:32.332Z"
     }
   ]
 }

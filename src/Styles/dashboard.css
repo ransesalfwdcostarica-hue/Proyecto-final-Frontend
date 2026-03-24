@@ -22,6 +22,7 @@
   top: 80px;
   left: 0;
   overflow-y: auto;
+  transition: transform 0.3s ease;
 }
 
 .admin-sidebar h2 {
@@ -171,6 +172,8 @@
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .panel-header {
@@ -644,6 +647,7 @@ hr {
   gap: 0.6rem;
   color: var(--text-muted);
   font-size: 0.85rem;
+  overflow-wrap: anywhere;
 }
 
 .message-body {
@@ -733,4 +737,127 @@ hr {
 
 .btn-submit:hover {
   background: var(--primary-hover);
+}
+
+/* Mobile Responsiveness for Admin Panel */
+.admin-mobile-header {
+  display: none;
+}
+
+.admin-mobile-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+  padding: 0;
+}
+
+.admin-mobile-close {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+}
+
+.admin-mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 80px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 80px);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 990;
+}
+
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+    padding-top: 3rem;
+  }
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+  .admin-sidebar h2 {
+    margin-bottom: 3rem;
+  }
+  .admin-content {
+    margin-left: 0;
+    padding: 1.5rem;
+    padding-top: calc(80px + 1.5rem);
+  }
+  .admin-mobile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .admin-mobile-toggle {
+    display: block;
+  }
+  .admin-mobile-close {
+    display: block;
+  }
+  .admin-mobile-overlay {
+    display: block;
+  }
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-row-admin {
+    grid-template-columns: 1fr;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .messages-grid {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-header h1 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-panel {
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+  }
+  
+  .message-card {
+    padding: 1rem;
+  }
+
+  .message-user-info h3 {
+    font-size: 1rem;
+  }
+
+  .detail-item {
+    font-size: 0.8rem;
+  }
+
+  .message-body {
+    padding: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .widget-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .dashboard-header p {
+    font-size: 0.85rem;
+  }
 }

@@ -12,7 +12,7 @@ import {
     Image as ImageIcon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getAllExercises, createExercise, deleteExercise } from '../services/exerciseService';
+import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
 import Swal from 'sweetalert2';
 import '../styles/Ejercicios.css';
 
@@ -49,7 +49,7 @@ const EjerciciosComponent = () => {
     const loadExercises = async () => {
         try {
             setLoading(true);
-            const data = await getAllExercises();
+            const data = await obtenerTodosEjercicios();
             setExercises(data);
             setFilteredExercises(data);
         } catch (error) {
@@ -92,7 +92,7 @@ const EjerciciosComponent = () => {
 
         if (result.isConfirmed) {
             try {
-                await deleteExercise(id);
+                await eliminarEjercicio(id);
                 setExercises(exercises.filter(ex => ex.id !== id));
                 Swal.fire({
                     title: 'Eliminado',
@@ -131,7 +131,7 @@ const EjerciciosComponent = () => {
         }
 
         try {
-            const created = await createExercise(newExercise);
+            const created = await crearEjercicio(newExercise);
             setExercises([...exercises, created]);
             setShowAddModal(false);
             setNewExercise({

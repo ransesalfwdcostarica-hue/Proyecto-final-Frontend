@@ -8,13 +8,26 @@ import {
     Image as ImageIcon,
     AlertTriangle
 } from 'lucide-react';
-import { getAllExercises, createExercise, deleteExercise } from '../services/exerciseService';
+import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
 import Swal from 'sweetalert2';
 
 const AdminExercises = ({ openAddModal }) => {
     const [exercises, setExercises] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [exerciseToDelete, setExerciseToDelete] = useState(null);
+
+    // Form state
+    const [newExercise, setNewExercise] = useState({
+        nombre: '',
+        nivel: 'PRINCIPIANTE',
+        musculo: '',
+        tiempo: '',
+        imagen: '',
+        categoria: 'Pecho'
+    });
 
     useEffect(() => {
         loadExercises();
@@ -30,7 +43,7 @@ const AdminExercises = ({ openAddModal }) => {
     const loadExercises = async () => {
         try {
             setLoading(true);
-            const data = await getAllExercises();
+            const data = await obtenerTodosEjercicios();
             setExercises(data);
         } catch (error) {
             console.error("Error loading exercises:", error);
@@ -162,20 +175,20 @@ const AdminExercises = ({ openAddModal }) => {
                         <form onSubmit={handleCreate} className="admin-form-premium">
                             <div className="form-group-admin">
                                 <label>Nombre del Ejercicio</label>
-                                <input 
-                                    type="text" 
-                                    required 
+                                <input
+                                    type="text"
+                                    required
                                     placeholder="Ej: Press de Banca Plano"
                                     value={newExercise.nombre}
-                                    onChange={e => setNewExercise({...newExercise, nombre: e.target.value})}
+                                    onChange={e => setNewExercise({ ...newExercise, nombre: e.target.value })}
                                 />
                             </div>
                             <div className="form-row-admin">
                                 <div className="form-group-admin">
                                     <label>Categoría</label>
-                                    <select 
+                                    <select
                                         value={newExercise.categoria}
-                                        onChange={e => setNewExercise({...newExercise, categoria: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, categoria: e.target.value })}
                                     >
                                         <option value="Pecho">Pecho</option>
                                         <option value="Espalda">Espalda</option>
@@ -188,9 +201,9 @@ const AdminExercises = ({ openAddModal }) => {
                                 </div>
                                 <div className="form-group-admin">
                                     <label>Nivel de Dificultad</label>
-                                    <select 
+                                    <select
                                         value={newExercise.nivel}
-                                        onChange={e => setNewExercise({...newExercise, nivel: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, nivel: e.target.value })}
                                     >
                                         <option value="PRINCIPIANTE">Principiante</option>
                                         <option value="INTERMEDIO">Intermedio</option>
@@ -202,22 +215,22 @@ const AdminExercises = ({ openAddModal }) => {
                             <div className="form-row-admin">
                                 <div className="form-group-admin">
                                     <label>Músculo</label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="Ej: PECHO" 
-                                        required 
+                                    <input
+                                        type="text"
+                                        placeholder="Ej: PECHO"
+                                        required
                                         value={newExercise.musculo}
-                                        onChange={e => setNewExercise({...newExercise, musculo: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, musculo: e.target.value })}
                                     />
                                 </div>
                                 <div className="form-group-admin">
                                     <label>Tiempo</label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="Ej: 45 SEG" 
-                                        required 
+                                    <input
+                                        type="text"
+                                        placeholder="Ej: 45 SEG"
+                                        required
                                         value={newExercise.tiempo}
-                                        onChange={e => setNewExercise({...newExercise, tiempo: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, tiempo: e.target.value })}
                                     />
                                 </div>
                             </div>
@@ -225,12 +238,12 @@ const AdminExercises = ({ openAddModal }) => {
                                 <label>URL de Imagen Ilustrativa</label>
                                 <div className="input-icon-wrapper">
                                     <ImageIcon size={18} />
-                                    <input 
-                                        type="url" 
-                                        required 
+                                    <input
+                                        type="url"
+                                        required
                                         placeholder="https://images.unsplash.com/..."
                                         value={newExercise.imagen}
-                                        onChange={e => setNewExercise({...newExercise, imagen: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, imagen: e.target.value })}
                                     />
                                 </div>
                             </div>

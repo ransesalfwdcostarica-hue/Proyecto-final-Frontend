@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Users, Activity, Home, Dumbbell, Mail } from 'lucide-react';
+import { LayoutDashboard, Users, Activity, Home, Dumbbell, Mail, Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import DashboardAdministrador from './DashboardAdministrador';
 import AdminUsers from './AdminUsers';
 import AdminRoutines from './AdminRoutines';
 import AdminExercises from './AdminExercises';
-import { createExercise } from '../services/exerciseService';
+import { crearEjercicio } from '../services/exerciseService';
 import { Plus, X, Image as ImageIcon } from 'lucide-react';
 import Swal from 'sweetalert2';
 import AdminMessages from './AdminMessages';
@@ -14,6 +14,12 @@ import '../styles/dashboard.css';
 const DashAdmin = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setIsMobileMenuOpen(false);
+  };
   const [newExercise, setNewExercise] = useState({
     nombre: '',
     nivel: 'PRINCIPIANTE',
@@ -81,40 +87,46 @@ const DashAdmin = () => {
 
   return (
     <div className="admin-dashboard">
-      <aside className="admin-sidebar" style={{ zIndex: 1000 }}>
+      {isMobileMenuOpen && (
+        <div className="admin-mobile-overlay" onClick={() => setIsMobileMenuOpen(false)}></div>
+      )}
+      <aside className={`admin-sidebar ${isMobileMenuOpen ? 'open' : ''}`} style={{ zIndex: 1000 }}>
+        <button className="admin-mobile-close" onClick={() => setIsMobileMenuOpen(false)}>
+          <X size={24} />
+        </button>
         <h2>Admin Panel</h2>
         <nav className="sidebar-nav">
           <button
             className={`sidebar-btn ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
+            onClick={() => handleTabChange('overview')}
           >
             <LayoutDashboard size={20} />
             Overview
           </button>
           <button
             className={`sidebar-btn ${activeTab === 'users' ? 'active' : ''}`}
-            onClick={() => setActiveTab('users')}
+            onClick={() => handleTabChange('users')}
           >
             <Users size={20} />
             Usuarios
           </button>
           <button
             className={`sidebar-btn ${activeTab === 'routines' ? 'active' : ''}`}
-            onClick={() => setActiveTab('routines')}
+            onClick={() => handleTabChange('routines')}
           >
             <Activity size={20} />
             Rutinas
           </button>
           <button
             className={`sidebar-btn ${activeTab === 'messages' ? 'active' : ''}`}
-            onClick={() => setActiveTab('messages')}
+            onClick={() => handleTabChange('messages')}
           >
             <Mail size={20} />
             Mensajes
           </button>
           <button
             className={`sidebar-btn ${activeTab === 'exercises' ? 'active' : ''}`}
-            onClick={() => setActiveTab('exercises')}
+            onClick={() => handleTabChange('exercises')}
           >
             <Dumbbell size={20} />
             Ejercicios
@@ -130,6 +142,11 @@ const DashAdmin = () => {
       </aside>
 
       <main className="admin-content">
+        <div className="admin-mobile-header">
+          <button className="admin-mobile-toggle" onClick={() => setIsMobileMenuOpen(true)}>
+            <Menu size={28} />
+          </button>
+        </div>
         {renderContent()}
       </main>
 

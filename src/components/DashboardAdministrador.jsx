@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Users, Activity, CheckCircle, Clock, Plus } from 'lucide-react';
 import { getAllUsers } from '../services/userService';
 import { getAllRoutines } from '../services/routineService';
-import { getAllExercises } from '../services/exerciseService';
+import { obtenerTodosEjercicios, obtenerEjerciciosPorCategoria, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
 
 
 const DashboardAdministrador = ({ changeTab, openAddModal }) => {
@@ -36,6 +36,27 @@ const DashboardAdministrador = ({ changeTab, openAddModal }) => {
     };
 
     useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const users = await getAllUsers();
+                const routines = await getAllRoutines();
+                const exercises = await obtenerTodosEjercicios();
+
+                const pending = routines.filter(r => r.status === 'pending').length;
+                const approved = routines.filter(r => r.status === 'approved').length;
+
+                setStats({
+                    totalUsers: users.length,
+                    totalRoutines: routines.length,
+                    pendingRoutines: pending,
+                    approvedRoutines: approved,
+                    totalExercises: exercises.length
+                });
+            } catch (error) {
+                console.error("Error fetching stats:", error);
+            }
+        };
+
         fetchStats();
 
         // Listen for new exercises added to refresh stats

@@ -18,13 +18,15 @@ import {
   X,
   Activity,
   Upload,
-  User as UserIcon
+  User as UserIcon,
+  Menu
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getAllExercises } from '../services/exerciseService';
+import { obtenerTodosEjercicios } from '../services/exerciseService';
 import { updateUser } from '../services/userService';
 import { UserContext } from '../context/UserContext';
 import Swal from 'sweetalert2';
+import SubirImagen from './SubirImagen';
 import '../styles/DashboardCliente.css';
 
 const DashCliente = () => {
@@ -34,6 +36,12 @@ const DashCliente = () => {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({});
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleActiveTab = (tab) => {
+    setActiveTab(tab);
+    setIsMobileMenuOpen(false);
+  };
 
   useEffect(() => {
     if (user) {
@@ -44,7 +52,7 @@ const DashCliente = () => {
 
   const loadExercises = async () => {
     try {
-      const data = await getAllExercises();
+      const data = await obtenerTodosEjercicios();
       setExercises(data.slice(0, 6)); // Solo mostramos algunos destacados
       setLoading(false);
     } catch (error) {
@@ -104,6 +112,7 @@ const DashCliente = () => {
     }
   };
 
+<<<<<<< HEAD
   const handleAvatarUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -142,6 +151,36 @@ const DashCliente = () => {
         img.src = reader.result;
       };
       reader.readAsDataURL(file);
+=======
+  const handleCloudinaryUpload = async (imageUrl) => {
+    setEditForm(prev => ({ ...prev, avatar: imageUrl }));
+
+    try {
+      const updated = await updateUser(user.id, { ...user, avatar: imageUrl });
+
+      setUser(updated);
+      localStorage.setItem('user', JSON.stringify(updated));
+
+      Swal.fire({
+        icon: 'success',
+        title: '¡Foto actualizada!',
+        text: 'Tu foto de perfil se guardó correctamente.',
+        background: '#171212',
+        color: '#fff',
+        confirmButtonColor: '#8b0000',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    } catch {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo guardar la foto.',
+        background: '#171212',
+        color: '#fff',
+        confirmButtonColor: '#8b0000'
+      });
+>>>>>>> 7f5008c4df97890f30c37e0f505389d5ab76fde7
     }
   };
 
@@ -151,39 +190,46 @@ const DashCliente = () => {
 
   return (
     <div className="client-dashboard animate-fade-in">
+      {isMobileMenuOpen && (
+        <div className="dash-mobile-overlay" onClick={() => setIsMobileMenuOpen(false)}></div>
+      )}
+
       {/* Sidebar */}
-      <aside className="client-sidebar">
+      <aside className={`client-sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
-          <h2 style={{ color: 'white', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.5rem' }}>
+          <h2 style={{ color: 'white', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.5rem', margin: 0 }}>
             <Flame color="#8b0000" fill="#8b0000" size={28} /> PowerFIT
           </h2>
+          <button className="dash-mobile-menu-close" onClick={() => setIsMobileMenuOpen(false)}>
+            <X size={24} />
+          </button>
         </div>
 
         <nav className="sidebar-menu">
           <button
             className={`menu-item ${activeTab === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => handleActiveTab('dashboard')}
           >
             <LayoutDashboard size={20} />
             Dashboard
           </button>
           <button
             className={`menu-item ${activeTab === 'training' ? 'active' : ''}`}
-            onClick={() => setActiveTab('training')}
+            onClick={() => handleActiveTab('training')}
           >
             <Dumbbell size={20} />
             Entrenamientos
           </button>
           <button
             className={`menu-item ${activeTab === 'nutrition' ? 'active' : ''}`}
-            onClick={() => setActiveTab('nutrition')}
+            onClick={() => handleActiveTab('nutrition')}
           >
             <Utensils size={20} />
             Nutrición
           </button>
           <button
             className={`menu-item ${activeTab === 'settings' ? 'active' : ''}`}
-            onClick={() => setActiveTab('settings')}
+            onClick={() => handleActiveTab('settings')}
           >
             <Settings size={20} />
             Ajustes
@@ -217,11 +263,16 @@ const DashCliente = () => {
       {/* Main Content */}
       <main className="client-main">
         <header className="client-header">
-          <div className="header-title">
-            <h1>{activeTab === 'dashboard' ? 'Panel de Rendimiento' :
-              activeTab === 'training' ? 'Biblioteca de Entrenamiento' :
-                activeTab === 'nutrition' ? 'Plan Nutricional' : 'Ajustes de Cuenta'}</h1>
-            <p>¡Hola {user.nombre}! Estas {activeTab === 'dashboard' ? 'son tus estadísticas del día.' : 'es tu sección personalizada.'}</p>
+          <div className="header-title-wrapper">
+            <button className="dash-mobile-menu-toggle" onClick={() => setIsMobileMenuOpen(true)}>
+              <Menu size={28} />
+            </button>
+            <div className="header-title">
+              <h1>{activeTab === 'dashboard' ? 'Panel de Rendimiento' :
+                activeTab === 'training' ? 'Biblioteca de Entrenamiento' :
+                  activeTab === 'nutrition' ? 'Plan Nutricional' : 'Ajustes de Cuenta'}</h1>
+              <p>¡Hola {user.nombre}! Estas {activeTab === 'dashboard' ? 'son tus estadísticas del día.' : 'es tu sección personalizada.'}</p>
+            </div>
           </div>
           <div className="header-actions">
           </div>
@@ -420,16 +471,11 @@ const DashCliente = () => {
                   />
                   {isEditing && (
                     <div className="avatar-overlay">
-                      <label htmlFor="avatar-upload" className="upload-icon-label">
-                        <Upload size={24} />
-                        <input
-                          type="file"
-                          id="avatar-upload"
-                          hidden
-                          accept="image/*"
-                          onChange={handleAvatarUpload}
-                        />
-                      </label>
+                      <SubirImagen onImageUpload={handleCloudinaryUpload}>
+                        <label className="upload-icon-label" style={{ cursor: 'pointer' }}>
+                          <Upload size={24} />
+                        </label>
+                      </SubirImagen>
                     </div>
                   )}
                 </div>

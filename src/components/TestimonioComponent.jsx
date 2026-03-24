@@ -1,9 +1,13 @@
 import { useState, useEffect, useContext } from 'react';
 import { Search, Plus, MessageSquare, ThumbsUp, Share2, Award, TrendingUp, Dumbbell, MoreHorizontal, X, Upload, Trash2, AlertTriangle, Send, User } from 'lucide-react';
 import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount } from '../services/testimonioService';
-import { getAllUsers } from '../services/userService';
+import { getAllUsers, updateUser } from '../services/userService';
 import { Link } from 'react-router-dom';
+<<<<<<< HEAD
 import { UserContext } from '../context/UserContext';
+=======
+import SubirImagen from './SubirImagen';
+>>>>>>> 7f5008c4df97890f30c37e0f505389d5ab76fde7
 import '../styles/SuccessStories.css';
 
 const TestimonioComponent = () => {
@@ -32,6 +36,12 @@ const TestimonioComponent = () => {
     const [commentsData, setCommentsData] = useState({});
     const [newCommentText, setNewCommentText] = useState({});
     const [loadingComments, setLoadingComments] = useState({});
+<<<<<<< HEAD
+=======
+    // Current logged-in user
+    const [currentUser, setCurrentUser] = useState(null);
+    const [avatarUploading, setAvatarUploading] = useState(false);
+>>>>>>> 7f5008c4df97890f30c37e0f505389d5ab76fde7
 
     // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,20 +67,40 @@ const TestimonioComponent = () => {
         setIsModalOpen(true);
     };
 
+    // Load current user from localStorage
+    useEffect(() => {
+        const stored = localStorage.getItem('user');
+        if (stored) {
+            try { setCurrentUser(JSON.parse(stored)); } catch { setCurrentUser(null); }
+        }
+    }, []);
+
+    // Avatar upload handler (Cloudinary)
+    const handleCloudinaryAvatarUpload = async (imageUrl) => {
+        if (!currentUser) return;
+        setAvatarUploading(true);
+
+        // Preview inmediato
+        setCurrentUser(prev => ({ ...prev, avatar: imageUrl }));
+
+        try {
+            const updated = await updateUser(currentUser.id, { ...currentUser, avatar: imageUrl });
+            setCurrentUser(updated);
+            localStorage.setItem('user', JSON.stringify(updated));
+        } catch (err) {
+            console.error('Error saving avatar:', err);
+        } finally {
+            setAvatarUploading(false);
+        }
+    };
+
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setNewStory({ title: '', text: '', category: 'Pérdida de Peso', image: '' });
     };
 
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setNewStory({ ...newStory, image: reader.result });
-            };
-            reader.readAsDataURL(file);
-        }
+    const handleCloudinaryStoryImage = (imageUrl) => {
+        setNewStory({ ...newStory, image: imageUrl });
     };
 
     const handleSubmitStory = async (e) => {
@@ -87,9 +117,15 @@ const TestimonioComponent = () => {
         }
 
         const storyPayload = {
+<<<<<<< HEAD
             userId: currentUser.id || `u_${Date.now()}`,
             userName: currentUser.nombre || "Usuario",
             userAvatar: currentUser.avatar || `https://i.pravatar.cc/150?u=${currentUser.id || Math.random()}`,
+=======
+            userId: user.id || `u_${Date.now()}`,
+            userName: user.nombre || "Usuario",
+            userAvatar: user.avatar || `https://i.pravatar.cc/150?u=${user.id || Math.random()}`,
+>>>>>>> 7f5008c4df97890f30c37e0f505389d5ab76fde7
             time: "Justo ahora",
             tag: newStory.category,
             title: newStory.title,
@@ -303,9 +339,15 @@ const TestimonioComponent = () => {
 
         const commentPayload = {
             storyId,
+<<<<<<< HEAD
             userId: currentUser.id,
             userName: currentUser.nombre || "Usuario",
             userAvatar: currentUser.avatar || `https://i.pravatar.cc/150?u=${currentUser.id}`,
+=======
+            userId: user.id,
+            userName: user.nombre || "Usuario",
+            userAvatar: user.avatar || `https://i.pravatar.cc/150?u=${user.id}`,
+>>>>>>> 7f5008c4df97890f30c37e0f505389d5ab76fde7
             text: text.trim(),
             fecha: new Date().toISOString()
         };
@@ -344,9 +386,9 @@ const TestimonioComponent = () => {
                 <header className="stories-header animate-fade-in">
                     <div className="stories-title-section">
                         <div>
-                            <h1>Testimonios</h1>
+                            <h1>Culture Fit</h1>
                             <p className="stories-subtitle">
-                                Transformaciones reales de nuestra comunidad dedicada. Inspírate y comparte tu propio viaje.
+                                Historias de éxito de nuestra comunidad dedicada. Inspírate y comparte tu propio viaje.
                             </p>
                         </div>
                         <button className="btn-share" onClick={handleOpenModal}>
@@ -536,6 +578,50 @@ const TestimonioComponent = () => {
 
                     {/* Sidebar */}
                     <aside className="stories-sidebar">
+                        {/* Mini-perfil del usuario logueado */}
+                        {currentUser && (
+                            <div className="sidebar-widget" style={{ textAlign: 'center', paddingBottom: '1.5rem' }}>
+                                <div style={{ position: 'relative', display: 'inline-block', marginBottom: '0.75rem' }}>
+                                    <img
+                                        src={currentUser.avatar || `https://i.pravatar.cc/150?u=${currentUser.id}`}
+                                        alt={currentUser.nombre}
+                                        style={{
+                                            width: '80px', height: '80px', borderRadius: '50%',
+                                            objectFit: 'cover', border: '3px solid var(--primary)',
+                                            display: 'block', margin: '0 auto'
+                                        }}
+                                    />
+                                    <div
+                                        title="Cambiar foto de perfil"
+                                        style={{
+                                            position: 'absolute', bottom: 0, right: 0,
+                                            background: 'var(--primary)', borderRadius: '50%',
+                                            width: '26px', height: '26px', display: 'flex',
+                                            alignItems: 'center', justifyContent: 'center',
+                                            cursor: avatarUploading ? 'not-allowed' : 'pointer',
+                                            opacity: avatarUploading ? 0.6 : 1,
+                                            boxShadow: '0 2px 8px rgba(0,0,0,0.4)'
+                                        }}
+                                    >
+                                        <SubirImagen onImageUpload={handleCloudinaryAvatarUpload}>
+                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                                                {avatarUploading
+                                                    ? <span style={{ color: '#fff', fontSize: '0.6rem' }}>...</span>
+                                                    : <Upload size={13} color="#fff" />
+                                                }
+                                            </div>
+                                        </SubirImagen>
+                                    </div>
+                                </div>
+                                <h4 style={{ color: 'var(--text-primary)', margin: '0 0 0.2rem', fontSize: '1rem' }}>{currentUser.nombre}</h4>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: 0 }}>
+                                    {currentUser.rol === 'admin' ? 'Coach Certificado' : 'Atleta PowerFIT'}
+                                </p>
+                                {avatarUploading && (
+                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.5rem' }}>Guardando foto...</p>
+                                )}
+                            </div>
+                        )}
                         <div className="sidebar-widget">
                             <h3 className="widget-title">
                                 <Award size={20} />
@@ -633,17 +719,12 @@ const TestimonioComponent = () => {
                             <div className="form-group">
                                 <label>Foto de progreso (Opcional)</label>
                                 <div className="upload-container">
-                                    <input
-                                        type="file"
-                                        id="image-upload"
-                                        accept="image/*"
-                                        onChange={handleImageUpload}
-                                        className="file-input"
-                                    />
-                                    <label htmlFor="image-upload" className="upload-label">
-                                        <Upload size={20} />
-                                        <span>{newStory.image ? 'Cambiar imagen' : 'Subir imagen'}</span>
-                                    </label>
+                                    <SubirImagen onImageUpload={handleCloudinaryStoryImage}>
+                                        <div className="upload-label" style={{ cursor: 'pointer' }}>
+                                            <Upload size={20} />
+                                            <span>{newStory.image ? 'Cambiar imagen' : 'Subir imagen'}</span>
+                                        </div>
+                                    </SubirImagen>
                                 </div>
                                 {newStory.image && (
                                     <div className="image-preview">
