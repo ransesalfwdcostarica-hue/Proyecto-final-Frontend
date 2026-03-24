@@ -1,26 +1,19 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Dumbbell, User, Flame, LogOut, Menu, X } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
+import { UserContext } from '../context/UserContext';
 import '../styles/Navbar.css';
 
 const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [user, setUser] = useState(null);
+    const { user, logout } = useContext(UserContext);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const isDashboard = location.pathname.includes('/dashboard') || location.pathname.includes('/admin');
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
-
     const handleLogout = () => {
-        localStorage.removeItem('user');
-        setUser(null);
+        logout();
         navigate('/');
     };
 

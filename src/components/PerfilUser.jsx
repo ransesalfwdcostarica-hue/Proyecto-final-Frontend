@@ -59,9 +59,9 @@ const PerfilUser = () => {
                 <div className="profile-header animate-fade-in">
                     <div className="profile-main-info">
                         <div className="profile-avatar-container">
-                            <img 
-                                src={`https://i.pravatar.cc/150?u=${user.id}`} 
-                                alt={user.nombre} 
+                            <img
+                                src={user.avatar || `https://i.pravatar.cc/150?u=${user.id}`}
+                                alt={user.nombre}
                                 className="profile-large-avatar"
                             />
                         </div>

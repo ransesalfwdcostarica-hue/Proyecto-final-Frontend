@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import {
   LayoutDashboard,
   Dumbbell,
@@ -23,11 +23,12 @@ import {
 import { Link } from 'react-router-dom';
 import { getAllExercises } from '../services/exerciseService';
 import { updateUser } from '../services/userService';
+import { UserContext } from '../context/UserContext';
 import Swal from 'sweetalert2';
 import '../styles/DashboardCliente.css';
 
 const DashCliente = () => {
-  const [user, setUser] = useState(null);
+  const { user, refreshUser, logout } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,14 +36,11 @@ const DashCliente = () => {
   const [editForm, setEditForm] = useState({});
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      setEditForm(parsedUser);
+    if (user) {
+      setEditForm(user);
       loadExercises();
     }
-  }, []);
+  }, [user]);
 
   const loadExercises = async () => {
     try {
@@ -56,7 +54,7 @@ const DashCliente = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
+    logout();
     window.location.href = '/login';
   };
 
@@ -84,8 +82,7 @@ const DashCliente = () => {
 
     try {
       const updated = await updateUser(user.id, editForm);
-      setUser(updated);
-      localStorage.setItem('user', JSON.stringify(updated));
+      refreshUser(updated);
       setIsEditing(false);
       Swal.fire({
         icon: 'success',
@@ -112,7 +109,37 @@ const DashCliente = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setEditForm({ ...editForm, avatar: reader.result });
+        const img = new Image();
+        img.onload = () => {
+          // Resize image to max 400x400 for efficiency
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 400;
+          const MAX_HEIGHT = 400;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Get compressed data URL
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          setEditForm(prev => ({ ...prev, avatar: compressedDataUrl }));
+        };
+        img.src = reader.result;
       };
       reader.readAsDataURL(file);
     }
