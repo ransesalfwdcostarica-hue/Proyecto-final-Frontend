@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { UserContext } from '../context/UserContext';
 import { Search, Plus, MessageSquare, ThumbsUp, Share2, Award, TrendingUp, Dumbbell, MoreHorizontal, X, Upload, Trash2, AlertTriangle, Send, User } from 'lucide-react';
-import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount } from '../Services/testimonioService';
-import { getAllUsers } from '../services/userService';
+import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount } from '../services/testimonioService';
+import { getAllUsers, updateUser } from '../services/userService';
 import { Link } from 'react-router-dom';
-import '../Styles/SuccessStories.css';
+import SubirImagen from './SubirImagen';
+import '../styles/SuccessStories.css';
 
 const getTimeAgo = (dateString) => {
     if (!dateString) return '';
@@ -31,6 +33,7 @@ const getTimeAgo = (dateString) => {
 };
 
 const TestimonioComponent = () => {
+    const { user: currentUser, refreshUser } = useContext(UserContext);
     const [stories, setStories] = useState([]);
     const [topContributors, setTopContributors] = useState([]);
     const [trendingTopics, setTrendingTopics] = useState([]);
@@ -44,11 +47,19 @@ const TestimonioComponent = () => {
     const [userSearchResults, setUserSearchResults] = useState([]);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
 
+    // Helper to get up-to-date user avatar
+    const getUserAvatar = (userId, fallbackAvatar) => {
+        const user = allUsers.find(u => String(u.id) === String(userId));
+        return user?.avatar || fallbackAvatar || `https://i.pravatar.cc/150?u=${userId}`;
+    };
+
     // Comments state
     const [showComments, setShowComments] = useState({});
     const [commentsData, setCommentsData] = useState({});
     const [newCommentText, setNewCommentText] = useState({});
     const [loadingComments, setLoadingComments] = useState({});
+    const [avatarUploading, setAvatarUploading] = useState(false);
+
     // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newStory, setNewStory] = useState({
@@ -66,12 +77,28 @@ const TestimonioComponent = () => {
     const [isLoginAlertOpen, setIsLoginAlertOpen] = useState(false);
 
     const handleOpenModal = () => {
-        const storedUser = localStorage.getItem('user');
-        if (!storedUser) {
+        if (!currentUser) {
             setIsLoginAlertOpen(true);
             return;
         }
         setIsModalOpen(true);
+    };
+
+
+
+    // Avatar upload handler (Cloudinary)
+    const handleCloudinaryAvatarUpload = async (imageUrl) => {
+        if (!currentUser) return;
+        setAvatarUploading(true);
+
+        try {
+            const updated = await updateUser(currentUser.id, { ...currentUser, avatar: imageUrl });
+            refreshUser(updated);
+        } catch (err) {
+            console.error('Error saving avatar:', err);
+        } finally {
+            setAvatarUploading(false);
+        }
     };
 
     const handleCloseModal = () => {
@@ -79,31 +106,27 @@ const TestimonioComponent = () => {
         setNewStory({ title: '', text: '', category: 'Pérdida de Peso', image: '' });
     };
 
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setNewStory({ ...newStory, image: reader.result });
-            };
-            reader.readAsDataURL(file);
-        }
+    const handleCloudinaryStoryImage = (imageUrl) => {
+        setNewStory({ ...newStory, image: imageUrl });
     };
 
     const handleSubmitStory = async (e) => {
         e.preventDefault();
-        const storedUserJSON = localStorage.getItem('user');
-        if (!storedUserJSON) {
+
+        if (!newStory.title.trim() || !newStory.text.trim()) {
+            alert('Por favor, completa el título y el contenido de tu historia.');
+            return;
+        }
+
+        if (!currentUser) {
             alert('Sesión expirada. Por favor, inicia sesión nuevamente.');
             return;
         }
 
-        const user = JSON.parse(storedUserJSON);
-
         const storyPayload = {
-            userId: user.id || `u_${Date.now()}`,
-            userName: user.nombre || "Usuario",
-            userAvatar: `https://i.pravatar.cc/150?u=${user.id || Math.random()}`,
+            userId: currentUser.id || `u_${Date.now()}`,
+            userName: currentUser.nombre || "Usuario",
+            userAvatar: currentUser.avatar || `https://i.pravatar.cc/150?u=${currentUser.id || Math.random()}`,
             time: "Justo ahora",
             fecha: new Date().toISOString(),
             tag: newStory.category,
@@ -117,7 +140,13 @@ const TestimonioComponent = () => {
 
         try {
             const createdStory = await createStory(storyPayload);
-            setStories([createdStory, ...stories]);
+            const updatedStories = [createdStory, ...stories];
+            setStories(updatedStories);
+
+            // Recalcular colaboradores destacados
+            const updatedContributors = calculateTopContributors(updatedStories, allUsers);
+            setTopContributors(updatedContributors);
+
             handleCloseModal();
         } catch (error) {
             console.error('Error post story:', error);
@@ -135,7 +164,13 @@ const TestimonioComponent = () => {
 
         try {
             await deleteStory(storyIdToDelete);
-            setStories(stories.filter(story => story.id !== storyIdToDelete));
+            const updatedStories = stories.filter(story => story.id !== storyIdToDelete);
+            setStories(updatedStories);
+
+            // Recalcular colaboradores destacados
+            const updatedContributors = calculateTopContributors(updatedStories, allUsers);
+            setTopContributors(updatedContributors);
+
             setIsDeleteModalOpen(false);
             setStoryIdToDelete(null);
         } catch (error) {
@@ -144,31 +179,59 @@ const TestimonioComponent = () => {
         }
     };
 
+    const calculateTopContributors = (storiesData, usersData) => {
+        const counts = {};
+        storiesData.forEach(story => {
+            counts[story.userId] = (counts[story.userId] || 0) + 1;
+        });
+
+        const contributors = Object.keys(counts).map(userId => {
+            const user = usersData.find(u => String(u.id) === String(userId));
+            const lastStory = storiesData.find(s => String(s.userId) === String(userId));
+
+            return {
+                id: userId,
+                name: user ? user.nombre : (lastStory ? lastStory.userName : 'Usuario'),
+                avatar: user ? (user.avatar || `https://i.pravatar.cc/150?u=${user.id}`) : (lastStory ? lastStory.userAvatar : `https://i.pravatar.cc/150?u=${userId}`),
+                role: user ? (user.rol === 'admin' ? 'Coach' : 'Atleta') : (lastStory ? (lastStory.tag || 'Miembro') : 'Miembro'),
+                points: counts[userId]
+            };
+        });
+
+        return contributors.sort((a, b) => b.points - a.points).slice(0, 5);
+    };
+
     useEffect(() => {
         loadData();
-        loadAllUsers();
     }, []);
 
     const loadData = async () => {
         setLoading(true);
         try {
-            const { storiesData, contributorsData, topicsData } = await fetchStoriesData();
+            const { storiesData, topicsData } = await fetchStoriesData();
+            const usersData = await getAllUsers();
+
             setStories(storiesData);
-            setTopContributors(contributorsData);
+            setAllUsers(usersData);
             setTrendingTopics(topicsData);
+
+            const dynamicContributors = calculateTopContributors(storiesData, usersData);
+            setTopContributors(dynamicContributors);
+
+            // Inicializar estados de likes locales desde la DB
+            if (currentUser) {
+                const initialLikes = {};
+                storiesData.forEach(story => {
+                    if (story.likedBy && story.likedBy.includes(currentUser.id)) {
+                        initialLikes[story.id] = true;
+                    }
+                });
+                setLocalLikes(initialLikes);
+            }
         } catch (error) {
             console.error("Error loading data:", error);
         } finally {
             setLoading(false);
-        }
-    };
-
-    const loadAllUsers = async () => {
-        try {
-            const data = await getAllUsers();
-            setAllUsers(data);
-        } catch (error) {
-            console.error("Error loading users:", error);
         }
     };
 
@@ -178,28 +241,40 @@ const TestimonioComponent = () => {
         const story = stories.find(s => s.id === id);
         if (!story) return;
 
-        const isCurrentlyLiked = !!localLikes[id];
-        const newLikeValue = isCurrentlyLiked ? story.likes - 1 : story.likes + 1;
+        if (!currentUser) {
+            alert('Debes iniciar sesión para reaccionar a una historia.');
+            return;
+        }
 
-        // UI Optimista: Actualizar localLikes inmediatamente
+        const isCurrentlyLiked = !!localLikes[id];
+
+        let newLikedBy = story.likedBy || [];
+        if (isCurrentlyLiked) {
+            newLikedBy = newLikedBy.filter(userId => userId !== currentUser.id);
+        } else {
+            newLikedBy = [...newLikedBy, currentUser.id];
+        }
+
+        const newLikeValue = newLikedBy.length;
+
+        // UI Optimista
         setLocalLikes(prev => ({
             ...prev,
             [id]: !isCurrentlyLiked
         }));
 
         try {
-            // Actualizar en el servidor
-            await updateStoryLikes(id, newLikeValue);
+            // Actualizar en el servidor con el nuevo array de IDs y el contador
+            await updateStoryLikes(id, newLikeValue, newLikedBy);
 
-            // Actualizar el estado local de la historia para que el contador sea correcto
+            // Actualizar el estado local de la historia
             setStories(prevStories =>
                 prevStories.map(s =>
-                    s.id === id ? { ...s, likes: newLikeValue } : s
+                    s.id === id ? { ...s, likes: newLikeValue, likedBy: newLikedBy } : s
                 )
             );
         } catch (error) {
             console.error('Error updating likes:', error);
-            // Revertir UI optimista en caso de error
             setLocalLikes(prev => ({
                 ...prev,
                 [id]: isCurrentlyLiked
@@ -252,22 +327,23 @@ const TestimonioComponent = () => {
     const handleAddComment = async (e, storyId) => {
         e.preventDefault();
         const text = newCommentText[storyId];
-        if (!text || !text.trim()) return;
+        if (!text || !text.trim()) {
+            alert('El comentario no puede estar vacío.');
+            return;
+        }
 
-        const storedUserJSON = localStorage.getItem('user');
-        if (!storedUserJSON) {
+        if (!currentUser) {
             setIsLoginAlertOpen(true);
             return;
         }
 
-        const user = JSON.parse(storedUserJSON);
         const story = stories.find(s => s.id === storyId);
 
         const commentPayload = {
             storyId,
-            userId: user.id,
-            userName: user.nombre || "Usuario",
-            userAvatar: `https://i.pravatar.cc/150?u=${user.id}`,
+            userId: currentUser.id,
+            userName: currentUser.nombre || "Usuario",
+            userAvatar: currentUser.avatar || `https://i.pravatar.cc/150?u=${currentUser.id}`,
             text: text.trim(),
             fecha: new Date().toISOString()
         };
@@ -275,6 +351,8 @@ const TestimonioComponent = () => {
         try {
             const createdComment = await addComment(commentPayload);
             const newCount = (story.comments || 0) + 1;
+
+            await updateStoryCommentsCount(storyId, newCount);
 
             // Actualizar estado local
             setCommentsData(prev => ({
@@ -304,9 +382,9 @@ const TestimonioComponent = () => {
                 <header className="stories-header animate-fade-in">
                     <div className="stories-title-section">
                         <div>
-                            <h1>Testimonios</h1>
+                            <h1>Culture Fit</h1>
                             <p className="stories-subtitle">
-                                Transformaciones reales de nuestra comunidad dedicada. Inspírate y comparte tu propio viaje.
+                                Historias de éxito de nuestra comunidad dedicada. Inspírate y comparte tu propio viaje.
                             </p>
                         </div>
                         <button className="btn-share" onClick={handleOpenModal}>
@@ -348,7 +426,7 @@ const TestimonioComponent = () => {
                                     {userSearchResults.map(user => (
                                         <Link to={`/perfil/${user.id}`} key={user.id} className="search-result-item">
                                             <img
-                                                src={`https://i.pravatar.cc/150?u=${user.id}`}
+                                                src={user.avatar || `https://i.pravatar.cc/150?u=${user.id}`}
                                                 alt={user.nombre}
                                                 className="search-result-avatar"
                                             />
@@ -378,7 +456,7 @@ const TestimonioComponent = () => {
                                 >
                                     <div className="story-header">
                                         <div className="user-info">
-                                            <img src={story.userAvatar} alt={story.userName} className="user-avatar" />
+                                            <img src={getUserAvatar(story.userId, story.userAvatar)} alt={story.userName} className="user-avatar" />
                                             <div className="user-details">
                                                 <h4>{story.userName}</h4>
                                                 <div className="story-meta">
@@ -387,7 +465,7 @@ const TestimonioComponent = () => {
                                             </div>
                                         </div>
                                         <div className="story-header-actions">
-                                            {localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).id === story.userId && (
+                                            {currentUser && currentUser.id === story.userId && (
                                                 <button
                                                     className="btn-delete"
                                                     onClick={() => handleDeleteStory(story.id)}
@@ -457,7 +535,7 @@ const TestimonioComponent = () => {
                                                 ) : commentsData[story.id]?.length > 0 ? (
                                                     commentsData[story.id].map(comment => (
                                                         <div key={comment.id} className="comment-item">
-                                                            <img src={comment.userAvatar} alt={comment.userName} className="comment-avatar" />
+                                                            <img src={getUserAvatar(comment.userId, comment.userAvatar)} alt={comment.userName} className="comment-avatar" />
                                                             <div className="comment-content">
                                                                 <div className="comment-header">
                                                                     <span className="comment-user">{comment.userName}</span>
@@ -496,6 +574,50 @@ const TestimonioComponent = () => {
 
                     {/* Sidebar */}
                     <aside className="stories-sidebar">
+                        {/* Mini-perfil del usuario logueado */}
+                        {currentUser && (
+                            <div className="sidebar-widget" style={{ textAlign: 'center', paddingBottom: '1.5rem' }}>
+                                <div style={{ position: 'relative', display: 'inline-block', marginBottom: '0.75rem' }}>
+                                    <img
+                                        src={currentUser.avatar || `https://i.pravatar.cc/150?u=${currentUser.id}`}
+                                        alt={currentUser.nombre}
+                                        style={{
+                                            width: '80px', height: '80px', borderRadius: '50%',
+                                            objectFit: 'cover', border: '3px solid var(--primary)',
+                                            display: 'block', margin: '0 auto'
+                                        }}
+                                    />
+                                    <div
+                                        title="Cambiar foto de perfil"
+                                        style={{
+                                            position: 'absolute', bottom: 0, right: 0,
+                                            background: 'var(--primary)', borderRadius: '50%',
+                                            width: '26px', height: '26px', display: 'flex',
+                                            alignItems: 'center', justifyContent: 'center',
+                                            cursor: avatarUploading ? 'not-allowed' : 'pointer',
+                                            opacity: avatarUploading ? 0.6 : 1,
+                                            boxShadow: '0 2px 8px rgba(0,0,0,0.4)'
+                                        }}
+                                    >
+                                        <SubirImagen onImageUpload={handleCloudinaryAvatarUpload}>
+                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                                                {avatarUploading
+                                                    ? <span style={{ color: '#fff', fontSize: '0.6rem' }}>...</span>
+                                                    : <Upload size={13} color="#fff" />
+                                                }
+                                            </div>
+                                        </SubirImagen>
+                                    </div>
+                                </div>
+                                <h4 style={{ color: 'var(--text-primary)', margin: '0 0 0.2rem', fontSize: '1rem' }}>{currentUser.nombre}</h4>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: 0 }}>
+                                    {currentUser.rol === 'admin' ? 'Coach Certificado' : 'Atleta PowerFIT'}
+                                </p>
+                                {avatarUploading && (
+                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.5rem' }}>Guardando foto...</p>
+                                )}
+                            </div>
+                        )}
                         <div className="sidebar-widget">
                             <h3 className="widget-title">
                                 <Award size={20} />
@@ -511,7 +633,10 @@ const TestimonioComponent = () => {
                                                 <p>{contributor.role}</p>
                                             </div>
                                         </div>
-                                        <div className="contributor-points">{contributor.points}</div>
+                                        <div className="contributor-points">
+                                            <span>{contributor.points}</span>
+                                            <small style={{ fontSize: '0.65rem', display: 'block', opacity: 0.7 }}>Publicaciones</small>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -590,17 +715,12 @@ const TestimonioComponent = () => {
                             <div className="form-group">
                                 <label>Foto de progreso (Opcional)</label>
                                 <div className="upload-container">
-                                    <input
-                                        type="file"
-                                        id="image-upload"
-                                        accept="image/*"
-                                        onChange={handleImageUpload}
-                                        className="file-input"
-                                    />
-                                    <label htmlFor="image-upload" className="upload-label">
-                                        <Upload size={20} />
-                                        <span>{newStory.image ? 'Cambiar imagen' : 'Subir imagen'}</span>
-                                    </label>
+                                    <SubirImagen onImageUpload={handleCloudinaryStoryImage}>
+                                        <div className="upload-label" style={{ cursor: 'pointer' }}>
+                                            <Upload size={20} />
+                                            <span>{newStory.image ? 'Cambiar imagen' : 'Subir imagen'}</span>
+                                        </div>
+                                    </SubirImagen>
                                 </div>
                                 {newStory.image && (
                                     <div className="image-preview">

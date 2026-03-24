@@ -1,42 +1,69 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Dumbbell, User, Flame, LogOut, Menu, X } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import '../Styles/Navbar.css';
+import { useState, useContext } from 'react';
+import { UserContext } from '../context/UserContext';
+import '../styles/Navbar.css';
 
 const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [user, setUser] = useState(null);
+    const { user, logout } = useContext(UserContext);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    
+
     const isDashboard = location.pathname.includes('/dashboard') || location.pathname.includes('/admin');
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
-
     const handleLogout = () => {
-        localStorage.removeItem('user');
-        setUser(null);
+        logout();
         navigate('/');
     };
+
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    const closeMenu = () => setIsMenuOpen(false);
 
     return (
         <nav className={`navbar ${isDashboard ? 'navbar-solid' : ''}`}>
             <div className="navbar-container">
-                <Link to="/" className="navbar-logo">
+                <Link to="/" className="navbar-logo" onClick={closeMenu}>
                     <Dumbbell className="logo-icon" size={26} />
                     <span>Power <span style={{ fontWeight: 300, color: 'var(--text-muted)' }}>FIT</span></span>
                 </Link>
 
-                <div className="navbar-links">
-                    <Link to="/ejercicios" className="nav-link">Ejercicios</Link>
-                    <Link to="/dietas" className="nav-link">Dietas</Link>
-                    <Link to="/comunidad" className="nav-link">Comunidad</Link>
-                    <Link to="/contacto" className="nav-link">Sobre Nosotros</Link>
+                <button
+                    className="mobile-menu-toggle"
+                    onClick={toggleMenu}
+                    aria-label="Toggle menu"
+                >
+                    {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                </button>
+
+                <div className={`navbar-links ${isMenuOpen ? 'active' : ''}`}>
+                    <Link to="/ejercicios" className="nav-link" onClick={closeMenu}>Ejercicios</Link>
+                    <Link to="/dietas" className="nav-link" onClick={closeMenu}>Alimentacion</Link>
+                    <Link to="/comunidad" className="nav-link" onClick={closeMenu}>Comunidad</Link>
+                    <Link to="/contacto" className="nav-link" onClick={closeMenu}>Sobre Nosotros</Link>
+
+                    {/* Mobile Only Actions */}
+                    <div className="mobile-only-actions">
+                        {user ? (
+                            <>
+                                <span className="user-greeting">Hola, {user.nombre || user.email?.split('@')[0]}</span>
+                                {user.rol === 'admin' ? (
+                                    <Link to="/admin" className="nav-btn-red" onClick={closeMenu}>Panel Admin</Link>
+                                ) : (
+                                    <Link to="/dashboard" className="nav-btn-outline" onClick={closeMenu}>Ver Perfil</Link>
+                                )
+                                }
+                                <button onClick={() => { handleLogout(); closeMenu(); }} className="nav-btn-outline">
+                                    Salir
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" className="nav-btn-outline" onClick={closeMenu}>Iniciar Sesión</Link>
+                                <Link to="/registro" className="nav-btn-red" onClick={closeMenu}>Empieza Ahora</Link>
+                            </>
+                        )}
+                    </div>
                 </div>
 
                 <div className="navbar-actions">

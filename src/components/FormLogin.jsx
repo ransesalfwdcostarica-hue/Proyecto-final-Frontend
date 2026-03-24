@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, CheckCircle, X } from "lucide-react";
 import { loginUser } from "../services/userService";
-import "../Styles/Login.css";
+import "../styles/Login.css";
 
 function FormLogin() {
   const [formData, setFormData] = useState({
@@ -27,8 +27,10 @@ function FormLogin() {
     e.preventDefault();
     setError("");
 
-    if (!formData.email || !formData.password) {
-      setError("Por favor, completa todos los campos.");
+    if (!formData.email?.trim() || !formData.password?.trim()) {
+      const msg = "Por favor, completa todos los campos.";
+      setError(msg);
+      alert(msg);
       return;
     }
 

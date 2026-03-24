@@ -1,30 +1,12 @@
 {
   "usuarios": [
     {
-      "id": "0947",
-      "email": "pepe@pepe",
-      "password": "pepe",
-      "nombre": "pepe",
-      "edad": "20",
-      "rol": "client",
-      "edadFisica": "20",
-      "sexo": "m",
-      "altura": "170",
-      "peso": "130",
-      "lugarEntrenamiento": "gym",
-      "alergias": "no",
-      "pesoMeta": 70,
-      "plazoSemanas": 12,
-      "pesoActual": "130",
-      "deficitEstimado": 450
-    },
-    {
       "id": "c695",
       "email": "ransesalfwdcostarica@gmail.com",
       "password": "R4nses_2008",
       "nombre": "Ranses Alvir",
       "edad": "20",
-      "rol": "client",
+      "rol": "admin",
       "edadFisica": "20",
       "sexo": "m",
       "altura": "170",
@@ -34,15 +16,27 @@
       "pesoMeta": 72,
       "plazoSemanas": 8,
       "pesoActual": "96",
-      "deficitEstimado": 450
+      "deficitEstimado": 450,
+      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774294985/zg1lbikveirdjmc2orli.jpg"
     },
     {
-      "id": "f973",
-      "email": "Faaahhh@faaah.com",
-      "password": "fah",
-      "nombre": "Faahhh Jimenez",
-      "edad": "23",
-      "rol": "client"
+      "id": "0e67",
+      "email": "Rsalasfwdcostarica@gmail.com",
+      "password": "1234",
+      "nombre": "Ronny Salas",
+      "edad": "17",
+      "rol": "client",
+      "edadFisica": "17",
+      "sexo": "m",
+      "altura": "180",
+      "peso": "70",
+      "lugarEntrenamiento": "gym",
+      "alergias": "ninguna",
+      "pesoMeta": 65,
+      "plazoSemanas": 8,
+      "pesoActual": "70",
+      "deficitEstimado": 450,
+      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774365274/admk4azg1ovszeyfysoe.jpg"
     },
     {
       "id": "eb3d",
@@ -53,7 +47,7 @@
       "rol": "admin"
     },
     {
-      "id": "eb3d",
+      "id": "eb3e",
       "email": "papoi@papoi.com",
       "password": "papoi",
       "nombre": "papu",
@@ -97,11 +91,13 @@
   ],
   "contactos": [
     {
-      "id": "bfb6",
-      "nombre": "Ronny Salas ",
-      "contacto": "72694020",
-      "mensaje": "aa",
-      "fecha": "2026-03-18T20:03:52.690Z"
+      "id": "3a7a",
+      "nombre": "Ransés",
+      "contacto": "60184472",
+      "email": "ransesalvir75@gmail.com",
+      "mensaje": "No sé",
+      "pais": "Costa Rica",
+      "fecha": "2026-03-20T20:49:35.162Z"
     }
   ],
   "stories": [
@@ -117,8 +113,11 @@
       "category": "Pérdida de Peso",
       "imageBefore": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
       "imageAfter": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
-      "likes": 2,
-      "comments": 29
+      "likes": 1,
+      "likedBy": [
+        "c695"
+      ],
+      "comments": 2
     },
     {
       "id": "s2",
@@ -132,7 +131,8 @@
       "category": "Ganancia de Músculo",
       "image": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
       "likes": 90,
-      "comments": 12
+      "likedBy": [],
+      "comments": 0
     },
     {
       "id": "s3",
@@ -144,8 +144,9 @@
       "title": "Cómo arreglé mi relación con la comida",
       "text": "Los consejos de expertos me ayudaron a darme cuenta de que la restricción no es la solución. Aprender sobre macros y balance fue un cambio radical por mi salud mental y física.",
       "category": "Consejos de Expertos",
-      "likes": 211,
-      "comments": 45
+      "likes": 210,
+      "likedBy": [],
+      "comments": 0
     },
     {
       "id": "4dca",
@@ -158,8 +159,22 @@
       "text": "Aumento de masa muscular en otro nivel 🗣️",
       "category": "Ganancia de Músculo",
       "image": null,
-      "likes": 5,
-      "comments": 1
+      "likes": 2,
+      "comments": 0
+    },
+    {
+      "id": "9d31",
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://i.pravatar.cc/150?u=c695",
+      "time": "Justo ahora",
+      "tag": "Pérdida de Peso",
+      "title": "fdsfsfsfs",
+      "text": "sdfssdf",
+      "category": "Pérdida de Peso",
+      "image": null,
+      "likes": 0,
+      "comments": 0
     }
   ],
   "trendingTopics": [
@@ -437,31 +452,31 @@
   ],
   "comentarios": [
     {
-      "id": "aed1",
-      "storyId": "s1",
-      "userId": "eb3d",
-      "userName": "admin",
-      "userAvatar": "https://i.pravatar.cc/150?u=eb3d",
-      "text": "No",
-      "fecha": "2026-03-23T19:42:10.829Z"
-    },
-    {
-      "id": "18f0",
+      "id": "51a8",
       "storyId": "4dca",
-      "userId": "eb3d",
-      "userName": "admin",
-      "userAvatar": "https://i.pravatar.cc/150?u=eb3d",
-      "text": "No jodas bro",
-      "fecha": "2026-03-23T19:42:29.517Z"
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://i.pravatar.cc/150?u=c695",
+      "text": "JAJAJAJAJJAA",
+      "fecha": "2026-03-19T21:22:30.081Z"
     },
     {
-      "id": "5535",
+      "id": "6349",
       "storyId": "s1",
-      "userId": "ac2b",
-      "userName": "Jheycob",
-      "userAvatar": "https://i.pravatar.cc/150?u=ac2b",
-      "text": "aaaaaa",
-      "fecha": "2026-03-23T21:41:02.190Z"
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://i.pravatar.cc/150?u=c695",
+      "text": "hola JAJAJAJAJAJA",
+      "fecha": "2026-03-20T14:24:24.986Z"
+    },
+    {
+      "id": "8787",
+      "storyId": "s1",
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://i.pravatar.cc/150?u=c695",
+      "text": "jhols",
+      "fecha": "2026-03-23T14:52:32.332Z"
     }
   ]
 }

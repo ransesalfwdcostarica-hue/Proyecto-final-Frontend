@@ -1,6 +1,7 @@
 const BASE_URL = "http://localhost:3001";
 
-export const getAllExercises = async () => {
+//Obtener todos los ejercicios
+export const obtenerTodosEjercicios = async () => {
   try {
     const response = await fetch(`${BASE_URL}/ejercicios`);
     if (!response.ok) {
@@ -13,7 +14,8 @@ export const getAllExercises = async () => {
   }
 };
 
-export const getExercisesByCategory = async (category) => {
+//Obtener ejercicios por categoría
+export const obtenerEjerciciosPorCategoria = async (category) => {
   try {
     const response = await fetch(`${BASE_URL}/ejercicios?categoria=${category}`);
     if (!response.ok) {
@@ -26,7 +28,8 @@ export const getExercisesByCategory = async (category) => {
   }
 };
 
-export const createExercise = async (exerciseData) => {
+//Crear un ejercicio
+export const crearEjercicio = async (exerciseData) => {
   try {
     const response = await fetch(`${BASE_URL}/ejercicios`, {
       method: 'POST',
@@ -45,7 +48,8 @@ export const createExercise = async (exerciseData) => {
   }
 };
 
-export const deleteExercise = async (id) => {
+//Eliminar un ejercicio
+export const eliminarEjercicio = async (id) => {
   try {
     const response = await fetch(`${BASE_URL}/ejercicios/${id}`, {
       method: 'DELETE',

@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Send, MessageSquare, Bot, History, Target, Users, Instagram, Facebook, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { saveContactMessage } from '../services/userService';
-import '../Styles/Contacto.css';
+import '../styles/Contacto.css';
 
 const FormContact = () => {
     const [formData, setFormData] = useState({
         nombre: '',
         contacto: '',
-        mensaje: ''
+        email: '',
+        mensaje: '',
+        pais: ''
     });
     const [loading, setLoading] = useState(false);
+    const [texto, setTexto] = useState('');
+    const [currentUser, setCurrentUser] = useState(null);
+
+    useEffect(() => {
+        const stored = localStorage.getItem('user');
+        if (stored) {
+            try { setCurrentUser(JSON.parse(stored)); } catch { setCurrentUser(null); }
+        }
+    }, []);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -21,10 +32,30 @@ const FormContact = () => {
         }));
     };
 
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        if (!formData.nombre || !formData.contacto || !formData.mensaje) {
+
+        if (!currentUser) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Inicia sesión primero',
+                text: 'Debes estar logueado para enviar un mensaje.',
+                background: '#171212',
+                color: '#ffffff',
+                iconColor: '#7d2020',
+                confirmButtonColor: '#7d2020',
+                confirmButtonText: 'Ir al Login'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/login';
+                }
+            });
+            return;
+        }
+
+        if (!formData.nombre?.trim() || !formData.contacto?.trim() || !formData.mensaje?.trim() || !formData.email?.trim()) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Campos incompletos',
@@ -124,6 +155,24 @@ const FormContact = () => {
 
                 {/* Support Form */}
                 <div className="soporte-section animate-fade-in delay-300">
+                    {!currentUser && (
+                        <div style={{
+                            background: 'rgba(125,32,32,0.15)',
+                            border: '1px solid #7d2020',
+                            borderRadius: '12px',
+                            padding: '1rem 1.5rem',
+                            marginBottom: '1rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            color: '#f87171'
+                        }}>
+                            <span style={{ fontSize: '1.4rem' }}>🔒</span>
+                            <span>
+                                Debes <Link to="/login" style={{ color: '#f87171', fontWeight: 700, textDecoration: 'underline' }}>iniciar sesión</Link> para poder enviar un mensaje.
+                            </span>
+                        </div>
+                    )}
                     <div className="soporte-form-container">
                         <div className="form-header">
                             <MessageSquare className="text-primary" size={32} />
@@ -134,38 +183,67 @@ const FormContact = () => {
                         <form className="soporte-form" onSubmit={handleSubmit}>
                             <div className="form-group">
                                 <label htmlFor="nombre">Nombre completo</label>
-                                <input 
-                                    type="text" 
-                                    id="nombre" 
-                                    placeholder="Ingresa tu nombre" 
+                                <input
+                                    type="text"
+                                    id="nombre"
+                                    placeholder="Ingresa tu nombre"
                                     value={formData.nombre}
                                     onChange={handleChange}
-                                    required 
+                                    required
                                 />
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="contacto">Correo o Número de Teléfono</label>
-                                <input 
-                                    type="text" 
-                                    id="contacto" 
-                                    placeholder="Tu email o celular" 
+                                <label htmlFor="pais">Pais</label>
+                                <input
+                                    type="text"
+                                    id="pais"
+                                    placeholder="Ingresa tu pais"
+                                    value={formData.pais}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="contacto">Celular</label>
+                                <input
+                                    type="number"
+                                    id="contacto"
+                                    placeholder="Celular"
                                     value={formData.contacto}
                                     onChange={handleChange}
-                                    required 
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="email">Correo</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    placeholder="Correo"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
                                 />
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="mensaje">Mensaje</label>
-                                <textarea 
-                                    id="mensaje" 
-                                    rows="5" 
-                                    placeholder="Describe tu problema o duda técnica..." 
+                                <textarea
+                                    id="mensaje"
+                                    rows="5"
+                                    placeholder="Describe tu problema o duda técnica..."
                                     value={formData.mensaje}
-                                    onChange={handleChange}
+                                    onChange={(e) => {
+                                        handleChange(e);
+                                        setTexto(e.target.value);
+                                    }}
                                     required
+                                    maxLength={1000}
                                 ></textarea>
+                                <p className="text-gray-500 text-sm">{formData.mensaje.length}/1000</p>
                             </div>
 
                             <button type="submit" className="btn-submit" disabled={loading}>
@@ -185,9 +263,9 @@ const FormContact = () => {
                             <div className="about-text">
                                 <h2>Nuestra Historia</h2>
                                 <p>
-                                    PowerFIT nació en 2026 con el objetivo de transformar la vida de las personas a través del fitness inteligente. 
-                                    Lo que comenzó como una idea para simplificar los planes de entrenamiento, evolucionó en una plataforma 
-                                    integral que combina tecnología avanzada con la pasión por el bienestar físico. 
+                                    PowerFIT nació en 2026 con el objetivo de transformar la vida de las personas a través del fitness inteligente.
+                                    Lo que comenzó como una idea para simplificar los planes de entrenamiento, evolucionó en una plataforma
+                                    integral que combina tecnología avanzada con la pasión por el bienestar físico.
                                     Hoy, somos una comunidad en constante crecimiento, unidos por el deseo de superación constante.
                                 </p>
                             </div>
@@ -201,7 +279,7 @@ const FormContact = () => {
                             <div className="about-text">
                                 <h2>Nuestra Misión</h2>
                                 <p>
-                                Nuestra misión es proporcionar herramientas personalizadas, precisas y motivadoras para que cualquier persona, sin importar su lugar o nivel inicial, pueda alcanzar la mejor versión de sí misma. Creemos que la salud y el fitness deben estar al alcance de todos.
+                                    Nuestra misión es proporcionar herramientas personalizadas, precisas y motivadoras para que cualquier persona, sin importar su lugar o nivel inicial, pueda alcanzar la mejor versión de sí misma. Creemos que la salud y el fitness deben estar al alcance de todos.
                                 </p>
                             </div>
                         </div>
@@ -225,4 +303,3 @@ const FormContact = () => {
 };
 
 export default FormContact;
- 

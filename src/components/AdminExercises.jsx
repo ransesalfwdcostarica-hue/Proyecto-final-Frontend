@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Trash2, 
-  Plus, 
-  Search, 
-  Dumbbell, 
-  X, 
-  Image as ImageIcon,
-  AlertTriangle
+import {
+    Trash2,
+    Plus,
+    Search,
+    Dumbbell,
+    X,
+    Image as ImageIcon,
+    AlertTriangle
 } from 'lucide-react';
-import { getAllExercises, createExercise, deleteExercise } from '../services/exerciseService';
+import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
+import Swal from 'sweetalert2';
 
-const AdminExercises = () => {
+const AdminExercises = ({ openAddModal }) => {
     const [exercises, setExercises] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [exerciseToDelete, setExerciseToDelete] = useState(null);
-    
+
     // Form state
     const [newExercise, setNewExercise] = useState({
         nombre: '',
@@ -30,12 +31,19 @@ const AdminExercises = () => {
 
     useEffect(() => {
         loadExercises();
+
+        const handleRefresh = () => {
+            loadExercises();
+        };
+
+        window.addEventListener('refreshExercises', handleRefresh);
+        return () => window.removeEventListener('refreshExercises', handleRefresh);
     }, []);
 
     const loadExercises = async () => {
         try {
             setLoading(true);
-            const data = await getAllExercises();
+            const data = await obtenerTodosEjercicios();
             setExercises(data);
         } catch (error) {
             console.error("Error loading exercises:", error);
@@ -45,40 +53,49 @@ const AdminExercises = () => {
     };
 
     const handleDeleteClick = (id) => {
-        setExerciseToDelete(id);
-        setIsDeleteModalOpen(true);
+        Swal.fire({
+            title: '¿Eliminar Ejercicio?',
+            text: "Esta acción no se puede deshacer y el ejercicio se borrará de la base de datos.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#8b0000',
+            cancelButtonColor: '#333',
+            confirmButtonText: 'Eliminar Definitivamente',
+            cancelButtonText: 'Cancelar',
+            background: '#171212',
+            color: '#fff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                confirmDelete(id);
+            }
+        });
     };
 
-    const confirmDelete = async () => {
+    const confirmDelete = async (id) => {
         try {
-            await deleteExercise(exerciseToDelete);
-            setExercises(exercises.filter(ex => ex.id !== exerciseToDelete));
-            setIsDeleteModalOpen(false);
-        } catch (error) {
-            alert("Error al eliminar");
-        }
-    };
-
-    const handleCreate = async (e) => {
-        e.preventDefault();
-        try {
-            const created = await createExercise(newExercise);
-            setExercises([...exercises, created]);
-            setShowModal(false);
-            setNewExercise({
-                nombre: '',
-                nivel: 'PRINCIPIANTE',
-                musculo: '',
-                tiempo: '',
-                imagen: '',
-                categoria: 'Pecho'
+            await deleteExercise(id);
+            setExercises(exercises.filter(ex => ex.id !== id));
+            Swal.fire({
+                title: 'Eliminado',
+                text: 'El ejercicio ha sido borrado correctamente.',
+                icon: 'success',
+                background: '#171212',
+                color: '#fff',
+                confirmButtonColor: '#8b0000'
             });
         } catch (error) {
-            alert("Error al crear");
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo eliminar el ejercicio.',
+                icon: 'error',
+                background: '#171212',
+                color: '#fff',
+                confirmButtonColor: '#8b0000'
+            });
         }
     };
 
-    const filtered = exercises.filter(ex => 
+    const filtered = exercises.filter(ex =>
         ex.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
         ex.categoria.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -93,16 +110,16 @@ const AdminExercises = () => {
             <div className="panel-header">
                 <div className="search-box-admin">
                     <Search size={18} />
-                    <input 
-                        type="text" 
-                        placeholder="Buscar por nombre o categoría..." 
+                    <input
+                        type="text"
+                        placeholder="Buscar por nombre o categoría..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <button className="btn-primary" onClick={() => setShowModal(true)}>
+                <button className="btn-primary" onClick={openAddModal}>
                     <Plus size={18} />
-                    Nuevo Ejercicio
+                    Agregar Ejercicios
                 </button>
             </div>
 
@@ -148,8 +165,6 @@ const AdminExercises = () => {
                     </div>
                 )}
             </div>
-
-            {/* Modal de Añadir */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal-content admin-exercise-modal animate-fade-in">
@@ -160,20 +175,20 @@ const AdminExercises = () => {
                         <form onSubmit={handleCreate} className="admin-form-premium">
                             <div className="form-group-admin">
                                 <label>Nombre del Ejercicio</label>
-                                <input 
-                                    type="text" 
-                                    required 
+                                <input
+                                    type="text"
+                                    required
                                     placeholder="Ej: Press de Banca Plano"
                                     value={newExercise.nombre}
-                                    onChange={e => setNewExercise({...newExercise, nombre: e.target.value})}
+                                    onChange={e => setNewExercise({ ...newExercise, nombre: e.target.value })}
                                 />
                             </div>
                             <div className="form-row-admin">
                                 <div className="form-group-admin">
                                     <label>Categoría</label>
-                                    <select 
+                                    <select
                                         value={newExercise.categoria}
-                                        onChange={e => setNewExercise({...newExercise, categoria: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, categoria: e.target.value })}
                                     >
                                         <option value="Pecho">Pecho</option>
                                         <option value="Espalda">Espalda</option>
@@ -186,9 +201,9 @@ const AdminExercises = () => {
                                 </div>
                                 <div className="form-group-admin">
                                     <label>Nivel de Dificultad</label>
-                                    <select 
+                                    <select
                                         value={newExercise.nivel}
-                                        onChange={e => setNewExercise({...newExercise, nivel: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, nivel: e.target.value })}
                                     >
                                         <option value="PRINCIPIANTE">Principiante</option>
                                         <option value="INTERMEDIO">Intermedio</option>
@@ -200,22 +215,22 @@ const AdminExercises = () => {
                             <div className="form-row-admin">
                                 <div className="form-group-admin">
                                     <label>Músculo</label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="Ej: PECHO" 
-                                        required 
+                                    <input
+                                        type="text"
+                                        placeholder="Ej: PECHO"
+                                        required
                                         value={newExercise.musculo}
-                                        onChange={e => setNewExercise({...newExercise, musculo: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, musculo: e.target.value })}
                                     />
                                 </div>
                                 <div className="form-group-admin">
                                     <label>Tiempo</label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="Ej: 45 SEG" 
-                                        required 
+                                    <input
+                                        type="text"
+                                        placeholder="Ej: 45 SEG"
+                                        required
                                         value={newExercise.tiempo}
-                                        onChange={e => setNewExercise({...newExercise, tiempo: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, tiempo: e.target.value })}
                                     />
                                 </div>
                             </div>
@@ -223,40 +238,25 @@ const AdminExercises = () => {
                                 <label>URL de Imagen Ilustrativa</label>
                                 <div className="input-icon-wrapper">
                                     <ImageIcon size={18} />
-                                    <input 
-                                        type="url" 
-                                        required 
+                                    <input
+                                        type="url"
+                                        required
                                         placeholder="https://images.unsplash.com/..."
                                         value={newExercise.imagen}
-                                        onChange={e => setNewExercise({...newExercise, imagen: e.target.value})}
+                                        onChange={e => setNewExercise({ ...newExercise, imagen: e.target.value })}
                                     />
                                 </div>
                             </div>
                             <button type="submit" className="btn-submit-admin">
                                 <Plus size={20} />
-                                Guardar Ejercicio
+                                Agregar Ejercicios
                             </button>
                         </form>
                     </div>
                 </div>
             )}
 
-            {/* Modal de Eliminación */}
-            {isDeleteModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-content delete-confirm-modal animate-fade-in">
-                        <div className="delete-icon-box">
-                            <AlertTriangle size={48} />
-                        </div>
-                        <h3>¿Eliminar Ejercicio?</h3>
-                        <p>Esta acción no se puede deshacer y el ejercicio se borrará de la base de datos.</p>
-                        <div className="modal-actions-column">
-                            <button className="btn-delete-full" onClick={confirmDelete}>Eliminar Definitivamente</button>
-                            <button className="btn-cancel-full" onClick={() => setIsDeleteModalOpen(false)}>Cancelar</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+
         </div>
     );
 };
