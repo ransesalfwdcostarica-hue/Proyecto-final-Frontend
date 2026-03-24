@@ -7,6 +7,31 @@ import { Link } from 'react-router-dom';
 import SubirImagen from './SubirImagen';
 import '../styles/SuccessStories.css';
 
+const getTimeAgo = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+
+    const seconds = Math.floor((new Date() - date) / 1000);
+
+    let interval = seconds / 31536000;
+    if (interval > 1) return `hace ${Math.floor(interval)} año${Math.floor(interval) !== 1 ? 's' : ''}`;
+    
+    interval = seconds / 2592000;
+    if (interval > 1) return `hace ${Math.floor(interval)} mes${Math.floor(interval) !== 1 ? 'es' : ''}`;
+    
+    interval = Math.floor(seconds / 86400);
+    if (interval >= 1) return interval === 1 ? 'hace 1 día' : `hace ${interval} días`;
+    
+    interval = Math.floor(seconds / 3600);
+    if (interval >= 1) return interval === 1 ? 'hace 1 hora' : `hace ${interval} horas`;
+    
+    interval = Math.floor(seconds / 60);
+    if (interval >= 1) return interval === 1 ? 'hace 1 minuto' : `hace ${interval} minutos`;
+    
+    return 'hace unos segundos';
+};
+
 const TestimonioComponent = () => {
     const { user: currentUser, refreshUser } = useContext(UserContext);
     const [stories, setStories] = useState([]);
@@ -103,6 +128,7 @@ const TestimonioComponent = () => {
             userName: currentUser.nombre || "Usuario",
             userAvatar: currentUser.avatar || `https://i.pravatar.cc/150?u=${currentUser.id || Math.random()}`,
             time: "Justo ahora",
+            fecha: new Date().toISOString(),
             tag: newStory.category,
             title: newStory.title,
             text: newStory.text,
@@ -326,8 +352,6 @@ const TestimonioComponent = () => {
             const createdComment = await addComment(commentPayload);
             const newCount = (story.comments || 0) + 1;
 
-            await updateStoryCommentsCount(storyId, newCount);
-
             // Actualizar estado local
             setCommentsData(prev => ({
                 ...prev,
@@ -400,7 +424,7 @@ const TestimonioComponent = () => {
                                     {userSearchResults.map(user => (
                                         <Link to={`/perfil/${user.id}`} key={user.id} className="search-result-item">
                                             <img
-                                                src={user.avatar || `https://i.pravatar.cc/150?u=${user.id}`}
+                                                src={`https://i.pravatar.cc/150?u=${user.id}`}
                                                 alt={user.nombre}
                                                 className="search-result-avatar"
                                             />
@@ -434,7 +458,7 @@ const TestimonioComponent = () => {
                                             <div className="user-details">
                                                 <h4>{story.userName}</h4>
                                                 <div className="story-meta">
-                                                    {story.time} • {story.tag}
+                                                    {getTimeAgo(story.fecha || story.time)} • {story.tag}
                                                 </div>
                                             </div>
                                         </div>
@@ -513,7 +537,7 @@ const TestimonioComponent = () => {
                                                             <div className="comment-content">
                                                                 <div className="comment-header">
                                                                     <span className="comment-user">{comment.userName}</span>
-                                                                    <span className="comment-date">{new Date(comment.fecha).toLocaleDateString()}</span>
+                                                                    <span className="comment-date">{getTimeAgo(comment.fecha)}</span>
                                                                 </div>
                                                                 <p className="comment-text">{comment.text}</p>
                                                             </div>

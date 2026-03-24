@@ -118,8 +118,7 @@ const DashCliente = () => {
     try {
       const updated = await updateUser(user.id, { ...user, avatar: imageUrl });
 
-      setUser(updated);
-      localStorage.setItem('user', JSON.stringify(updated));
+      refreshUser(updated);
 
       Swal.fire({
         icon: 'success',

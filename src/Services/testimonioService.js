@@ -1,10 +1,11 @@
 const API_URL = 'http://localhost:3001';
 
 export const fetchStoriesData = async () => {
-    const [storiesRes, contributorsRes, topicsRes] = await Promise.all([
+    const [storiesRes, contributorsRes, topicsRes, commentsRes] = await Promise.all([
         fetch(`${API_URL}/stories`),
         fetch(`${API_URL}/topContributors`),
-        fetch(`${API_URL}/trendingTopics`)
+        fetch(`${API_URL}/trendingTopics`),
+        fetch(`${API_URL}/comentarios`)
     ]);
 
     if (!storiesRes.ok || !contributorsRes.ok || !topicsRes.ok) {
@@ -14,6 +15,17 @@ export const fetchStoriesData = async () => {
     const storiesData = await storiesRes.json();
     const contributorsData = await contributorsRes.json();
     const topicsData = await topicsRes.json();
+    
+    let commentsData = [];
+    if (commentsRes.ok) {
+        commentsData = await commentsRes.json();
+    }
+    
+    // Attach accurate comments count to each story
+    storiesData.forEach(story => {
+        const storyComments = commentsData.filter(c => c.storyId === story.id);
+        story.comments = storyComments.length;
+    });
 
     return { storiesData, contributorsData, topicsData };
 };
@@ -102,9 +114,23 @@ export const updateStoryCommentsCount = async (storyId, newCount) => {
 };
 
 export const getStoriesByUserId = async (userId) => {
-    const response = await fetch(`${API_URL}/stories?userId=${userId}`);
-    if (!response.ok) {
+    const [storiesRes, commentsRes] = await Promise.all([
+        fetch(`${API_URL}/stories?userId=${userId}`),
+        fetch(`${API_URL}/comentarios`)
+    ]);
+    if (!storiesRes.ok) {
         throw new Error('Error al cargar las historias del usuario.');
     }
-    return await response.json();
+    
+    const stories = await storiesRes.json();
+    let commentsData = [];
+    if (commentsRes.ok) {
+        commentsData = await commentsRes.json();
+    }
+    
+    stories.forEach(story => {
+        story.comments = commentsData.filter(c => c.storyId === story.id).length;
+    });
+    
+    return stories;
 };

@@ -69,6 +69,24 @@
       "nombre": "Jaja",
       "edad": "74",
       "rol": "client"
+    },
+    {
+      "id": "ac2b",
+      "email": "jporrasfwdcostarica@gmail.com",
+      "password": "j1234",
+      "nombre": "Jheycob",
+      "edad": "22",
+      "rol": "client",
+      "edadFisica": "22",
+      "sexo": "m",
+      "altura": "180",
+      "peso": "76",
+      "lugarEntrenamiento": "gym",
+      "alergias": "Alergia a todo",
+      "pesoMeta": 70,
+      "plazoSemanas": 8,
+      "pesoActual": "76",
+      "deficitEstimado": 450
     }
   ],
   "contactos": [
@@ -95,11 +113,8 @@
       "category": "Pérdida de Peso",
       "imageBefore": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
       "imageAfter": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
-      "likes": 1,
-      "likedBy": [
-        "c695"
-      ],
-      "comments": 2
+      "likes": 2,
+      "comments": 29
     },
     {
       "id": "s2",
@@ -126,9 +141,8 @@
       "title": "Cómo arreglé mi relación con la comida",
       "text": "Los consejos de expertos me ayudaron a darme cuenta de que la restricción no es la solución. Aprender sobre macros y balance fue un cambio radical por mi salud mental y física.",
       "category": "Consejos de Expertos",
-      "likes": 210,
-      "likedBy": [],
-      "comments": 0
+      "likes": 211,
+      "comments": 45
     },
     {
       "id": "4dca",
@@ -141,22 +155,8 @@
       "text": "Aumento de masa muscular en otro nivel 🗣️",
       "category": "Ganancia de Músculo",
       "image": null,
-      "likes": 2,
-      "comments": 0
-    },
-    {
-      "id": "9d31",
-      "userId": "c695",
-      "userName": "Ranses Alvir",
-      "userAvatar": "https://i.pravatar.cc/150?u=c695",
-      "time": "Justo ahora",
-      "tag": "Pérdida de Peso",
-      "title": "fdsfsfsfs",
-      "text": "sdfssdf",
-      "category": "Pérdida de Peso",
-      "image": null,
-      "likes": 0,
-      "comments": 0
+      "likes": 5,
+      "comments": 1
     }
   ],
   "trendingTopics": [
@@ -434,31 +434,31 @@
   ],
   "comentarios": [
     {
-      "id": "51a8",
+      "id": "aed1",
+      "storyId": "s1",
+      "userId": "eb3d",
+      "userName": "admin",
+      "userAvatar": "https://i.pravatar.cc/150?u=eb3d",
+      "text": "No",
+      "fecha": "2026-03-23T19:42:10.829Z"
+    },
+    {
+      "id": "18f0",
       "storyId": "4dca",
-      "userId": "c695",
-      "userName": "Ranses Alvir",
-      "userAvatar": "https://i.pravatar.cc/150?u=c695",
-      "text": "JAJAJAJAJJAA",
-      "fecha": "2026-03-19T21:22:30.081Z"
+      "userId": "eb3d",
+      "userName": "admin",
+      "userAvatar": "https://i.pravatar.cc/150?u=eb3d",
+      "text": "No jodas bro",
+      "fecha": "2026-03-23T19:42:29.517Z"
     },
     {
-      "id": "6349",
+      "id": "5535",
       "storyId": "s1",
-      "userId": "c695",
-      "userName": "Ranses Alvir",
-      "userAvatar": "https://i.pravatar.cc/150?u=c695",
-      "text": "hola JAJAJAJAJAJA",
-      "fecha": "2026-03-20T14:24:24.986Z"
-    },
-    {
-      "id": "8787",
-      "storyId": "s1",
-      "userId": "c695",
-      "userName": "Ranses Alvir",
-      "userAvatar": "https://i.pravatar.cc/150?u=c695",
-      "text": "jhols",
-      "fecha": "2026-03-23T14:52:32.332Z"
+      "userId": "ac2b",
+      "userName": "Jheycob",
+      "userAvatar": "https://i.pravatar.cc/150?u=ac2b",
+      "text": "aaaaaa",
+      "fecha": "2026-03-23T21:41:02.190Z"
     }
   ]
 }
