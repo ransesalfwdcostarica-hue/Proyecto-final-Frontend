@@ -24,6 +24,7 @@ const Ejercicios = () => {
     const [activeCategory, setActiveCategory] = useState('Todos');
     const [user, setUser] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showTechniqueModal, setShowTechniqueModal] = useState(false);
     
     // Form state
     const [newExercise, setNewExercise] = useState({
@@ -193,7 +194,7 @@ const Ejercicios = () => {
                                 <span className="tag-difficulty">{exercise.nivel}</span>
                                 <span className="tag-muscle">{exercise.musculo}</span>
                             </div>
-                            <button className="btn-technique">
+                            <button className="btn-technique" onClick={() => setShowTechniqueModal(true)}>
                                 <Play size={16} fill="currentColor" />
                                 Ver Técnica
                             </button>
@@ -205,6 +206,20 @@ const Ejercicios = () => {
             {filteredExercises.length === 0 && (
                 <div style={{ textAlign: 'center', padding: '50px', color: 'var(--text-dim)' }}>
                     <p>No se encontraron ejercicios con esos filtros.</p>
+                </div>
+            )}
+
+            {/* Modal de Técnica */}
+            {showTechniqueModal && (
+                <div className="modal-overlay" onClick={() => setShowTechniqueModal(false)}>
+                    <div className="modal-content animate-fade-up" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Técnica</h2>
+                            <button className="close-btn" onClick={() => setShowTechniqueModal(false)}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
 
