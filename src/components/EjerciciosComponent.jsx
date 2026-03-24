@@ -25,6 +25,8 @@ const EjerciciosComponent = () => {
     const [activeCategory, setActiveCategory] = useState('Todos');
     const [user, setUser] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showTechniqueModal, setShowTechniqueModal] = useState(false);
+    const [favorites, setFavorites] = useState([]);
 
     // Form state
     const [newExercise, setNewExercise] = useState({
@@ -36,12 +38,16 @@ const EjerciciosComponent = () => {
         categoria: 'Pecho'
     });
 
-    const categories = ['Todos', 'Pecho', 'Espalda', 'Piernas', 'Hombros', 'Brazos', 'Core', 'Glúteos'];
+    const categories = ['Todos', 'Favoritos', 'Pecho', 'Espalda', 'Piernas', 'Hombros', 'Brazos', 'Core', 'Glúteos'];
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
+        }
+        const storedFavorites = localStorage.getItem('favorites');
+        if (storedFavorites) {
+            setFavorites(JSON.parse(storedFavorites));
         }
         loadExercises();
     }, []);
@@ -62,7 +68,9 @@ const EjerciciosComponent = () => {
     useEffect(() => {
         let result = exercises;
 
-        if (activeCategory !== 'Todos') {
+        if (activeCategory === 'Favoritos') {
+            result = result.filter(ex => favorites.includes(ex.id));
+        } else if (activeCategory !== 'Todos') {
             result = result.filter(ex => ex.categoria === activeCategory);
         }
 
@@ -74,7 +82,18 @@ const EjerciciosComponent = () => {
         }
 
         setFilteredExercises(result);
-    }, [searchTerm, activeCategory, exercises]);
+    }, [searchTerm, activeCategory, exercises, favorites]);
+
+    const toggleFavorite = (id) => {
+        let updatedFavorites;
+        if (favorites.includes(id)) {
+            updatedFavorites = favorites.filter(favId => favId !== id);
+        } else {
+            updatedFavorites = [...favorites, id];
+        }
+        setFavorites(updatedFavorites);
+        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    };
 
     const handleDelete = async (id) => {
         const result = await Swal.fire({
@@ -117,7 +136,7 @@ const EjerciciosComponent = () => {
 
     const handleCreate = async (e) => {
         e.preventDefault();
-
+        
         if (!newExercise.nombre?.trim() || !newExercise.musculo?.trim() || !newExercise.tiempo?.trim() || !newExercise.imagen?.trim()) {
             Swal.fire({
                 title: 'Atención',
@@ -216,7 +235,9 @@ const EjerciciosComponent = () => {
                             key={cat}
                             className={`category-tag ${activeCategory === cat ? 'active' : ''}`}
                             onClick={() => setActiveCategory(cat)}
+                            style={cat === 'Favoritos' ? { display: 'flex', alignItems: 'center', gap: '4px' } : {}}
                         >
+                            {cat === 'Favoritos' && <Heart size={16} fill={activeCategory === 'Favoritos' ? "currentColor" : "none"} />}
                             {cat}
                         </button>
                     ))}
@@ -242,15 +263,19 @@ const EjerciciosComponent = () => {
                         <div className="card-info">
                             <div className="card-header-row">
                                 <h3>{exercise.nombre}</h3>
-                                <button className="heart-btn">
-                                    <Heart size={20} />
+                                <button
+                                    className={`heart-btn ${favorites.includes(exercise.id) ? 'active' : ''}`}
+                                    onClick={() => toggleFavorite(exercise.id)}
+                                    style={favorites.includes(exercise.id) ? { color: '#ef4444' } : {}}
+                                >
+                                    <Heart size={20} fill={favorites.includes(exercise.id) ? "currentColor" : "none"} />
                                 </button>
                             </div>
                             <div className="tags-row">
                                 <span className="tag-difficulty">{exercise.nivel}</span>
                                 <span className="tag-muscle">{exercise.musculo}</span>
                             </div>
-                            <button className="btn-technique">
+                            <button className="btn-technique" onClick={() => setShowTechniqueModal(true)}>
                                 <Play size={16} fill="currentColor" />
                                 Ver Técnica
                             </button>
@@ -262,6 +287,23 @@ const EjerciciosComponent = () => {
             {filteredExercises.length === 0 && (
                 <div style={{ textAlign: 'center', padding: '50px', color: 'var(--text-dim)' }}>
                     <p>No se encontraron ejercicios con esos filtros.</p>
+                </div>
+            )}
+
+            {/* Modal de Técnica */}
+            {showTechniqueModal && (
+                <div className="modal-overlay" onClick={() => setShowTechniqueModal(false)}>
+                    <div className="modal-content animate-fade-up" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Técnica</h2>
+                            <button className="close-btn" onClick={() => setShowTechniqueModal(false)}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <div style={{ padding: '20px', textAlign: 'center' }}>
+                            <p>Instrucciones detalladas de técnica para este ejercicio.</p>
+                        </div>
+                    </div>
                 </div>
             )}
 
@@ -305,7 +347,7 @@ const EjerciciosComponent = () => {
                                         value={newExercise.categoria}
                                         onChange={e => setNewExercise({ ...newExercise, categoria: e.target.value })}
                                     >
-                                        {categories.filter(c => c !== 'Todos').map(c => (
+                                        {categories.filter(c => c !== 'Todos' && c !== 'Favoritos').map(c => (
                                             <option key={c} value={c}>{c}</option>
                                         ))}
                                     </select>
@@ -358,4 +400,4 @@ const EjerciciosComponent = () => {
     );
 };
 
-export default EjerciciosComponent; 
+export default EjerciciosComponent;

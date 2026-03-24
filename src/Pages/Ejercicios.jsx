@@ -1,11 +1,12 @@
-import EjerciciosComponent from '../components/EjerciciosComponent'
+import React from 'react';
+import EjerciciosComponent from '../components/EjerciciosComponent';
 
-function Ejercicios() {
+const Ejercicios = () => {
     return (
-        <div>
+        <div className="ejercicios-page">
             <EjerciciosComponent />
         </div>
-    )
-}
+    );
+};
 
 export default Ejercicios;

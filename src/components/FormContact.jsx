@@ -122,11 +122,7 @@ const FormContact = () => {
                         <h3>Llámanos</h3>
                         <p>+506 7269 4020</p>
                     </div>
-                    <Link to="/chatbot" className="info-card" style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <div className="info-icon"><Bot size={28} /></div>
-                        <h3>Hablar con chat IA</h3>
-                        <p>Respuestas instantáneas 24/7</p>
-                    </Link>
+
                     <div className="info-card">
                         <div className="info-icon"><Mail size={28} /></div>
                         <h3>Email</h3>

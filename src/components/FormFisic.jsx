@@ -158,7 +158,7 @@ const FormFisic = ({ userData, onNext, onBack }) => {
             <span className="footer-notice">
               * Sus datos están protegidos y se usan exclusivamente para su plan.
             </span>
-            <div style={{ display: 'flex', gap: '1rem' }}>
+            <div className="form-actions">
               <button
                 type="button"
                 onClick={() => onBack(formData)}

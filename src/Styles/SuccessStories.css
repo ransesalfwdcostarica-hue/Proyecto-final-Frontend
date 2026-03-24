@@ -1,5 +1,5 @@
 .success-stories-page {
-    padding-top: 100px;
+    padding-top: var(--nav-height);
     background-color: var(--bg-dark);
     min-height: 100vh;
     padding-bottom: 50px;
@@ -343,6 +343,7 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
+    object-fit: cover;
 }
 
 .contributor-details h5 {
@@ -1230,6 +1231,17 @@
     .modal-content {
         width: 95%;
         padding: 1.5rem;
+    }
+
+    .contacto-container {
+        padding-top: var(--nav-height-mobile);
+    }
+    .contacto-title {
+        font-size: 2.8rem;
+    }
+    
+    .info-cards {
+        grid-template-columns: 1fr;
     }
 }
 

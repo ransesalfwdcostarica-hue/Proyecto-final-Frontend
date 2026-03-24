@@ -4,7 +4,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 100px 2rem 2rem 2rem;
+    padding: var(--nav-height) 2.5rem 2.5rem 2.5rem;
     background: #191414;
     /* very dark brown/red */
     position: relative;
@@ -284,7 +284,7 @@ select.auth-form-input {
 
 @media (max-width: 768px) {
     .login-page-container {
-        padding: 80px 1rem 2rem 1rem;
+        padding: var(--nav-height-mobile) 1.25rem 2.5rem 1.25rem;
     }
 
     .auth-split-card {
@@ -299,6 +299,7 @@ select.auth-form-input {
 
     .auth-image-overlay {
         padding: 1.5rem;
+        min-height: 180px;
     }
 
     .auth-image-overlay h2 {
@@ -320,6 +321,11 @@ select.auth-form-input {
 
     .social-buttons {
         flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .terms-checkbox {
+        align-items: flex-start;
     }
 }
 
