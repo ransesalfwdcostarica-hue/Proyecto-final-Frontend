@@ -9,7 +9,6 @@ import {
     AlertTriangle
 } from 'lucide-react';
 import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
-import { getAllExercises, createExercise, deleteExercise } from '../services/exerciseService';
 import Swal from 'sweetalert2';
 
 const AdminExercises = ({ openAddModal }) => {

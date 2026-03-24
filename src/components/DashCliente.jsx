@@ -18,7 +18,8 @@ import {
   X,
   Activity,
   Upload,
-  User as UserIcon
+  User as UserIcon,
+  Menu
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { obtenerTodosEjercicios } from '../services/exerciseService';
@@ -34,6 +35,12 @@ const DashCliente = () => {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({});
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleActiveTab = (tab) => {
+    setActiveTab(tab);
+    setIsMobileMenuOpen(false);
+  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -145,39 +152,46 @@ const DashCliente = () => {
 
   return (
     <div className="client-dashboard animate-fade-in">
+      {isMobileMenuOpen && (
+        <div className="dash-mobile-overlay" onClick={() => setIsMobileMenuOpen(false)}></div>
+      )}
+
       {/* Sidebar */}
-      <aside className="client-sidebar">
+      <aside className={`client-sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
-          <h2 style={{ color: 'white', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.5rem' }}>
+          <h2 style={{ color: 'white', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.5rem', margin: 0 }}>
             <Flame color="#8b0000" fill="#8b0000" size={28} /> PowerFIT
           </h2>
+          <button className="dash-mobile-menu-close" onClick={() => setIsMobileMenuOpen(false)}>
+            <X size={24} />
+          </button>
         </div>
 
         <nav className="sidebar-menu">
           <button
             className={`menu-item ${activeTab === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => handleActiveTab('dashboard')}
           >
             <LayoutDashboard size={20} />
             Dashboard
           </button>
           <button
             className={`menu-item ${activeTab === 'training' ? 'active' : ''}`}
-            onClick={() => setActiveTab('training')}
+            onClick={() => handleActiveTab('training')}
           >
             <Dumbbell size={20} />
             Entrenamientos
           </button>
           <button
             className={`menu-item ${activeTab === 'nutrition' ? 'active' : ''}`}
-            onClick={() => setActiveTab('nutrition')}
+            onClick={() => handleActiveTab('nutrition')}
           >
             <Utensils size={20} />
             Nutrición
           </button>
           <button
             className={`menu-item ${activeTab === 'settings' ? 'active' : ''}`}
-            onClick={() => setActiveTab('settings')}
+            onClick={() => handleActiveTab('settings')}
           >
             <Settings size={20} />
             Ajustes
@@ -211,11 +225,16 @@ const DashCliente = () => {
       {/* Main Content */}
       <main className="client-main">
         <header className="client-header">
-          <div className="header-title">
-            <h1>{activeTab === 'dashboard' ? 'Panel de Rendimiento' :
-              activeTab === 'training' ? 'Biblioteca de Entrenamiento' :
-                activeTab === 'nutrition' ? 'Plan Nutricional' : 'Ajustes de Cuenta'}</h1>
-            <p>¡Hola {user.nombre}! Estas {activeTab === 'dashboard' ? 'son tus estadísticas del día.' : 'es tu sección personalizada.'}</p>
+          <div className="header-title-wrapper">
+            <button className="dash-mobile-menu-toggle" onClick={() => setIsMobileMenuOpen(true)}>
+              <Menu size={28} />
+            </button>
+            <div className="header-title">
+              <h1>{activeTab === 'dashboard' ? 'Panel de Rendimiento' :
+                activeTab === 'training' ? 'Biblioteca de Entrenamiento' :
+                  activeTab === 'nutrition' ? 'Plan Nutricional' : 'Ajustes de Cuenta'}</h1>
+              <p>¡Hola {user.nombre}! Estas {activeTab === 'dashboard' ? 'son tus estadísticas del día.' : 'es tu sección personalizada.'}</p>
+            </div>
           </div>
           <div className="header-actions">
           </div>

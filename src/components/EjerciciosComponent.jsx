@@ -12,12 +12,8 @@ import {
     Image as ImageIcon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
 import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
-=======
-import { getAllExercises, createExercise, deleteExercise } from '../services/exerciseService';
 import Swal from 'sweetalert2';
->>>>>>> 220409add12fc17b9ee0197d5805644a2d1c31d6
 import '../styles/Ejercicios.css';
 
 const EjerciciosComponent = () => {
