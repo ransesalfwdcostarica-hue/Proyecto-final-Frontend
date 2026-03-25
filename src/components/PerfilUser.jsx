@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getUserById, actualizarImg } from '../services/userService';
-import { getStoriesByUserId } from '../services/testimonioService';
-import { ThumbsUp, MessageSquare, Award, ArrowLeft, Grid } from 'lucide-react';
+import { getUserById, updateUser } from '../Services/userService';
+import { getStoriesByUserId } from '../Services/testimonioService';
+import { ThumbsUp, MessageSquare, Award, ArrowLeft, Grid, Edit2, Save, X, Upload } from 'lucide-react';
 import SubirImagen from './SubirImagen';
 import '../styles/SuccessStories.css';
 
@@ -11,6 +11,12 @@ const PerfilUser = () => {
     const [user, setUser] = useState(null);
     const [stories, setStories] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isEditingBio, setIsEditingBio] = useState(false);
+    const [bioText, setBioText] = useState("");
+    const [avatarUploading, setAvatarUploading] = useState(false);
+
+    const loggedUser = JSON.parse(localStorage.getItem('user') || 'null');
+    const isOwnProfile = loggedUser && String(loggedUser.id) === String(id);
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -20,6 +26,7 @@ const PerfilUser = () => {
                     getStoriesByUserId(id)
                 ]);
                 setUser(userData);
+                setBioText(userData.bio || "Transformando mi vida un entrenamiento a la vez. 🏋️‍♂️✨");
                 setStories(userStories);
             } catch (error) {
                 console.error("Error al cargar el perfil:", error);
@@ -31,19 +38,38 @@ const PerfilUser = () => {
         fetchProfileData();
     }, [id]);
 
-    // 🔥 NUEVA FUNCIÓN usando actualizarImg
-    const handleImageUpload = async (imageUrl) => {
+    const handleSaveBio = async () => {
         try {
-            const updatedUser = await actualizarImg(id, imageUrl);
+            await updateUser(id, { bio: bioText });
+            setUser(prev => ({ ...prev, bio: bioText }));
+            setIsEditingBio(false);
+            
+            if (isOwnProfile) {
+                const updatedSession = { ...loggedUser, bio: bioText };
+                localStorage.setItem('user', JSON.stringify(updatedSession));
+            }
+        } catch (error) {
+            console.error("Error al guardar bio:", error);
+            alert("Hubo un error al actualizar la descripción.");
+        }
+    };
 
-            setUser(prev => ({
-                ...prev,
-                avatar: updatedUser.avatar
-            }));
-
+    const handleAvatarUpload = async (imageUrl) => {
+        setAvatarUploading(true);
+        try {
+            await updateUser(id, { avatar: imageUrl });
+            setUser(prev => ({ ...prev, avatar: imageUrl }));
+            
+            if (isOwnProfile) {
+                const updatedSession = { ...loggedUser, avatar: imageUrl };
+                localStorage.setItem('user', JSON.stringify(updatedSession));
+                window.dispatchEvent(new Event('userUpdated'));
+            }
         } catch (error) {
             console.error("Error al actualizar la foto de perfil:", error);
             alert("Hubo un error al actualizar la foto de perfil.");
+        } finally {
+            setAvatarUploading(false);
         }
     };
 
@@ -75,33 +101,91 @@ const PerfilUser = () => {
 
                 <div className="profile-header animate-fade-in">
                     <div className="profile-main-info">
-                        <div className="profile-avatar-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <div className="profile-avatar-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
                             <img
                                 src={user.avatar || `https://i.pravatar.cc/150?u=${user.id}`}
                                 alt={user.nombre}
                                 className="profile-large-avatar"
                             />
-                            <SubirImagen onImageUpload={handleImageUpload} />
+                            {isOwnProfile && (
+                                <div
+                                    title="Cambiar foto de perfil"
+                                    style={{
+                                        position: 'absolute', bottom: 10, right: 10,
+                                        background: 'var(--primary)', borderRadius: '50%',
+                                        width: '32px', height: '32px', display: 'flex',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        cursor: avatarUploading ? 'not-allowed' : 'pointer',
+                                        opacity: avatarUploading ? 0.6 : 1,
+                                        boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+                                        border: '2px solid var(--bg-card)'
+                                    }}
+                                >
+                                    <SubirImagen onImageUpload={handleAvatarUpload}>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                                            {avatarUploading
+                                                ? <span style={{ color: '#fff', fontSize: '0.6rem' }}>...</span>
+                                                : <Upload size={14} color="#fff" />
+                                            }
+                                        </div>
+                                    </SubirImagen>
+                                </div>
+                            )}
                         </div>
 
                         <div className="profile-stats-section">
                             <div className="profile-username-row">
                                 <h2>{user.nombre}</h2>
-                                <button className="btn-follow">Seguir</button>
-                                <button className="btn-message">Mensaje</button>
+                                {!isOwnProfile && <button className="btn-follow">Seguir</button>}
                             </div>
 
                             <div className="profile-numbers">
-                                <span><strong>{stories.length}</strong> publicaciones</span>
-                                <span><strong>{Math.floor(Math.random() * 500)}</strong> seguidores</span>
-                                <span><strong>{Math.floor(Math.random() * 300)}</strong> seguidos</span>
+                                <div className="stat-box">
+                                    <strong>{stories.length}</strong>
+                                    <span>Posts</span>
+                                </div>
+                                <div className="stat-box">
+                                    <strong>{Math.floor(Math.random() * 500)}</strong>
+                                    <span>Seguidores</span>
+                                </div>
+                                <div className="stat-box">
+                                    <strong>{Math.floor(Math.random() * 300)}</strong>
+                                    <span>Seguidos</span>
+                                </div>
                             </div>
 
-                            <div className="profile-bio">
+                            <div className="profile-bio-card">
                                 <p className="profile-role">
                                     {user.rol === 'admin' ? 'Coach Certificado' : 'Atleta PowerFIT'}
                                 </p>
-                                <p>Transformando mi vida un entrenamiento a la vez. 🏋️‍♂️✨</p>
+                                {isEditingBio ? (
+                                    <div style={{ marginTop: '0.5rem' }}>
+                                        <textarea 
+                                            value={bioText}
+                                            onChange={(e) => setBioText(e.target.value)}
+                                            style={{ width: '100%', minHeight: '80px', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '0.8rem', fontSize: '0.9rem', outline: 'none', resize: 'vertical' }}
+                                        />
+                                        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', justifyContent: 'flex-end' }}>
+                                            <button onClick={() => setIsEditingBio(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.2rem' }}><X size={14}/> Cancelar</button>
+                                            <button onClick={handleSaveBio} style={{ background: 'var(--primary)', border: 'none', color: 'white', cursor: 'pointer', borderRadius: '4px', padding: '0.3rem 0.8rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}><Save size={14}/> Guardar</button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div style={{ position: 'relative' }}>
+                                        <p className="profile-bio-text">{user.bio || "Transformando mi vida un entrenamiento a la vez. 🏋️‍♂️✨"}</p>
+                                        {isOwnProfile && (
+                                            <button 
+                                                onClick={() => setIsEditingBio(true)}
+                                                style={{ position: 'absolute', top: '-25px', right: 0, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', transition: 'color 0.2s ease' }}
+                                                title="Editar biografía"
+                                                onMouseOver={(e) => e.currentTarget.style.color = 'white'}
+                                                onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+                                            >
+                                                <Edit2 size={16} />
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

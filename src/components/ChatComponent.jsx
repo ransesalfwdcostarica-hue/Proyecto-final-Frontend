@@ -3,22 +3,32 @@ import { Link } from 'react-router-dom';
 import {
   PlusSquare, Settings, User, LayoutDashboard, MessageSquare,
   Dumbbell, Apple, Clock, CheckCircle, Activity, Utensils,
-  BarChart2, Paperclip, Send, Flame, Footprints, Heart, Moon
+  BarChart2, Paperclip, Send, Flame, Footprints, Heart, Moon, Menu, X
 } from 'lucide-react';
 import '../styles/Chatbot.css';
 
 const ChatComponent = () => {
   const [inputText, setInputText] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className="chatbot-wrapper">
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>
+      )}
+
       {/* Header */}
       <header className="chatbot-header">
-        <Link to="/" className="chatbot-logo-area">
-
-          <PlusSquare size={20} />
-          <span>Power <span style={{ color: '#ca4a4a' }}>Fit Asistente</span></span>
-        </Link>
+        <div className="header-left-mobile">
+          <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
+            <Menu size={24} />
+          </button>
+          <Link to="/" className="chatbot-logo-area">
+            <PlusSquare size={20} />
+            <span className="logo-text">Power <span style={{ color: '#ca4a4a' }}>Fit Asistente</span></span>
+          </Link>
+        </div>
 
         <div className="header-right">
           <div className="system-status">
@@ -33,37 +43,49 @@ const ChatComponent = () => {
       <div className="chatbot-body">
 
         {/* Left Sidebar */}
-        <aside className="chatbot-sidebar-left">
+        <aside className={`chatbot-sidebar-left ${isSidebarOpen ? 'mobile-open' : ''}`}>
+          <div className="mobile-sidebar-header">
+            <span>Historial de Chats</span>
+            <button className="close-sidebar-btn" onClick={() => setIsSidebarOpen(false)}>
+              <X size={24} />
+            </button>
+          </div>
+
+          <div className="new-chat-btn-container" style={{ paddingBottom: '16px', borderBottom: '1px solid #2d1b1c', marginBottom: '16px' }}>
+            <button
+              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', backgroundColor: '#7c2626', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
+              <PlusSquare size={18} /> Nuevo Chat
+            </button>
+          </div>
+
           <div className="sidebar-section">
-            <div className="sidebar-title">MENÚ</div>
-            <Link to="/panel" className="nav-item">
-              <LayoutDashboard size={20} /> Panel de Control
-            </Link>
+            <div className="sidebar-title">Hoy</div>
             <div className="nav-item active">
-              <MessageSquare size={20} /> IA VitalBot
+              <MessageSquare size={18} /> Análisis de Estadísticas
             </div>
-            <Link to="/plan" className="nav-item">
-              <Dumbbell size={20} /> Entrenamientos
-            </Link>
-            <Link to="/dietas" className="nav-item">
-              <Apple size={20} /> Nutrición
-            </Link>
+            <div className="nav-item">
+              <MessageSquare size={18} /> Recuperación de Rodilla
+            </div>
           </div>
 
           <div className="sidebar-section">
-            <div className="sidebar-title">SESIONES RECIENTES</div>
-            <div className="nav-item-small">
-              <Clock size={16} /> Recuperación de Rodilla
-            </div>
-            <div className="nav-item-small">
-              <Clock size={16} /> Preparación de Dieta Keto
+            <div className="sidebar-title">Ayer</div>
+            <div className="nav-item">
+              <MessageSquare size={18} /> Preparación de Dieta Keto
             </div>
           </div>
 
-          <div className="upgrade-card">
-            <h3>Mejora a Pro</h3>
-            <p>Obtén entrenamiento por IA y planes de dieta personalizados ilimitados.</p>
-            <button className="btn-white">Explorar Planes</button>
+          <div className="sidebar-section">
+            <div className="sidebar-title">Últimos 7 Días</div>
+            <div className="nav-item">
+              <MessageSquare size={18} /> Rutina HIIT 30 min
+            </div>
+            <div className="nav-item">
+              <MessageSquare size={18} /> Suplementación deportiva
+            </div>
+            <div className="nav-item">
+              <MessageSquare size={18} /> Calcular macros
+            </div>
           </div>
         </aside>
 

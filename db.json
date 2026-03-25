@@ -17,7 +17,7 @@
       "plazoSemanas": 8,
       "pesoActual": "96",
       "deficitEstimado": 450,
-      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774294985/zg1lbikveirdjmc2orli.jpg"
+      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774390526/rldqwumojedsbdfoojao.jpg"
     },
     {
       "id": "0e67",
@@ -104,18 +104,55 @@
       "pesoMeta": 67,
       "plazoSemanas": 8,
       "pesoActual": "95",
+      "deficitEstimado": 450,
+      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774470389/th9skn53ww8ra175uzis.jpg"
+    },
+    {
+      "id": "ebaa",
+      "email": "ransesalvir75@gmail.com",
+      "password": "R4nses_2008",
+      "nombre": "RANSES MATIAS",
+      "edad": "20",
+      "rol": "client",
+      "edadFisica": "20",
+      "sexo": "m",
+      "altura": "190",
+      "peso": "120",
+      "lugarEntrenamiento": "gym",
+      "alergias": "",
+      "pesoMeta": 70,
+      "plazoSemanas": 8,
+      "pesoActual": "120",
+      "deficitEstimado": 450
+    },
+    {
+      "id": "092f",
+      "email": "stacy@gmaim.com",
+      "password": "12345",
+      "nombre": "stacy salazar",
+      "edad": "20",
+      "rol": "client",
+      "edadFisica": "20",
+      "sexo": "f",
+      "altura": "1.54",
+      "peso": "155",
+      "lugarEntrenamiento": "home",
+      "alergias": "nada ",
+      "pesoMeta": 70,
+      "plazoSemanas": 12,
+      "pesoActual": "155",
       "deficitEstimado": 450
     }
   ],
   "contactos": [
     {
-      "id": "3a7a",
-      "nombre": "Ransés",
+      "id": "5156",
+      "nombre": "RANSES MATIAS",
       "contacto": "60184472",
       "email": "ransesalvir75@gmail.com",
-      "mensaje": "No sé",
-      "pais": "Costa Rica",
-      "fecha": "2026-03-20T20:49:35.162Z"
+      "mensaje": "HOLA BROOO ",
+      "pais": "Costa Rica ",
+      "fecha": "2026-03-24T22:12:43.534Z"
     }
   ],
   "stories": [
@@ -131,8 +168,9 @@
       "category": "Pérdida de Peso",
       "imageBefore": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
       "imageAfter": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
-      "likes": 2,
-      "comments": 27
+      "likes": 0,
+      "comments": 2,
+      "likedBy": []
     },
     {
       "id": "s2",
@@ -145,8 +183,10 @@
       "text": "Solía tener problemas para ganar peso. El programa de fuerza personalizado aquí lo cambió todo. Me enfoqué en movimientos compuestos y aumenté mi ingesta calórica. ¡Es un maratón, no un sprint!",
       "category": "Ganancia de Músculo",
       "image": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
-      "likes": 90,
-      "likedBy": [],
+      "likes": 1,
+      "likedBy": [
+        "c695"
+      ],
       "comments": 0
     },
     {
@@ -159,8 +199,9 @@
       "title": "Cómo arreglé mi relación con la comida",
       "text": "Los consejos de expertos me ayudaron a darme cuenta de que la restricción no es la solución. Aprender sobre macros y balance fue un cambio radical por mi salud mental y física.",
       "category": "Consejos de Expertos",
-      "likes": 210,
-      "comments": 45
+      "likes": 0,
+      "comments": 45,
+      "likedBy": []
     },
     {
       "id": "4dca",
@@ -173,8 +214,9 @@
       "text": "Aumento de masa muscular en otro nivel 🗣️",
       "category": "Ganancia de Músculo",
       "image": null,
-      "likes": 2,
-      "comments": 0
+      "likes": 0,
+      "comments": 0,
+      "likedBy": []
     }
   ],
   "trendingTopics": [
@@ -448,6 +490,26 @@
       "tiempo": "45 SEG",
       "imagen": "/exercises/face-pull.jpg",
       "categoria": "Hombros"
+    }
+  ],
+  "comentarios": [
+    {
+      "id": "1194",
+      "storyId": "s1",
+      "userId": "b508",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774470389/th9skn53ww8ra175uzis.jpg",
+      "text": "Holaaaa",
+      "fecha": "2026-03-25T21:11:09.589Z"
+    },
+    {
+      "id": "7c36",
+      "storyId": "s1",
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774294985/zg1lbikveirdjmc2orli.jpg",
+      "text": "JAJAJAJA",
+      "fecha": "2026-03-25T21:34:26.882Z"
     }
   ]
 }

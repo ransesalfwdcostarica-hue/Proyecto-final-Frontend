@@ -23,7 +23,7 @@ export const fetchStoriesData = async () => {
     
     // Attach accurate comments count to each story
     storiesData.forEach(story => {
-        const storyComments = commentsData.filter(c => c.storyId === story.id);
+        const storyComments = commentsData.filter(c => String(c.storyId) === String(story.id));
         story.comments = storyComments.length;
     });
 
@@ -129,7 +129,7 @@ export const getStoriesByUserId = async (userId) => {
     }
     
     stories.forEach(story => {
-        story.comments = commentsData.filter(c => c.storyId === story.id).length;
+        story.comments = commentsData.filter(c => String(c.storyId) === String(story.id)).length;
     });
     
     return stories;
