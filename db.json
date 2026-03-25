@@ -34,9 +34,12 @@
       "alergias": "ninguna",
       "pesoMeta": 65,
       "plazoSemanas": 8,
-      "pesoActual": "70",
+      "pesoActual": "67",
       "deficitEstimado": 450,
-      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774365274/admk4azg1ovszeyfysoe.jpg"
+      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774365274/admk4azg1ovszeyfysoe.jpg",
+      "semanasEnProgreso": 1,
+      "ultimoFeedbackDieta": "muy bien ",
+      "ultimoFeedbackEjercicio": "no mucho"
     },
     {
       "id": "eb3d",
