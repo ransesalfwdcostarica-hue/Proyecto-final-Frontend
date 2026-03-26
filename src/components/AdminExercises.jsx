@@ -73,7 +73,7 @@ const AdminExercises = ({ openAddModal }) => {
 
     const confirmDelete = async (id) => {
         try {
-            await deleteExercise(id);
+            await eliminarEjercicio(id);
             setExercises(exercises.filter(ex => ex.id !== id));
             Swal.fire({
                 title: 'Eliminado',

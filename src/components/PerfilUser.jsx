@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 import { getUserById, actualizarImg } from '../services/userService';
 import { getStoriesByUserId } from '../services/testimonioService';
 import { ThumbsUp, MessageSquare, Award, ArrowLeft, Grid } from 'lucide-react';
@@ -8,6 +9,7 @@ import '../styles/SuccessStories.css';
 
 const PerfilUser = () => {
     const { id } = useParams();
+    const { user: currentUser, refreshUser } = useContext(UserContext);
     const [user, setUser] = useState(null);
     const [stories, setStories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -40,6 +42,11 @@ const PerfilUser = () => {
                 ...prev,
                 avatar: updatedUser.avatar
             }));
+
+            // If I'm updating my own profile, refresh global context
+            if (currentUser && String(currentUser.id) === String(id)) {
+                refreshUser({ avatar: updatedUser.avatar });
+            }
 
         } catch (error) {
             console.error("Error al actualizar la foto de perfil:", error);

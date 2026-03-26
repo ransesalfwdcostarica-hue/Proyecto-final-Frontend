@@ -32,7 +32,7 @@ const DashAdmin = () => {
   const handleCreateExercise = async (e) => {
     e.preventDefault();
     try {
-      await createExercise(newExercise);
+      await crearEjercicio(newExercise);
       setShowAddModal(false);
       setNewExercise({
         nombre: '',

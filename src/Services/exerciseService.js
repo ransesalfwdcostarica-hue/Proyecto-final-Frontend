@@ -48,6 +48,26 @@ export const crearEjercicio = async (exerciseData) => {
   }
 };
 
+//Actualizar un ejercicio
+export const actualizarEjercicio = async (id, exerciseData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/ejercicios/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(exerciseData),
+    });
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Error updating exercise ${id}:`, error);
+    throw error;
+  }
+};
+
 //Eliminar un ejercicio
 export const eliminarEjercicio = async (id) => {
   try {

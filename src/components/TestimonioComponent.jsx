@@ -352,8 +352,6 @@ const TestimonioComponent = () => {
             const createdComment = await addComment(commentPayload);
             const newCount = (story.comments || 0) + 1;
 
-            await updateStoryCommentsCount(storyId, newCount);
-
             // Actualizar estado local
             setCommentsData(prev => ({
                 ...prev,
