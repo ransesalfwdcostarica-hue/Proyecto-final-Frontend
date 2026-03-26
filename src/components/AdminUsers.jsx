@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { getAllUsers, deleteUser, updateUser } from '../Services/userService';
-import { Trash2, UserPlus, AlertTriangle, X, Edit2, Save } from 'lucide-react';
 import { getAllUsers, deleteUser, updateUser } from '../services/userService';
 import { Trash2, UserPlus, AlertTriangle, X, Edit2, Save, Eye, Activity, ClipboardList, Target, Calendar, User as UserIcon } from 'lucide-react';
 

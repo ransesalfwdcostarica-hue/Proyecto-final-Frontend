@@ -13,7 +13,7 @@ import {
     Edit2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { obtenerTodosEjercicios as getAllExercises, crearEjercicio as createExercise, eliminarEjercicio as deleteExercise, actualizarEjercicio as updateExercise } from '../services/exerciseService';
+import { obtenerTodosEjercicios as getAllExercises, crearEjercicio as createExercise, eliminarEjercicio as deleteExercise, actualizarEjercicio as updateExercise } from '../Services/exerciseService';
 import '../styles/Ejercicios.css';
 
 const Ejercicios = () => {

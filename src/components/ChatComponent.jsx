@@ -58,9 +58,7 @@ const ChatComponent = () => {
             <div className="nav-item active">
               <MessageSquare size={18} /> Análisis de Estadísticas
             </div>
-            <div className="}
-            }
-            av-item">
+            <div className="nav-item">
               <MessageSquare size={18} /> Recuperación de Rodilla
             </div>
           </div>

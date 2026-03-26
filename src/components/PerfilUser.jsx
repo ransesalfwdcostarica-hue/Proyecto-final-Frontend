@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { getUserById, updateUser } from '../services/userService';
-import { getStoriesByUserId } from '../services/testimonioService';
+import { getStoriesByUserId } from '../Services/testimonioService';
 import { ThumbsUp, MessageSquare, Award, ArrowLeft, Grid, Edit2, Save, X, Upload } from 'lucide-react';
 import SubirImagen from './SubirImagen';
 import '../styles/SuccessStories.css';
