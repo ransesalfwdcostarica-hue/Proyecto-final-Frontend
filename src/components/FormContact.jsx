@@ -118,13 +118,13 @@ const FormContact = () => {
                 {/* Info Cards */}
                 <div className="info-cards animate-fade-in delay-100">
                     <div className="info-card">
-                        <div className="info-icon"><Phone size={28} /></div>
+                        <div className="info-icon"><Phone size={36} /></div>
                         <h3>Llámanos</h3>
                         <p>+506 7269 4020</p>
                     </div>
 
                     <div className="info-card">
-                        <div className="info-icon"><Mail size={28} /></div>
+                        <div className="info-icon"><Mail size={36} /></div>
                         <h3>Email</h3>
                         <p>soporte@powerfit.com</p>
                     </div>
