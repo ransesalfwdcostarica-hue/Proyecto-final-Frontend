@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Home from '../Pages/Home';
 import Contacto from '../Pages/Contacto';
@@ -13,6 +13,8 @@ import Dietas from '../Pages/Dietas';
 import PerfilUsuario from '../Pages/PerfilUsuario';
 
 const Routing = () => {
+    const isLogged = localStorage.getItem('user');
+
     return (
         <Router>
             <Navbar />
@@ -23,7 +25,10 @@ const Routing = () => {
                 <Route path="/dietas" element={<Dietas />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/registro" element={<Registro />} />
-                <Route path="/chatbot" element={<Chatbot />} />
+                <Route 
+                    path="/chatbot" 
+                    element={isLogged ? <Chatbot /> : <Navigate to="/login" />} 
+                />
                 <Route path="/admin" element={<DashboardAdmin />} />
                 <Route path="/dashboard" element={<DashboardCliente />} />
                 <Route path="/comunidad" element={<Testimonios />} />

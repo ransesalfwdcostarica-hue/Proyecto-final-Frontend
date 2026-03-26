@@ -17,7 +17,7 @@
       "plazoSemanas": 8,
       "pesoActual": "96",
       "deficitEstimado": 450,
-      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774294985/zg1lbikveirdjmc2orli.jpg"
+      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774390526/rldqwumojedsbdfoojao.jpg"
     },
     {
       "id": "0e67",
@@ -66,17 +66,54 @@
       "plazoSemanas": 8,
       "pesoActual": "76",
       "deficitEstimado": 450
+    },
+    {
+      "id": "b508",
+      "email": "ransesalvir75@gmail.com",
+      "password": "R4nses_2008",
+      "nombre": "Ranses Alvir",
+      "edad": "20",
+      "rol": "client",
+      "edadFisica": "20",
+      "sexo": "m",
+      "altura": "170",
+      "peso": "95",
+      "lugarEntrenamiento": "home",
+      "alergias": "",
+      "pesoMeta": 67,
+      "plazoSemanas": 8,
+      "pesoActual": "95",
+      "deficitEstimado": 450,
+      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774470389/th9skn53ww8ra175uzis.jpg"
+    },
+    {
+      "id": "ebaa",
+      "email": "ransesalvir75@gmail.com",
+      "password": "R4nses_2008",
+      "nombre": "RANSES MATIAS",
+      "edad": "20",
+      "rol": "client",
+      "edadFisica": "20",
+      "sexo": "m",
+      "altura": "190",
+      "peso": "120",
+      "lugarEntrenamiento": "gym",
+      "alergias": "",
+      "pesoMeta": 70,
+      "plazoSemanas": 8,
+      "pesoActual": "120",
+      "deficitEstimado": 450
     }
   ],
   "contactos": [
     {
-      "id": "3a7a",
-      "nombre": "Ransés",
+      "id": "5156",
+      "nombre": "RANSES MATIAS",
       "contacto": "60184472",
       "email": "ransesalvir75@gmail.com",
-      "mensaje": "No sé",
-      "pais": "Costa Rica",
-      "fecha": "2026-03-20T20:49:35.162Z"
+      "mensaje": "HOLA BROOO ",
+      "pais": "Costa Rica ",
+      "fecha": "2026-03-24T22:12:43.534Z"
     }
   ],
   "stories": [
@@ -92,8 +129,9 @@
       "category": "Pérdida de Peso",
       "imageBefore": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
       "imageAfter": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
-      "likes": 2,
-      "comments": 29
+      "likes": 0,
+      "comments": 2,
+      "likedBy": []
     },
     {
       "id": "s2",
@@ -106,8 +144,10 @@
       "text": "Solía tener problemas para ganar peso. El programa de fuerza personalizado aquí lo cambió todo. Me enfoqué en movimientos compuestos y aumenté mi ingesta calórica. ¡Es un maratón, no un sprint!",
       "category": "Ganancia de Músculo",
       "image": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
-      "likes": 90,
-      "likedBy": [],
+      "likes": 1,
+      "likedBy": [
+        "c695"
+      ],
       "comments": 0
     },
     {
@@ -120,8 +160,9 @@
       "title": "Cómo arreglé mi relación con la comida",
       "text": "Los consejos de expertos me ayudaron a darme cuenta de que la restricción no es la solución. Aprender sobre macros y balance fue un cambio radical por mi salud mental y física.",
       "category": "Consejos de Expertos",
-      "likes": 211,
-      "comments": 45
+      "likes": 0,
+      "comments": 45,
+      "likedBy": []
     },
     {
       "id": "4dca",
@@ -134,8 +175,9 @@
       "text": "Aumento de masa muscular en otro nivel 🗣️",
       "category": "Ganancia de Músculo",
       "image": null,
-      "likes": 5,
-      "comments": 1
+      "likes": 0,
+      "comments": 0,
+      "likedBy": []
     }
   ],
   "trendingTopics": [
@@ -413,31 +455,22 @@
   ],
   "comentarios": [
     {
-      "id": "aed1",
+      "id": "1194",
       "storyId": "s1",
-      "userId": "eb3d",
-      "userName": "admin",
-      "userAvatar": "https://i.pravatar.cc/150?u=eb3d",
-      "text": "No",
-      "fecha": "2026-03-23T19:42:10.829Z"
+      "userId": "b508",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774470389/th9skn53ww8ra175uzis.jpg",
+      "text": "Holaaaa",
+      "fecha": "2026-03-25T21:11:09.589Z"
     },
     {
-      "id": "18f0",
-      "storyId": "4dca",
-      "userId": "eb3d",
-      "userName": "admin",
-      "userAvatar": "https://i.pravatar.cc/150?u=eb3d",
-      "text": "No jodas bro",
-      "fecha": "2026-03-23T19:42:29.517Z"
-    },
-    {
-      "id": "5535",
+      "id": "7c36",
       "storyId": "s1",
-      "userId": "ac2b",
-      "userName": "Jheycob",
-      "userAvatar": "https://i.pravatar.cc/150?u=ac2b",
-      "text": "aaaaaa",
-      "fecha": "2026-03-23T21:41:02.190Z"
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774294985/zg1lbikveirdjmc2orli.jpg",
+      "text": "JAJAJAJA",
+      "fecha": "2026-03-25T21:34:26.882Z"
     }
   ]
 }

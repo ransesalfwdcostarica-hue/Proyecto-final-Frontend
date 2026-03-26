@@ -1,5 +1,5 @@
 .dietas-page {
-    padding-top: 100px;
+    padding-top: var(--nav-height);
     background-color: var(--bg-dark);
     min-height: 100vh;
     padding-bottom: 50px;
@@ -335,17 +335,47 @@
 }
 
 @media (max-width: 768px) {
-    .dietas-header h1 {
-        font-size: 2.5rem;
+    .dietas-page {
+        padding-top: var(--nav-height-mobile);
     }
+
+    .dietas-header {
+        margin-bottom: 2.5rem;
+    }
+
+    .dietas-header h1 {
+        font-size: 2.2rem;
+    }
+
+    .dietas-subtitle {
+        font-size: 1rem;
+    }
+
+    .dietas-container {
+        padding: 0 1.25rem;
+    }
+
     .inputs-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
+
     .category-grid {
         grid-template-columns: 1fr;
+        gap: 0.75rem;
     }
+
     .form-card {
-        padding: 2rem;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
+    }
+
+    .info-card {
+        padding: 1.5rem;
+    }
+
+    .status-card {
+        padding: 1.25rem 1.5rem;
     }
 }
 
