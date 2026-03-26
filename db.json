@@ -103,6 +103,7 @@
       "plazoSemanas": 8,
       "pesoActual": "120",
       "deficitEstimado": 450
+
     }
   ],
   "contactos": [
@@ -129,9 +130,12 @@
       "category": "Pérdida de Peso",
       "imageBefore": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
       "imageAfter": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
-      "likes": 0,
-      "comments": 2,
-      "likedBy": []
+      "likes": 2,
+      "likedBy": [
+        "c695"
+      ],
+      "comments": 29
+
     },
     {
       "id": "s2",
@@ -160,9 +164,9 @@
       "title": "Cómo arreglé mi relación con la comida",
       "text": "Los consejos de expertos me ayudaron a darme cuenta de que la restricción no es la solución. Aprender sobre macros y balance fue un cambio radical por mi salud mental y física.",
       "category": "Consejos de Expertos",
-      "likes": 0,
-      "comments": 45,
-      "likedBy": []
+      "likes": 211,
+      "likedBy": [],
+      "comments": 45
     },
     {
       "id": "4dca",
@@ -175,9 +179,24 @@
       "text": "Aumento de masa muscular en otro nivel 🗣️",
       "category": "Ganancia de Músculo",
       "image": null,
-      "likes": 0,
-      "comments": 0,
-      "likedBy": []
+      "likes": 2,
+      "likedBy": [],
+      "comments": 0
+    },
+    {
+      "id": "9d31",
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://i.pravatar.cc/150?u=c695",
+      "time": "Justo ahora",
+      "tag": "Pérdida de Peso",
+      "title": "fdsfsfsfs",
+      "text": "sdfssdf",
+      "category": "Pérdida de Peso",
+      "image": null,
+      "likes": 5,
+      "likedBy": [],
+      "comments": 1
     }
   ],
   "trendingTopics": [
@@ -233,8 +252,9 @@
       "nivel": "AVANZADO",
       "musculo": "PECHO",
       "tiempo": "45 SEG",
-      "imagen": "/exercises/bench-press.png",
-      "categoria": "Pecho"
+      "imagen": "https://plus.unsplash.com/premium_photo-1682094035772-a5ccdb07d9b0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "categoria": "Pecho",
+      "videoUrl": "https://www.youtube.com/embed/vthMCtgVtFw"
     },
     {
       "id": "e2",
@@ -301,11 +321,11 @@
     },
     {
       "id": "e9",
-      "nombre": "Flexiones de Brazos",
+      "nombre": "Push Ups",
       "nivel": "PRINCIPIANTE",
       "musculo": "PECHO",
       "tiempo": "60 SEG",
-      "imagen": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=80",
+      "imagen": "https://images.unsplash.com/photo-1598971457999-ca4ef48a9a71?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "categoria": "Pecho"
     },
     {
@@ -359,7 +379,7 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "CORE",
       "tiempo": "60 SEG",
-      "imagen": "/exercises/plancha.jpg",
+      "imagen": "https://plus.unsplash.com/premium_photo-1672352100050-65cb2ee4d818?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "categoria": "Core"
     },
     {
@@ -404,7 +424,7 @@
       "nivel": "AVANZADO",
       "musculo": "FULL BODY",
       "tiempo": "60 SEG",
-      "imagen": "https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=800&q=80",
+      "imagen": "https://static.nike.com/a/images/f_auto,cs_srgb/w_1536,c_limit/4399d325-3fd7-41f8-ac24-219ee6751668/%C2%BFqu%C3%A9-es-un-burpee-los-entrenadores-personales-lo-explican.jpg",
       "categoria": "Core"
     },
     {
@@ -431,7 +451,7 @@
       "nivel": "INTERMEDIO",
       "musculo": "ESPALDA",
       "tiempo": "45 SEG",
-      "imagen": "https://images.unsplash.com/photo-1590487988256-9ed24133863e?w=800&q=80",
+      "imagen": "https://plus.unsplash.com/premium_photo-1664299683145-d5ae24790f8e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "categoria": "Espalda"
     },
     {
