@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import {
   LayoutDashboard,
   Dumbbell,
@@ -19,23 +19,34 @@ import {
   Activity,
   Upload,
   User as UserIcon,
-  Menu
+  Menu,
+  TrendingUp,
+  ClipboardList
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { obtenerTodosEjercicios } from '../Services/exerciseService';
 import { updateUser } from '../Services/userService';
+import { obtenerTodosEjercicios } from '../Services/exerciseService';
+import { updateUser } from '../Services/userService';
+import { UserContext } from '../context/UserContext';
 import Swal from 'sweetalert2';
 import SubirImagen from './SubirImagen';
 import '../styles/DashboardCliente.css';
 
 const DashCliente = () => {
-  const [user, setUser] = useState(null);
+  const { user, refreshUser, logout } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [progressForm, setProgressForm] = useState({
+    pesoPerdido: '',
+    feedbackDieta: '',
+    feedbackEjercicio: '',
+    semanasEnProgreso: user?.semanasEnProgreso || 1
+  });
 
   const handleActiveTab = (tab) => {
     setActiveTab(tab);
@@ -43,14 +54,15 @@ const DashCliente = () => {
   };
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      setEditForm(parsedUser);
+    if (user) {
+      setEditForm(user);
+      setProgressForm(prev => ({
+        ...prev,
+        semanasEnProgreso: user.semanasEnProgreso || 1
+      }));
       loadExercises();
     }
-  }, []);
+  }, [user]);
 
   const loadExercises = async () => {
     try {
@@ -64,7 +76,7 @@ const DashCliente = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
+    logout();
     window.location.href = '/login';
   };
 
@@ -92,8 +104,7 @@ const DashCliente = () => {
 
     try {
       const updated = await updateUser(user.id, editForm);
-      setUser(updated);
-      localStorage.setItem('user', JSON.stringify(updated));
+      refreshUser(updated);
       setIsEditing(false);
       Swal.fire({
         icon: 'success',
@@ -121,8 +132,7 @@ const DashCliente = () => {
     try {
       const updated = await updateUser(user.id, { ...user, avatar: imageUrl });
 
-      setUser(updated);
-      localStorage.setItem('user', JSON.stringify(updated));
+      refreshUser(updated);
 
       Swal.fire({
         icon: 'success',
@@ -139,6 +149,51 @@ const DashCliente = () => {
         icon: 'error',
         title: 'Error',
         text: 'No se pudo guardar la foto.',
+        background: '#171212',
+        color: '#fff',
+        confirmButtonColor: '#8b0000'
+      });
+    }
+  };
+
+  const handleProgressSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const nuevoPesoActual = parseFloat(user.pesoActual) - (parseFloat(progressForm.pesoPerdido) || 0);
+      const nuevasSemanas = parseInt(progressForm.semanasEnProgreso);
+
+      const updateData = {
+        ...user,
+        pesoActual: nuevoPesoActual.toString(),
+        semanasEnProgreso: nuevasSemanas,
+        ultimoFeedbackDieta: progressForm.feedbackDieta,
+        ultimoFeedbackEjercicio: progressForm.feedbackEjercicio
+      };
+
+      const updated = await updateUser(user.id, updateData);
+      refreshUser(updated);
+
+      setProgressForm(prev => ({
+        ...prev,
+        pesoPerdido: '',
+        feedbackDieta: '',
+        feedbackEjercicio: ''
+      }));
+
+      Swal.fire({
+        icon: 'success',
+        title: '¡Progreso Guardado!',
+        text: `Has perdido ${progressForm.pesoPerdido}kg y vas por la semana ${nuevasSemanas}. ¡Sigue así!`,
+        background: '#171212',
+        color: '#fff',
+        confirmButtonColor: '#8b0000'
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo guardar tu progreso.',
         background: '#171212',
         color: '#fff',
         confirmButtonColor: '#8b0000'
@@ -187,7 +242,7 @@ const DashCliente = () => {
             onClick={() => handleActiveTab('nutrition')}
           >
             <Utensils size={20} />
-            Nutrición
+            Recomendaciones Nutricionales
           </button>
           <button
             className={`menu-item ${activeTab === 'settings' ? 'active' : ''}`}
@@ -232,7 +287,7 @@ const DashCliente = () => {
             <div className="header-title">
               <h1>{activeTab === 'dashboard' ? 'Panel de Rendimiento' :
                 activeTab === 'training' ? 'Biblioteca de Entrenamiento' :
-                  activeTab === 'nutrition' ? 'Plan Nutricional' : 'Ajustes de Cuenta'}</h1>
+                  activeTab === 'nutrition' ? 'Recomendaciones Nutricionales' : 'Ajustes de Cuenta'}</h1>
               <p>¡Hola {user.nombre}! Estas {activeTab === 'dashboard' ? 'son tus estadísticas del día.' : 'es tu sección personalizada.'}</p>
             </div>
           </div>
@@ -286,11 +341,11 @@ const DashCliente = () => {
               </div>
               <div className="stat-card">
                 <div className="stat-header">
-                  <span>Semanas Restantes</span>
+                  <span>Semana de Progreso</span>
                   <Calendar size={18} />
                 </div>
-                <div className="stat-value">{user.plazoSemanas}</div>
-                <div className="stat-change">Plazo original</div>
+                <div className="stat-value">{user.semanasEnProgreso || 1}</div>
+                <div className="stat-change">De {user.plazoSemanas} semanas</div>
               </div>
               <div className="stat-card">
                 <div className="stat-header">
@@ -302,6 +357,58 @@ const DashCliente = () => {
                   <div className="progress-fill" style={{ width: '100%' }}></div>
                 </div>
               </div>
+            </section>
+
+            {/* Formulario de Progreso */}
+            <section className="progress-form-card animate-fade-in shadow-premium">
+              <div className="section-header">
+                <h2><TrendingUp size={24} color="#ff4d4d" /> Cómo va tu progreso?</h2>
+                <p>Ingresa tus avances para ajustar tu plan nutricional y de entrenamiento.</p>
+              </div>
+              <form onSubmit={handleProgressSubmit}>
+                <div className="progress-grid">
+                  <div className="progress-field">
+                    <label>Peso que has perdido (kg)</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      placeholder="Ej: 0.5"
+                      required
+                      value={progressForm.pesoPerdido}
+                      onChange={e => setProgressForm({ ...progressForm, pesoPerdido: e.target.value })}
+                    />
+                  </div>
+                  <div className="progress-field">
+                    <label>Semana actual de progreso</label>
+                    <input
+                      type="number"
+                      required
+                      value={progressForm.semanasEnProgreso}
+                      onChange={e => setProgressForm({ ...progressForm, semanasEnProgreso: e.target.value })}
+                    />
+                  </div>
+                  <div className="progress-field full-width">
+                    <label>¿Cómo te ha ido con las recomendaciones de dieta?</label>
+                    <textarea
+                      placeholder="agrega tu respuesta"
+                      required
+                      value={progressForm.feedbackDieta}
+                      onChange={e => setProgressForm({ ...progressForm, feedbackDieta: e.target.value })}
+                    ></textarea>
+                  </div>
+                  <div className="progress-field full-width">
+                    <label>¿Cómo te ha ido con los ejercicios?</label>
+                    <textarea
+                      placeholder="agrega tu respuesta"
+                      value={progressForm.feedbackEjercicio}
+                      onChange={e => setProgressForm({ ...progressForm, feedbackEjercicio: e.target.value })}
+                    ></textarea>
+                  </div>
+                </div>
+                <button type="submit" className="btn-progress-save">
+                  <ClipboardList size={20} /> Actualizar Mi Progreso
+                </button>
+              </form>
             </section>
 
             {/* Mid Section */}

@@ -14,26 +14,7 @@ const DashboardAdministrador = ({ changeTab, openAddModal }) => {
         totalExercises: 0
     });
 
-    const fetchStats = async () => {
-        try {
-            const users = await getAllUsers();
-            const routines = await getAllRoutines();
-            const exercises = await getAllExercises();
 
-            const pending = routines.filter(r => r.status === 'pending').length;
-            const approved = routines.filter(r => r.status === 'approved').length;
-
-            setStats({
-                totalUsers: users.length,
-                totalRoutines: routines.length,
-                pendingRoutines: pending,
-                approvedRoutines: approved,
-                totalExercises: exercises.length
-            });
-        } catch (error) {
-            console.error("Error fetching stats:", error);
-        }
-    };
 
     useEffect(() => {
         const fetchStats = async () => {

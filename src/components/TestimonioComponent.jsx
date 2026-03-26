@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { UserContext } from '../context/UserContext';
 import { Search, Plus, MessageSquare, ThumbsUp, Share2, Award, TrendingUp, Dumbbell, MoreHorizontal, X, Upload, Trash2, AlertTriangle, Send, User } from 'lucide-react';
-import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount } from '../Services/testimonioService';
-import { getAllUsers, updateUser } from '../Services/userService';
+import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount } from '../services/testimonioService';
+import { getAllUsers, updateUser } from '../services/userService';
 import { Link } from 'react-router-dom';
 import SubirImagen from './SubirImagen';
 import '../styles/SuccessStories.css';
@@ -15,26 +16,27 @@ const getTimeAgo = (dateString) => {
 
     let interval = seconds / 31536000;
     if (interval >= 1) return `hace ${Math.floor(interval)} año${Math.floor(interval) !== 1 ? 's' : ''}`;
-    
+
     interval = seconds / 2592000;
     if (interval >= 1) return `hace ${Math.floor(interval)} mes${Math.floor(interval) !== 1 ? 'es' : ''}`;
-    
+
     interval = Math.floor(seconds / 604800);
     if (interval >= 1) return interval === 1 ? 'hace 1 semana' : `hace ${interval} semanas`;
 
     interval = Math.floor(seconds / 86400);
     if (interval >= 1) return interval === 1 ? 'hace 1 día' : `hace ${interval} días`;
-    
+
     interval = Math.floor(seconds / 3600);
     if (interval >= 1) return interval === 1 ? 'hace 1 hora' : `hace ${interval} horas`;
-    
+
     interval = Math.floor(seconds / 60);
     if (interval >= 1) return interval === 1 ? 'hace 1 minuto' : `hace ${interval} minutos`;
-    
+
     return 'hace menos de un minuto';
 };
 
 const TestimonioComponent = () => {
+    const { user: currentUser, refreshUser } = useContext(UserContext);
     const [stories, setStories] = useState([]);
     const [topContributors, setTopContributors] = useState([]);
     const [trendingTopics, setTrendingTopics] = useState([]);
@@ -51,13 +53,17 @@ const TestimonioComponent = () => {
     const [userSearchResults, setUserSearchResults] = useState([]);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
 
+    // Helper to get up-to-date user avatar
+    const getUserAvatar = (userId, fallbackAvatar) => {
+        const user = allUsers.find(u => String(u.id) === String(userId));
+        return user?.avatar || fallbackAvatar || `https://i.pravatar.cc/150?u=${userId}`;
+    };
+
     // Comments state
     const [showComments, setShowComments] = useState({});
     const [commentsData, setCommentsData] = useState({});
     const [newCommentText, setNewCommentText] = useState({});
     const [loadingComments, setLoadingComments] = useState({});
-    // Current logged-in user
-    const [currentUser, setCurrentUser] = useState(null);
     const [avatarUploading, setAvatarUploading] = useState(false);
 
     // Modal state
@@ -77,21 +83,15 @@ const TestimonioComponent = () => {
     const [isLoginAlertOpen, setIsLoginAlertOpen] = useState(false);
 
     const handleOpenModal = () => {
-        const storedUser = localStorage.getItem('user');
-        if (!storedUser) {
+        if (!currentUser) {
             setIsLoginAlertOpen(true);
             return;
         }
         setIsModalOpen(true);
     };
 
-    // Load current user and set up interval for time updates
+    // Load up-to-date user and set up interval for time updates
     useEffect(() => {
-        const stored = localStorage.getItem('user');
-        if (stored) {
-            try { setCurrentUser(JSON.parse(stored)); } catch { setCurrentUser(null); }
-        }
-
         const interval = setInterval(() => {
             setTick(t => t + 1);
         }, 60000);
@@ -104,13 +104,9 @@ const TestimonioComponent = () => {
         if (!currentUser) return;
         setAvatarUploading(true);
 
-        // Preview inmediato
-        setCurrentUser(prev => ({ ...prev, avatar: imageUrl }));
-
         try {
             const updated = await updateUser(currentUser.id, { ...currentUser, avatar: imageUrl });
-            setCurrentUser(updated);
-            localStorage.setItem('user', JSON.stringify(updated));
+            refreshUser(updated);
         } catch (err) {
             console.error('Error saving avatar:', err);
         } finally {
@@ -135,18 +131,15 @@ const TestimonioComponent = () => {
             return;
         }
 
-        const storedUserJSON = localStorage.getItem('user');
-        if (!storedUserJSON) {
+        if (!currentUser) {
             alert('Sesión expirada. Por favor, inicia sesión nuevamente.');
             return;
         }
 
-        const user = JSON.parse(storedUserJSON);
-
         const storyPayload = {
-            userId: user.id || `u_${Date.now()}`,
-            userName: user.nombre || "Usuario",
-            userAvatar: user.avatar || `https://i.pravatar.cc/150?u=${user.id || Math.random()}`,
+            userId: currentUser.id || `u_${Date.now()}`,
+            userName: currentUser.nombre || "Usuario",
+            userAvatar: currentUser.avatar || `https://i.pravatar.cc/150?u=${currentUser.id || Math.random()}`,
             time: "Justo ahora",
             fecha: new Date().toISOString(),
             tag: newStory.category,
@@ -254,11 +247,10 @@ const TestimonioComponent = () => {
             setTopContributors(dynamicContributors);
 
             // Inicializar estados de likes locales desde la DB
-            const storedUser = JSON.parse(localStorage.getItem('user'));
-            if (storedUser) {
+            if (currentUser) {
                 const initialLikes = {};
                 storiesData.forEach(story => {
-                    if (story.likedBy && story.likedBy.some(id => String(id) === String(storedUser.id))) {
+                    if (story.likedBy && story.likedBy.some(id => String(id) === String(currentUser.id))) {
                         initialLikes[story.id] = true;
                     }
                 });
@@ -277,21 +269,19 @@ const TestimonioComponent = () => {
         const story = stories.find(s => s.id === id);
         if (!story) return;
 
-        const storedUserJSON = localStorage.getItem('user');
-        if (!storedUserJSON) {
+        if (!currentUser) {
             alert('Debes iniciar sesión para reaccionar a una historia.');
             return;
         }
 
-        const user = JSON.parse(storedUserJSON);
         const isCurrentlyLiked = !!localLikes[id];
 
         let newLikedBy = story.likedBy || [];
         if (isCurrentlyLiked) {
-            newLikedBy = newLikedBy.filter(userId => String(userId) !== String(user.id));
+            newLikedBy = newLikedBy.filter(userId => String(userId) !== String(currentUser.id));
         } else {
-            if (!newLikedBy.some(id => String(id) === String(user.id))) {
-                newLikedBy = [...newLikedBy, user.id];
+            if (!newLikedBy.some(id => String(id) === String(currentUser.id))) {
+                newLikedBy = [...newLikedBy, currentUser.id];
             }
         }
 
@@ -372,20 +362,18 @@ const TestimonioComponent = () => {
             return;
         }
 
-        const storedUserJSON = localStorage.getItem('user');
-        if (!storedUserJSON) {
+        if (!currentUser) {
             setIsLoginAlertOpen(true);
             return;
         }
 
-        const user = JSON.parse(storedUserJSON);
         const story = stories.find(s => s.id === storyId);
 
         const commentPayload = {
             storyId,
-            userId: user.id,
-            userName: user.nombre || "Usuario",
-            userAvatar: user.avatar || `https://i.pravatar.cc/150?u=${user.id}`,
+            userId: currentUser.id,
+            userName: currentUser.nombre || "Usuario",
+            userAvatar: currentUser.avatar || `https://i.pravatar.cc/150?u=${currentUser.id}`,
             text: text.trim(),
             fecha: new Date().toISOString()
         };
@@ -393,7 +381,6 @@ const TestimonioComponent = () => {
         try {
             const createdComment = await addComment(commentPayload);
             const newCount = (story.comments || 0) + 1;
-
             await updateStoryCommentsCount(storyId, newCount);
 
             // Actualizar estado local
@@ -498,7 +485,7 @@ const TestimonioComponent = () => {
                                 >
                                     <div className="story-header">
                                         <div className="user-info">
-                                            <img src={story.userAvatar} alt={story.userName} className="user-avatar" />
+                                            <img src={getUserAvatar(story.userId, story.userAvatar)} alt={story.userName} className="user-avatar" />
                                             <div className="user-details">
                                                 <h4>{story.userName}</h4>
                                                 <div className="story-meta">
@@ -507,7 +494,7 @@ const TestimonioComponent = () => {
                                             </div>
                                         </div>
                                         <div className="story-header-actions">
-                                            {localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).id === story.userId && (
+                                            {currentUser && currentUser.id === story.userId && (
                                                 <button
                                                     className="btn-delete"
                                                     onClick={() => handleDeleteStory(story.id)}
@@ -577,7 +564,7 @@ const TestimonioComponent = () => {
                                                 ) : commentsData[story.id]?.length > 0 ? (
                                                     commentsData[story.id].map(comment => (
                                                         <div key={comment.id} className="comment-item">
-                                                            <img src={comment.userAvatar} alt={comment.userName} className="comment-avatar" />
+                                                            <img src={getUserAvatar(comment.userId, comment.userAvatar)} alt={comment.userName} className="comment-avatar" />
                                                             <div className="comment-content">
                                                                 <div className="comment-header">
                                                                     <span className="comment-user">{comment.userName}</span>

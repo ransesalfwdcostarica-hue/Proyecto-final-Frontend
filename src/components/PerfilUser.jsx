@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getUserById, updateUser } from '../Services/userService';
-import { getStoriesByUserId } from '../Services/testimonioService';
+import { UserContext } from '../context/UserContext';
+import { getUserById, updateUser } from '../services/userService';
+import { getStoriesByUserId } from '../services/testimonioService';
 import { ThumbsUp, MessageSquare, Award, ArrowLeft, Grid, Edit2, Save, X, Upload } from 'lucide-react';
 import SubirImagen from './SubirImagen';
 import '../styles/SuccessStories.css';
 
 const PerfilUser = () => {
     const { id } = useParams();
+    const { user: currentUser, refreshUser } = useContext(UserContext);
     const [user, setUser] = useState(null);
     const [stories, setStories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -43,7 +45,7 @@ const PerfilUser = () => {
             await updateUser(id, { bio: bioText });
             setUser(prev => ({ ...prev, bio: bioText }));
             setIsEditingBio(false);
-            
+
             if (isOwnProfile) {
                 const updatedSession = { ...loggedUser, bio: bioText };
                 localStorage.setItem('user', JSON.stringify(updatedSession));
@@ -57,10 +59,14 @@ const PerfilUser = () => {
     const handleAvatarUpload = async (imageUrl) => {
         setAvatarUploading(true);
         try {
-            await updateUser(id, { avatar: imageUrl });
+            const updatedUser = await updateUser(id, { avatar: imageUrl });
             setUser(prev => ({ ...prev, avatar: imageUrl }));
-            
-            if (isOwnProfile) {
+
+            // If I'm updating my own profile, refresh global context
+            if (currentUser && String(currentUser.id) === String(id)) {
+                refreshUser({ avatar: updatedUser.avatar });
+
+                // Also update localStorage for persistence
                 const updatedSession = { ...loggedUser, avatar: imageUrl };
                 localStorage.setItem('user', JSON.stringify(updatedSession));
                 window.dispatchEvent(new Event('userUpdated'));
@@ -160,21 +166,21 @@ const PerfilUser = () => {
                                 </p>
                                 {isEditingBio ? (
                                     <div style={{ marginTop: '0.5rem' }}>
-                                        <textarea 
+                                        <textarea
                                             value={bioText}
                                             onChange={(e) => setBioText(e.target.value)}
                                             style={{ width: '100%', minHeight: '80px', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '0.8rem', fontSize: '0.9rem', outline: 'none', resize: 'vertical' }}
                                         />
                                         <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', justifyContent: 'flex-end' }}>
-                                            <button onClick={() => setIsEditingBio(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.2rem' }}><X size={14}/> Cancelar</button>
-                                            <button onClick={handleSaveBio} style={{ background: 'var(--primary)', border: 'none', color: 'white', cursor: 'pointer', borderRadius: '4px', padding: '0.3rem 0.8rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}><Save size={14}/> Guardar</button>
+                                            <button onClick={() => setIsEditingBio(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.2rem' }}><X size={14} /> Cancelar</button>
+                                            <button onClick={handleSaveBio} style={{ background: 'var(--primary)', border: 'none', color: 'white', cursor: 'pointer', borderRadius: '4px', padding: '0.3rem 0.8rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}><Save size={14} /> Guardar</button>
                                         </div>
                                     </div>
                                 ) : (
                                     <div style={{ position: 'relative' }}>
                                         <p className="profile-bio-text">{user.bio || "Transformando mi vida un entrenamiento a la vez. 🏋️‍♂️✨"}</p>
                                         {isOwnProfile && (
-                                            <button 
+                                            <button
                                                 onClick={() => setIsEditingBio(true)}
                                                 style={{ position: 'absolute', top: '-25px', right: 0, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', transition: 'color 0.2s ease' }}
                                                 title="Editar biografía"

@@ -97,12 +97,10 @@
   color: white;
 }
 
-/* Delete Button Overlay */
-.delete-btn-overlay {
+/* Overlay Buttons */
+.delete-btn-overlay, .edit-btn-overlay {
   position: absolute;
   top: 15px;
-  left: 15px;
-  background: rgba(255, 77, 77, 0.9);
   color: white;
   border: none;
   width: 36px;
@@ -118,13 +116,29 @@
   transform: scale(0.8);
 }
 
-.exercise-card:hover .delete-btn-overlay {
+.delete-btn-overlay {
+  left: 15px;
+  background: rgba(255, 77, 77, 0.9);
+}
+
+.edit-btn-overlay {
+  left: 60px;
+  background: rgba(65, 105, 225, 0.9);
+}
+
+.exercise-card:hover .delete-btn-overlay,
+.exercise-card:hover .edit-btn-overlay {
   opacity: 1;
   transform: scale(1);
 }
 
 .delete-btn-overlay:hover {
   background: #ff0000;
+  transform: scale(1.1);
+}
+
+.edit-btn-overlay:hover {
+  background: #1e40af;
   transform: scale(1.1);
 }
 
@@ -338,6 +352,26 @@
   transition: all 0.3s ease;
   font-weight: 500;
   color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fav-heart-icon {
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0;
+  margin-right: 0;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.fav-category:hover .fav-heart-icon,
+.fav-category.active .fav-heart-icon {
+  width: 16px !important;
+  height: 16px !important;
+  opacity: 1;
+  margin-right: 6px;
 }
 
 .category-tag:hover {

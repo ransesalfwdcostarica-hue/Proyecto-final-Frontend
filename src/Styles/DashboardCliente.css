@@ -19,7 +19,8 @@
   background-color: var(--client-bg);
   color: var(--client-text);
   font-family: 'Outfit', sans-serif;
-  padding-top: 80px; /* Space for fixed Navbar */
+  padding-top: 80px;
+  /* Space for fixed Navbar */
 }
 
 /* Sidebar */
@@ -295,7 +296,9 @@
   font-weight: 500;
 }
 
-.stat-change.positive { color: #4ade80; }
+.stat-change.positive {
+  color: #4ade80;
+}
 
 .progress-bar-mini {
   height: 6px;
@@ -318,7 +321,8 @@
   gap: 1.5rem;
 }
 
-.chart-card, .summary-card {
+.chart-card,
+.summary-card {
   background: var(--client-card);
   padding: 2.25rem;
   border-radius: 28px;
@@ -356,10 +360,25 @@
   border-radius: 12px;
 }
 
-.dot { width: 10px; height: 10px; border-radius: 50%; }
-.dot.red { background: #8b0000; box-shadow: 0 0 10px rgba(139, 0, 0, 0.5); }
-.dot.orange { background: #f97316; box-shadow: 0 0 10px rgba(249, 115, 22, 0.5); }
-.dot.grey { background: #64748b; }
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dot.red {
+  background: #8b0000;
+  box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+}
+
+.dot.orange {
+  background: #f97316;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+}
+
+.dot.grey {
+  background: #64748b;
+}
 
 /* Training View */
 .exercises-mini-grid {
@@ -391,14 +410,18 @@
   padding: 1.25rem;
 }
 
-.mini-card-text h4 { margin: 0 0 0.75rem; font-size: 1rem; }
+.mini-card-text h4 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
 
 .mini-card-tags {
   display: flex;
   gap: 0.5rem;
 }
 
-.tag-lvl, .tag-time {
+.tag-lvl,
+.tag-time {
   font-size: 0.7rem;
   padding: 0.25rem 0.6rem;
   border-radius: 6px;
@@ -452,7 +475,12 @@
   border-radius: 12px;
 }
 
-.tip-dot { width: 8px; height: 8px; background: var(--client-accent-muted); border-radius: 50%; }
+.tip-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--client-accent-muted);
+  border-radius: 50%;
+}
 
 /* Settings View */
 .settings-card {
@@ -553,8 +581,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Avatar Edit Section */
@@ -616,31 +651,61 @@
 }
 
 @media (max-width: 1200px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .exercises-mini-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .exercises-mini-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 1024px) {
   .client-sidebar {
     transform: translateX(-100%);
-    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
-    padding-top: 3rem; /* Pushed down as requested */
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+    padding-top: 3rem;
+    /* Pushed down as requested */
   }
+
   .sidebar-logo {
-    margin-bottom: 3rem; /* Increased spacing to separate from items if needed */
+    margin-bottom: 3rem;
+    /* Increased spacing to separate from items if needed */
   }
+
   .client-sidebar.open {
     transform: translateX(0);
   }
-  .client-main { margin-left: 0; padding: 2rem; }
-  .dash-mobile-menu-toggle { display: block; }
-  .dash-mobile-menu-close { display: block; }
-  .dash-mobile-overlay { display: block; }
+
+  .client-main {
+    margin-left: 0;
+    padding: 2rem;
+  }
+
+  .dash-mobile-menu-toggle {
+    display: block;
+  }
+
+  .dash-mobile-menu-close {
+    display: block;
+  }
+
+  .dash-mobile-overlay {
+    display: block;
+  }
 }
 
 @media (max-width: 768px) {
-  .mid-section, .hero-cards, .form-settings-grid { grid-template-columns: 1fr; }
-  .header-actions { display: none; }
+
+  .mid-section,
+  .hero-cards,
+  .form-settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header-actions {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
@@ -648,5 +713,121 @@
     flex-direction: column;
     text-align: center;
     gap: 1rem;
+  }
+}
+
+/* Progress Form Section */
+.progress-form-card {
+  background: var(--client-card);
+  padding: 2.5rem;
+  border-radius: 32px;
+  border: 1px solid var(--client-border);
+  margin-bottom: 2.5rem;
+  transition: all 0.3s ease;
+}
+
+.progress-form-card:hover {
+  border-color: rgba(255, 77, 77, 0.2);
+}
+
+.progress-form-card h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-form-card p {
+  color: var(--client-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.progress-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.progress-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.progress-field.full-width {
+  grid-column: span 2;
+}
+
+.progress-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--client-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.progress-field input,
+.progress-field textarea {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--client-border);
+  border-radius: 12px;
+  padding: 1rem;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.progress-field input:focus,
+.progress-field textarea:focus {
+  border-color: var(--client-accent-muted);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 15px rgba(139, 0, 0, 0.1);
+}
+
+.progress-field textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.btn-progress-save {
+  margin-top: 2rem;
+  padding: 1.1rem 2rem;
+  background: linear-gradient(135deg, #8b0000 0%, #450a0a 100%);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.2s;
+  width: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-progress-save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 0, 0, 0.3);
+  filter: brightness(1.1);
+}
+
+.shadow-premium {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .progress-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-field.full-width {
+    grid-column: span 1;
   }
 }
