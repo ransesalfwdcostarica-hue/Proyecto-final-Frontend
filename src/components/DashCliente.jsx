@@ -22,8 +22,8 @@ import {
   Menu
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { obtenerTodosEjercicios } from '../services/exerciseService';
-import { updateUser } from '../services/userService';
+import { obtenerTodosEjercicios } from '../Services/exerciseService';
+import { updateUser } from '../Services/userService';
 import Swal from 'sweetalert2';
 import SubirImagen from './SubirImagen';
 import '../styles/DashboardCliente.css';

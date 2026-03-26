@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   PlusSquare, Settings, User, LayoutDashboard, MessageSquare,
@@ -8,20 +8,15 @@ import {
 import '../styles/Chatbot.css';
 
 const ChatComponent = () => {
-  const [inputText, setInputText] = useState('');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
   return (
     <div className="chatbot-wrapper">
       {/* Mobile Sidebar Overlay */}
-      {isSidebarOpen && (
-        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>
-      )}
+      <div className="sidebar-overlay" style={{ display: 'none' }}></div>
 
       {/* Header */}
       <header className="chatbot-header">
         <div className="header-left-mobile">
-          <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
+          <button className="mobile-menu-btn">
             <Menu size={24} />
           </button>
           <Link to="/" className="chatbot-logo-area">
@@ -43,10 +38,10 @@ const ChatComponent = () => {
       <div className="chatbot-body">
 
         {/* Left Sidebar */}
-        <aside className={`chatbot-sidebar-left ${isSidebarOpen ? 'mobile-open' : ''}`}>
+        <aside className="chatbot-sidebar-left">
           <div className="mobile-sidebar-header">
             <span>Historial de Chats</span>
-            <button className="close-sidebar-btn" onClick={() => setIsSidebarOpen(false)}>
+            <button className="close-sidebar-btn">
               <X size={24} />
             </button>
           </div>
@@ -63,7 +58,9 @@ const ChatComponent = () => {
             <div className="nav-item active">
               <MessageSquare size={18} /> Análisis de Estadísticas
             </div>
-            <div className="nav-item">
+            <div className="}
+            }
+            av-item">
               <MessageSquare size={18} /> Recuperación de Rodilla
             </div>
           </div>
@@ -119,7 +116,6 @@ const ChatComponent = () => {
                   <span className="msg-time">09:42 AM</span>
                   <span className="msg-name">Tú</span>
                 </div>
-
               </div>
             </div>
 
@@ -166,15 +162,8 @@ const ChatComponent = () => {
                 type="text"
                 className="chat-input"
                 placeholder="Pregúntale a VitalBot lo que sea..."
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    setInputText('');
-                  }
-                }}
               />
-              <button className="send-btn" onClick={() => setInputText('')}>
+              <button className="send-btn">
                 <Send size={18} />
               </button>
             </div>
@@ -183,52 +172,10 @@ const ChatComponent = () => {
             </div>
           </div>
         </main>
-
-        {/* Right Sidebar */}
-        <aside className="chatbot-sidebar-right">
-          <div className="right-section-title">
-            <BarChart2 size={20} color="#ca4a4a" /> Salud en Tiempo Real
-          </div>
-
-          <div className="score-card">
-            <div className="score-header">
-              <span>Puntuación de Actividad</span>
-              <span className="score-value">84/100</span>
-            </div>
-            <div className="score-bar-bg">
-              <div className="score-bar-fill"></div>
-            </div>
-          </div>
-
-          <div className="sidebar-title" style={{ marginLeft: 0, marginBottom: '16px' }}>ESTADÍSTICAS DE HOY</div>
-          <div className="stats-grid">
-            <div className="stat-box">
-              <Flame size={20} className="stat-icon" />
-              <div className="stat-label">Calorías</div>
-              <div className="stat-value">1,420</div>
-            </div>
-            <div className="stat-box">
-              <Footprints size={20} className="stat-icon" />
-              <div className="stat-label">Pasos</div>
-              <div className="stat-value">8,432</div>
-            </div>
-            <div className="stat-box">
-              <Heart size={20} className="stat-icon" />
-              <div className="stat-label">Ritmo Card.</div>
-              <div className="stat-value">72 bpm</div>
-            </div>
-            <div className="stat-box">
-              <Moon size={20} className="stat-icon" />
-              <div className="stat-label">Sueño</div>
-              <div className="stat-value">7h 20m</div>
-            </div>
-          </div>
-
-        </aside>
-
       </div>
     </div>
   );
 };
 
 export default ChatComponent;
+

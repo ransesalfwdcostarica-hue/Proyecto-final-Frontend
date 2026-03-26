@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAllRoutines, updateRoutineStatus, deleteRoutine } from '../services/routineService';
+import { getAllRoutines, updateRoutineStatus, deleteRoutine } from '../Services/routineService';
 import { Check, X, Trash2 } from 'lucide-react';
 
 const AdminRoutines = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAllContactMessages, deleteContactMessage } from '../services/userService';
+import { getAllContactMessages, deleteContactMessage } from '../Services/userService';
 import { Trash2, Mail, Calendar, User, Phone, MapPin } from 'lucide-react';
 
 const AdminMessages = () => {
