@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { obtenerTodosEjercicios } from '../Services/exerciseService';
-import { updateUser } from '../services/userService';
+import { updateUser } from '../Services/userService';
 import { UserContext } from '../context/UserContext';
 import Swal from 'sweetalert2';
 import SubirImagen from './SubirImagen';
