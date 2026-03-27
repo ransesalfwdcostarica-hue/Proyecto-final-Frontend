@@ -831,3 +831,134 @@
     grid-column: span 1;
   }
 }
+
+/* Grouped Exercises Training View */
+.muscle-group-section {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.muscle-group-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  border-left: 4px solid var(--client-accent);
+  padding-left: 1rem;
+}
+
+.no-exercises {
+  text-align: center;
+  padding: 5rem 2rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--client-border);
+  border-radius: 24px;
+  margin-top: 2rem;
+}
+
+.no-exercises h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.no-exercises p {
+  color: var(--client-text-muted);
+  margin-bottom: 2rem;
+}
+
+.btn-primary-small {
+  background: var(--client-accent-muted);
+  color: white;
+  padding: 0.8rem 1.8rem;
+  border-radius: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-primary-small:hover {
+  background: var(--client-accent);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
+}
+
+.mini-card-play:hover {
+  background: var(--client-accent);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
+}
+
+.btn-mini-technique:hover {
+  background: var(--client-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
+}
+
+.btn-mini-technique {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  width: fit-content;
+}
+
+.mini-card-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+
+
+.section-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.btn-add-training-global {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--client-accent);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+}
+
+.btn-add-training-global:hover {
+  background: var(--accent-red);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 77, 77, 0.4);
+}
+
+.btn-add-training-global svg {
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  padding: 3px;
+}
+

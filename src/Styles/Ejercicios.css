@@ -520,3 +520,57 @@
 .animate-spin {
     animation: spin 2s linear infinite;
 }
+
+/* Card Actions & Choose Button */
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.card-actions .btn-technique {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  color: var(--text-dim);
+  border-radius: 10px;
+  padding: 8px 12px;
+  flex: 0.8;
+}
+
+.btn-add-to-training {
+  flex: 1.2;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--accent-maroon);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
+}
+
+.btn-add-to-training:hover {
+  background: var(--accent-red);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 77, 77, 0.3);
+}
+
+.btn-add-to-training.active {
+  background: #10b981; /* Success Green */
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.btn-add-to-training.active:hover {
+  background: #059669;
+}
+
+

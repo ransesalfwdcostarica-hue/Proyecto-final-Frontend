@@ -150,27 +150,6 @@ const ChatComponent = () => {
       {/* Mobile Sidebar Overlay */}
       <div className="sidebar-overlay" style={{ display: 'none' }}></div>
 
-      {/* Header */}
-      <header className="chatbot-header">
-        <div className="header-left-mobile">
-          <button className="mobile-menu-btn">
-            <Menu size={24} />
-          </button>
-          <Link to="/" className="chatbot-logo-area">
-            <PlusSquare size={20} />
-            <span className="logo-text">Power <span style={{ color: '#ca4a4a' }}>Fit Asistente</span></span>
-          </Link>
-        </div>
-
-        <div className="header-right">
-          <div className="system-status">
-            <div className="status-dot"></div>
-            SISTEMA ACTIVO
-          </div>
-          <button className="header-icon-btn"><Settings size={20} /></button>
-        </div>
-      </header>
-
       {/* Main Layout Area */}
       <div className="chatbot-body">
 

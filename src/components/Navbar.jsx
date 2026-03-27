@@ -10,7 +10,7 @@ const Navbar = () => {
     const { user, logout } = useContext(UserContext);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const isDashboard = location.pathname.includes('/dashboard') || location.pathname.includes('/admin');
+    const isDashboard = location.pathname.includes('/dashboard') || location.pathname.includes('/admin') || location.pathname.includes('/chatbot');
 
     const handleLogout = () => {
         logout();

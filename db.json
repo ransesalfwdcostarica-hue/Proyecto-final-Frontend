@@ -39,7 +39,14 @@
       "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774365274/admk4azg1ovszeyfysoe.jpg",
       "semanasEnProgreso": 1,
       "ultimoFeedbackDieta": "muy bien ",
-      "ultimoFeedbackEjercicio": "no mucho"
+      "ultimoFeedbackEjercicio": "no mucho",
+      "ejerciciosElegidos": [
+        "e1",
+        "e2",
+        "e3",
+        "e8",
+        "e9"
+      ]
     },
     {
       "id": "eb3d",
