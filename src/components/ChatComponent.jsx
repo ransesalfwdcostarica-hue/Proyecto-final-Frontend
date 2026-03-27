@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { sendMessage } from '../Services/Chatbot';
 import {
   PlusSquare, Settings, User, LayoutDashboard, MessageSquare,
   Dumbbell, Apple, Clock, CheckCircle, Activity, Utensils,
@@ -8,6 +9,62 @@ import {
 import '../styles/Chatbot.css';
 
 const ChatComponent = () => {
+  const [inputText, setInputText] = useState('');
+  const [messages, setMessages] = useState([
+    {
+      role: 'bot',
+      content: '¡Hola! Soy tu asistente de salud impulsado por IA. He revisado tus datos de actividad recientes. Has completado 3 entrenamientos esta semana y la calidad de tu sueño ha mejorado en un 12%.\n\n¿Cómo puedo apoyar tus metas de fitness hoy?',
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }
+  ]);
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSendMessage = async (text = inputText) => {
+    if (!text.trim()) return;
+    
+    const newUserMessage = {
+      role: 'user',
+      content: text,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    
+    setMessages((prev) => [...prev, newUserMessage]);
+    setInputText('');
+    setIsTyping(true);
+
+    try {
+      const reply = await sendMessage(newUserMessage.content);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'bot',
+          content: reply,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'bot',
+          content: 'Lo siento, hubo un error al procesar tu solicitud.',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
   return (
     <div className="chatbot-wrapper">
       {/* Mobile Sidebar Overlay */}
@@ -87,71 +144,53 @@ const ChatComponent = () => {
         {/* Chat Area */}
         <main className="chatbot-main">
           <div className="chat-messages">
-            {/* Bot Message 1 */}
-            <div className="msg-row">
-              <div className="msg-avatar">
-                <PlusSquare size={20} color="white" />
-              </div>
-              <div className="msg-content">
-                <div className="msg-header">
-                  <span className="msg-name">VitalBot</span>
-                  <span className="msg-time">09:41 AM</span>
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`msg-row ${msg.role === 'user' ? 'user-row' : ''}`}>
+                <div className={`msg-avatar ${msg.role === 'user' ? 'user-avatar-sm' : ''}`}>
+                  {msg.role === 'user' ? <User size={20} /> : <PlusSquare size={20} color="white" />}
                 </div>
-                <div className="msg-bubble bot-bubble">
-                  <p>¡Hola! Soy tu asistente de salud impulsado por IA. He revisado tus datos de actividad recientes. Has completado 3 entrenamientos esta semana y la calidad de tu sueño ha mejorado en un 12%.</p>
-                  <p style={{ marginTop: '16px' }}>¿Cómo puedo apoyar tus metas de fitness hoy?</p>
-                </div>
-              </div>
-            </div>
-
-            {/* User Message */}
-            <div className="msg-row user-row">
-              <div className="msg-avatar user-avatar-sm">
-                <User size={20} />
-              </div>
-              <div className="msg-content">
-                <div className="msg-header user-header">
-                  <span className="msg-time">09:42 AM</span>
-                  <span className="msg-name">Tú</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Bot Message 2 */}
-            <div className="msg-row">
-              <div className="msg-avatar">
-                <PlusSquare size={20} color="white" />
-              </div>
-              <div className="msg-content">
-                <div className="msg-header">
-                  <span className="msg-name">VitalBot</span>
-                  <span className="msg-time">09:42 AM</span>
-                </div>
-                <div className="msg-bubble bot-bubble">
-                  <p>El dolor en la parte baja de la espalda es común, pero debemos priorizar la recuperación para evitar lesiones. Te recomiendo ajustar tu sesión de hoy.</p>
-                  <p style={{ marginTop: '16px', fontWeight: 'bold' }}>Basado en tu condición prexistente, te sugiero:</p>
-
-                  <div className="suggestion-list">
-                    <div className="suggestion-item">
-                      <CheckCircle size={20} className="suggestion-icon" />
-                      30 minutos de Cardio Constante de Baja Intensidad (LISS)
+                <div className="msg-content">
+                  <div className={`msg-header ${msg.role === 'user' ? 'user-header' : ''}`}>
+                    {msg.role === 'bot' && <span className="msg-name">VitalBot</span>}
+                    <span className="msg-time">{msg.time}</span>
+                    {msg.role === 'user' && <span className="msg-name">Tú</span>}
+                  </div>
+                  {msg.role === 'bot' ? (
+                    <div className="msg-bubble bot-bubble">
+                      <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p>
                     </div>
-                    <div className="suggestion-item">
-                      <CheckCircle size={20} className="suggestion-icon" />
-                      Rutina de movilidad enfocada en los flexores de la cadera y el cuadrado lumbar
+                  ) : (
+                    <div className="msg-bubble user-bubble">
+                      <p>{msg.content}</p>
                     </div>
+                  )}
+                </div>
+              </div>
+            ))}
+            {isTyping && (
+              <div className="msg-row">
+                <div className="msg-avatar">
+                  <PlusSquare size={20} color="white" />
+                </div>
+                <div className="msg-content">
+                  <div className="msg-header">
+                    <span className="msg-name">VitalBot</span>
+                  </div>
+                  <div className="msg-bubble bot-bubble">
+                    <p>Escribiendo...</p>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
 
           <div className="chat-input-container">
             <div className="action-chips">
-              <div className="action-chip"><Dumbbell size={16} /> Sugerir un entrenamiento</div>
-              <div className="action-chip"><Utensils size={16} /> Calcular mis macros</div>
-              <div className="action-chip"><Activity size={16} /> Sesión de movilidad</div>
-              <div className="action-chip"><BarChart2 size={16} /> Analizar mis estadísticas</div>
+              <div className="action-chip" onClick={() => handleSendMessage('Sugerir un entrenamiento')}><Dumbbell size={16} /> Sugerir un entrenamiento</div>
+              <div className="action-chip" onClick={() => handleSendMessage('Calcular mis macros')}><Utensils size={16} /> Calcular mis macros</div>
+              <div className="action-chip" onClick={() => handleSendMessage('Sesión de movilidad')}><Activity size={16} /> Sesión de movilidad</div>
+              <div className="action-chip" onClick={() => handleSendMessage('Analizar mis estadísticas')}><BarChart2 size={16} /> Analizar mis estadísticas</div>
             </div>
 
             <div className="input-box-wrapper">
@@ -160,8 +199,15 @@ const ChatComponent = () => {
                 type="text"
                 className="chat-input"
                 placeholder="Pregúntale a VitalBot lo que sea..."
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSendMessage();
+                  }
+                }}
               />
-              <button className="send-btn">
+              <button className="send-btn" onClick={() => handleSendMessage()}>
                 <Send size={18} />
               </button>
             </div>

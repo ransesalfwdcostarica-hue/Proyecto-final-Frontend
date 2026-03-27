@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Archivos de entorno y backend
+.env
+Chatbot.env
+server/node_modules/
+server/.env
