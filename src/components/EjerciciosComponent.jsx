@@ -7,27 +7,31 @@ import {
     Dumbbell,
     Home,
     Plus,
+    PlusCircle,
+    Check,
     Trash2,
     X,
+    ChevronRight,
     Image as ImageIcon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../Services/exerciseService';
+import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
+import { updateUser } from '../services/userService';
+import { useContext } from 'react';
+import { UserContext } from '../context/UserContext';
 import Swal from 'sweetalert2';
 import '../styles/Ejercicios.css';
 import MotivationalQuote from './MotivationalQuote';
 
 const EjerciciosComponent = () => {
     const navigate = useNavigate();
+    const { user, refreshUser } = useContext(UserContext);
     const [exercises, setExercises] = useState([]);
     const [filteredExercises, setFilteredExercises] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [activeCategory, setActiveCategory] = useState('Todos');
-    const [user, setUser] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showTechniqueModal, setShowTechniqueModal] = useState(false);
-    const [favorites, setFavorites] = useState([]);
 
     // Form state
     const [newExercise, setNewExercise] = useState({
@@ -39,17 +43,9 @@ const EjerciciosComponent = () => {
         categoria: 'Pecho'
     });
 
-    const categories = ['Todos', 'Favoritos', 'Pecho', 'Espalda', 'Piernas', 'Hombros', 'Brazos', 'Core', 'Glúteos'];
+    const categories = ['Todos', 'Pecho', 'Espalda', 'Piernas', 'Hombros', 'Brazos', 'Core', 'Glúteos'];
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-        const storedFavorites = localStorage.getItem('favorites');
-        if (storedFavorites) {
-            setFavorites(JSON.parse(storedFavorites));
-        }
         loadExercises();
     }, []);
 
@@ -69,9 +65,7 @@ const EjerciciosComponent = () => {
     useEffect(() => {
         let result = exercises;
 
-        if (activeCategory === 'Favoritos') {
-            result = result.filter(ex => favorites.includes(ex.id));
-        } else if (activeCategory !== 'Todos') {
+        if (activeCategory !== 'Todos') {
             result = result.filter(ex => ex.categoria === activeCategory);
         }
 
@@ -83,17 +77,53 @@ const EjerciciosComponent = () => {
         }
 
         setFilteredExercises(result);
-    }, [searchTerm, activeCategory, exercises, favorites]);
+    }, [searchTerm, activeCategory, exercises]);
 
-    const toggleFavorite = (id) => {
-        let updatedFavorites;
-        if (favorites.includes(id)) {
-            updatedFavorites = favorites.filter(favId => favId !== id);
-        } else {
-            updatedFavorites = [...favorites, id];
+    const [activeCategory, setActiveCategory] = useState('Todos');
+
+    const toggleChooseExercise = async (id) => {
+        if (!user) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: 'Debes iniciar sesión para elegir ejercicios.',
+                background: '#171212',
+                color: '#fff',
+                confirmButtonColor: '#8b0000'
+            });
+            return;
         }
-        setFavorites(updatedFavorites);
-        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+
+        const currentChosen = user.ejerciciosElegidos || [];
+        const isChosen = currentChosen.includes(id);
+
+        let newChosen;
+        if (isChosen) {
+            newChosen = currentChosen.filter(exId => exId !== id);
+        } else {
+            newChosen = [...currentChosen, id];
+        }
+
+        try {
+            const updatedUser = await updateUser(user.id, {
+                ...user,
+                ejerciciosElegidos: newChosen
+            });
+            refreshUser(updatedUser);
+
+            Swal.fire({
+                icon: 'success',
+                title: isChosen ? 'Eliminado' : 'Añadido',
+                text: isChosen ? 'Ejercicio removido de tus rutinas' : 'Ejercicio añadido a tus rutinas',
+                background: '#171212',
+                color: '#fff',
+                confirmButtonColor: '#8b0000',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        } catch (error) {
+            console.error("Error updating chosen exercises:", error);
+        }
     };
 
     const handleDelete = async (id) => {
@@ -236,9 +266,7 @@ const EjerciciosComponent = () => {
                             key={cat}
                             className={`category-tag ${activeCategory === cat ? 'active' : ''}`}
                             onClick={() => setActiveCategory(cat)}
-                            style={cat === 'Favoritos' ? { display: 'flex', alignItems: 'center', gap: '4px' } : {}}
                         >
-                            {cat === 'Favoritos' && <Heart size={16} fill={activeCategory === 'Favoritos' ? "currentColor" : "none"} />}
                             {cat}
                         </button>
                     ))}
@@ -266,22 +294,26 @@ const EjerciciosComponent = () => {
                         <div className="card-info">
                             <div className="card-header-row">
                                 <h3>{exercise.nombre}</h3>
-                                <button
-                                    className={`heart-btn ${favorites.includes(exercise.id) ? 'active' : ''}`}
-                                    onClick={() => toggleFavorite(exercise.id)}
-                                    style={favorites.includes(exercise.id) ? { color: '#ef4444' } : {}}
-                                >
-                                    <Heart size={20} fill={favorites.includes(exercise.id) ? "currentColor" : "none"} />
-                                </button>
                             </div>
                             <div className="tags-row">
                                 <span className="tag-difficulty">{exercise.nivel}</span>
                                 <span className="tag-muscle">{exercise.musculo}</span>
                             </div>
-                            <button className="btn-technique" onClick={() => setShowTechniqueModal(true)}>
-                                <Play size={16} fill="currentColor" />
-                                Ver Técnica
-                            </button>
+                            <div className="card-actions">
+                                <button className="btn-technique" onClick={() => setShowTechniqueModal(true)}>
+                                    <Play size={16} fill="currentColor" />
+                                    Técnica
+                                </button>
+                                {user && (
+                                <button 
+                                    className={`btn-add-to-training ${(user?.ejerciciosElegidos || []).includes(exercise.id) ? 'active' : ''}`} 
+                                    onClick={() => toggleChooseExercise(exercise.id)}
+                                >
+                                    {(user?.ejerciciosElegidos || []).includes(exercise.id) ? <Check size={16} /> : <Plus size={16} />}
+                                    <span>{(user?.ejerciciosElegidos || []).includes(exercise.id) ? 'En mi Rutina' : 'Añadir a Mi Rutina'}</span>
+                                </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 ))}

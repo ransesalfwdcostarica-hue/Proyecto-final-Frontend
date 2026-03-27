@@ -7,29 +7,32 @@ import {
     Dumbbell,
     Home,
     Plus,
+    Check,
+    ChevronRight,
     Trash2,
     X,
     Image as ImageIcon,
     Edit2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { obtenerTodosEjercicios as getAllExercises, crearEjercicio as createExercise, eliminarEjercicio as deleteExercise, actualizarEjercicio as updateExercise } from '../Services/exerciseService';
+import { obtenerTodosEjercicios as getAllExercises, crearEjercicio as createExercise, eliminarEjercicio as deleteExercise, actualizarEjercicio as updateExercise } from '../services/exerciseService';
+import { updateUser } from '../services/userService';
+import { useContext } from 'react';
+import { UserContext } from '../context/UserContext';
+import Swal from 'sweetalert2';
 import '../styles/Ejercicios.css';
 
 const Ejercicios = () => {
     const navigate = useNavigate();
+    const { user, refreshUser } = useContext(UserContext);
     const [exercises, setExercises] = useState([]);
     const [filteredExercises, setFilteredExercises] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState('Todos');
-    const [user, setUser] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [techniqueExercise, setTechniqueExercise] = useState(null);
-    const [favorites, setFavorites] = useState([]);
-    const [exerciseToRemoveFav, setExerciseToRemoveFav] = useState(null);
-    const [exerciseToEdit, setExerciseToEdit] = useState(null);
 
     // Form state
     const [newExercise, setNewExercise] = useState({
@@ -42,13 +45,9 @@ const Ejercicios = () => {
         videoUrl: ''
     });
 
-    const categories = ['Todos', 'Favoritos', 'Pecho', 'Espalda', 'Piernas', 'Hombros', 'Brazos', 'Core', 'Glúteos'];
+    const categories = ['Todos', 'Pecho', 'Espalda', 'Piernas', 'Hombros', 'Brazos', 'Core', 'Glúteos'];
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
         loadExercises();
     }, []);
 
@@ -68,9 +67,7 @@ const Ejercicios = () => {
     useEffect(() => {
         let result = exercises;
 
-        if (activeCategory === 'Favoritos') {
-            result = result.filter(ex => favorites.includes(ex.id));
-        } else if (activeCategory !== 'Todos') {
+        if (activeCategory !== 'Todos') {
             result = result.filter(ex => ex.categoria === activeCategory);
         }
 
@@ -82,25 +79,53 @@ const Ejercicios = () => {
         }
 
         setFilteredExercises(result);
-    }, [searchTerm, activeCategory, exercises, favorites]);
+    }, [searchTerm, activeCategory, exercises]);
 
-    const toggleFavorite = (id) => {
-        if (favorites.includes(id)) {
-            setExerciseToRemoveFav(id);
+    const [exerciseToEdit, setExerciseToEdit] = useState(null);
+
+    const toggleChooseExercise = async (id) => {
+        if (!user) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: 'Debes iniciar sesión para elegir ejercicios.',
+                background: '#171212',
+                color: '#fff',
+                confirmButtonColor: '#8b0000'
+            });
+            return;
+        }
+
+        const currentChosen = user.ejerciciosElegidos || [];
+        const isChosen = currentChosen.includes(id);
+
+        let newChosen;
+        if (isChosen) {
+            newChosen = currentChosen.filter(exId => exId !== id);
         } else {
-            setFavorites([...favorites, id]);
+            newChosen = [...currentChosen, id];
         }
-    };
 
-    const confirmRemoveFavorite = () => {
-        if (exerciseToRemoveFav) {
-            setFavorites(favorites.filter(favId => favId !== exerciseToRemoveFav));
-            setExerciseToRemoveFav(null);
+        try {
+            const updatedUser = await updateUser(user.id, {
+                ...user,
+                ejerciciosElegidos: newChosen
+            });
+            refreshUser(updatedUser);
+
+            Swal.fire({
+                icon: 'success',
+                title: isChosen ? 'Eliminado' : 'Añadido',
+                text: isChosen ? 'Ejercicio removido de tus rutinas' : 'Ejercicio añadido a tus rutinas',
+                background: '#171212',
+                color: '#fff',
+                confirmButtonColor: '#8b0000',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        } catch (error) {
+            console.error("Error updating chosen exercises:", error);
         }
-    };
-
-    const cancelRemoveFavorite = () => {
-        setExerciseToRemoveFav(null);
     };
 
     const handleDelete = async (id) => {
@@ -203,10 +228,9 @@ const Ejercicios = () => {
                     {categories.map(cat => (
                         <button
                             key={cat}
-                            className={`category-tag ${activeCategory === cat ? 'active' : ''} ${cat === 'Favoritos' ? 'fav-category' : ''}`}
+                            className={`category-tag ${activeCategory === cat ? 'active' : ''}`}
                             onClick={() => setActiveCategory(cat)}
                         >
-                            {cat === 'Favoritos' && <Heart className="fav-heart-icon" size={16} fill="currentColor" />}
                             {cat}
                         </button>
                     ))}
@@ -237,22 +261,24 @@ const Ejercicios = () => {
                         <div className="card-info">
                             <div className="card-header-row">
                                 <h3>{exercise.nombre}</h3>
-                                <button
-                                    className={`heart-btn ${favorites.includes(exercise.id) ? 'active' : ''}`}
-                                    onClick={() => toggleFavorite(exercise.id)}
-                                    style={favorites.includes(exercise.id) ? { color: '#ef4444' } : {}}
-                                >
-                                    <Heart size={20} fill={favorites.includes(exercise.id) ? "currentColor" : "none"} />
-                                </button>
                             </div>
                             <div className="tags-row">
                                 <span className="tag-difficulty">{exercise.nivel}</span>
                                 <span className="tag-muscle">{exercise.musculo}</span>
                             </div>
-                            <button className="btn-technique" onClick={() => setTechniqueExercise(exercise)}>
-                                <Play size={16} fill="currentColor" />
-                                Ver Técnica
-                            </button>
+                            <div className="card-actions">
+                                <button className="btn-technique" onClick={() => setTechniqueExercise(exercise)}>
+                                    <Play size={16} fill="currentColor" />
+                                    Técnica
+                                </button>
+                                <button 
+                                    className={`btn-add-to-training ${(user?.ejerciciosElegidos || []).includes(exercise.id) ? 'active' : ''}`} 
+                                    onClick={() => toggleChooseExercise(exercise.id)}
+                                >
+                                    {(user?.ejerciciosElegidos || []).includes(exercise.id) ? <Check size={16} /> : <Plus size={16} />}
+                                    <span>{(user?.ejerciciosElegidos || []).includes(exercise.id) ? 'En mi Rutina' : 'Añadir a Mi Rutina'}</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ))}
@@ -304,7 +330,7 @@ const Ejercicios = () => {
                                         value={newExercise.categoria}
                                         onChange={e => setNewExercise({ ...newExercise, categoria: e.target.value })}
                                     >
-                                        {categories.filter(c => c !== 'Todos' && c !== 'Favoritos').map(c => (
+                                        {categories.filter(c => c !== 'Todos').map(c => (
                                             <option key={c} value={c}>{c}</option>
                                         ))}
                                     </select>
@@ -406,7 +432,7 @@ const Ejercicios = () => {
                                         value={exerciseToEdit.categoria}
                                         onChange={e => setExerciseToEdit({ ...exerciseToEdit, categoria: e.target.value })}
                                     >
-                                        {categories.filter(c => c !== 'Todos' && c !== 'Favoritos').map(c => (
+                                        {categories.filter(c => c !== 'Todos').map(c => (
                                             <option key={c} value={c}>{c}</option>
                                         ))}
                                     </select>
@@ -499,32 +525,7 @@ const Ejercicios = () => {
                 </div>
             )}
 
-            {/* Modal de Confirmar Quitar Favorito */}
-            {exerciseToRemoveFav && (
-                <div className="modal-overlay" onClick={cancelRemoveFavorite}>
-                    <div className="modal-content animate-fade-up" style={{ maxWidth: '400px' }} onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2>Quitar Favorito</h2>
-                            <button className="close-btn" onClick={cancelRemoveFavorite}>
-                                <X size={24} />
-                            </button>
-                        </div>
-                        <div style={{ padding: '30px', textAlign: 'center' }}>
-                            <p style={{ fontSize: '1.1rem', marginBottom: '25px', color: 'var(--text-main)', lineHeight: '1.5' }}>
-                                ¿Estás seguro de que deseas quitar este ejercicio de tus favoritos?
-                            </p>
-                            <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
-                                <button className="btn-home" style={{ margin: 0, padding: '12px 25px' }} onClick={cancelRemoveFavorite}>
-                                    Cancelar
-                                </button>
-                                <button className="submit-btn-premium" style={{ margin: 0, padding: '12px 25px' }} onClick={confirmRemoveFavorite}>
-                                    Sí, Quitar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Modal de Confirmar Quitar Favorito removed */}
         </div>
     );
 };

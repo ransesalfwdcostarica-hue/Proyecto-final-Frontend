@@ -21,16 +21,16 @@ import {
   User as UserIcon,
   Menu,
   TrendingUp,
-  ClipboardList
+  ClipboardList,
+  Play
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { obtenerTodosEjercicios } from '../Services/exerciseService';
+import { obtenerTodosEjercicios } from '../services/exerciseService';
 import { updateUser } from '../services/userService';
 import { UserContext } from '../context/UserContext';
 import Swal from 'sweetalert2';
 import SubirImagen from './SubirImagen';
 import '../styles/DashboardCliente.css';
-import MotivationalQuote from './MotivationalQuote';
 
 const DashCliente = () => {
   const { user, refreshUser, logout } = useContext(UserContext);
@@ -38,6 +38,7 @@ const DashCliente = () => {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedTechnique, setSelectedTechnique] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [progressForm, setProgressForm] = useState({
@@ -66,7 +67,7 @@ const DashCliente = () => {
   const loadExercises = async () => {
     try {
       const data = await obtenerTodosEjercicios();
-      setExercises(data.slice(0, 6)); // Solo mostramos algunos destacados
+      setExercises(data);
       setLoading(false);
     } catch (error) {
       console.error("Error loading exercises:", error);
@@ -235,8 +236,7 @@ const DashCliente = () => {
           >
             <Dumbbell size={20} />
             Entrenamientos
-          </button>
-          <button
+          </button>          <button
             className={`menu-item ${activeTab === 'nutrition' ? 'active' : ''}`}
             onClick={() => handleActiveTab('nutrition')}
           >
@@ -317,8 +317,6 @@ const DashCliente = () => {
                 </div>
               </div>
             </section>
-
-            <MotivationalQuote />
 
             {/* Stats Grid */}
             <section className="stats-grid">
@@ -463,30 +461,69 @@ const DashCliente = () => {
           </div>
         )}
 
+
+
         {activeTab === 'training' && (
           <section className="training-view animate-fade-in">
             <div className="section-header-row">
-              <h2>Ejercicios para tu Nivel</h2>
-              <Link to="/ejercicios" className="btn-link">Ver todos los ejercicios <ChevronRight size={16} /></Link>
+              <div className="header-text">
+                <h2>Mis Rutinas Personalizadas</h2>
+                <p>Aquí verás los ejercicios que has elegido de la biblioteca y los agruparemos por músculo.</p>
+              </div>
+              <Link to="/ejercicios" className="btn-add-training-global">
+                <Plus size={18} /> Añadir Más Ejercicios
+              </Link>
             </div>
             {loading ? (
               <p>Cargando ejercicios...</p>
             ) : (
-              <div className="exercises-mini-grid">
-                {exercises.map(ex => (
-                  <div key={ex.id} className="exercise-mini-card">
-                    <div className="mini-card-img">
-                      <img src={ex.imagen} alt={ex.nombre} />
-                    </div>
-                    <div className="mini-card-text">
-                      <h4>{ex.nombre}</h4>
-                      <div className="mini-card-tags">
-                        <span className="tag-lvl">{ex.nivel}</span>
-                        <span className="tag-time">{ex.tiempo}</span>
+              <div className="grouped-exercises-container">
+                {user.ejerciciosElegidos && user.ejerciciosElegidos.length > 0 ? (
+                  Object.entries(
+                    exercises
+                      .filter(ex => user.ejerciciosElegidos.includes(ex.id))
+                      .reduce((acc, ex) => {
+                        const cat = ex.categoria || 'Otros';
+                        if (!acc[cat]) acc[cat] = [];
+                        acc[cat].push(ex);
+                        return acc;
+                      }, {})
+                  ).map(([category, items]) => (
+                    <div key={category} className="muscle-group-section">
+                      <h3 className="muscle-group-title">
+                        <Dumbbell size={20} color="#ff4d4d" /> {category}
+                      </h3>
+                      <div className="exercises-mini-grid">
+                        {items.map(ex => (
+                          <div key={ex.id} className="exercise-mini-card">
+                            <div className="mini-card-img">
+                              <img src={ex.imagen} alt={ex.nombre} />
+                            </div>
+                            <div className="mini-card-text">
+                              <h4>{ex.nombre}</h4>
+                              <div className="mini-card-tags">
+                                <span className="tag-lvl">{ex.nivel}</span>
+                                <span className="tag-time">{ex.tiempo}</span>
+                              </div>
+                              <button className="btn-mini-technique" onClick={() => setSelectedTechnique(ex)}>
+                                <Play size={14} fill="currentColor" />
+                                Ver técnica
+                              </button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="no-exercises">
+                    <h3>Aún no has elegido ejercicios</h3>
+                    <p>Ve a la biblioteca de entrenamientos para seleccionar los que más te gusten.</p>
+                    <Link to="/ejercicios" className="btn-primary-small">
+                      <Plus size={18} /> Explorar Biblioteca
+                    </Link>
                   </div>
-                ))}
+                )}
               </div>
             )}
           </section>
@@ -608,6 +645,43 @@ const DashCliente = () => {
           </section>
         )}
       </main>
+      <TechniqueModal exercise={selectedTechnique} onClose={() => setSelectedTechnique(null)} />
+    </div>
+  );
+};
+
+/* Técnica Modal Helper Component */
+const TechniqueModal = ({ exercise, onClose }) => {
+  if (!exercise) return null;
+  return (
+    <div className="modal-overlay" onClick={onClose} style={{ zIndex: 3000 }}>
+      <div className="modal-content animate-fade-in" onClick={e => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+        <div className="modal-header">
+          <h2>Técnica: {exercise.nombre}</h2>
+          <button className="close-btn" onClick={onClose}><X size={24} /></button>
+        </div>
+        <div className="modal-body" style={{ padding: '20px' }}>
+          {exercise.videoUrl ? (
+            <div className="video-responsive">
+              <iframe 
+                width="100%" 
+                height="315" 
+                src={exercise.videoUrl} 
+                title={exercise.nombre}
+                frameBorder="0" 
+                style={{ borderRadius: '12px' }}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen
+              ></iframe>
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-dim)' }}>
+              <Dumbbell size={48} style={{ opacity: 0.2, marginBottom: '15px' }} />
+              <p>El video de técnica para este ejercicio aún no está disponible.</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
