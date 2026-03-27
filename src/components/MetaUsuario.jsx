@@ -174,19 +174,17 @@ const MetaUsuario = ({ userData, onBack }) => {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+              <div className="meta-actions">
                 <button
-                  className="btn-start-plan"
+                  className="btn-back"
                   onClick={() => onBack({ peso: currentWeight, pesoMeta: targetWeight, plazoSemanas: duration })}
-                  style={{ background: '#333', flex: 1 }}
                 >
                   Atrás
                 </button>
                 <button
-                  className="btn-start-plan"
+                  className="btn-start"
                   onClick={handleStartPlan}
                   disabled={loading}
-                  style={{ flex: 2 }}
                 >
                   {loading ? "Registrando..." : "Comenzar Plan"} <ChevronRight size={18} />
                 </button>

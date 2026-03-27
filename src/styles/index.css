@@ -9,6 +9,8 @@
   --text-muted: #A0A0A0;
   --glass-bg: rgba(28, 29, 33, 0.7);
   --glass-border: rgba(255, 255, 255, 0.1);
+  --nav-height: 100px;
+  --nav-height-mobile: 90px;
 }
 
 * {

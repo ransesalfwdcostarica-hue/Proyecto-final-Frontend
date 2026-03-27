@@ -1,6 +1,6 @@
 /* Contacto.css - Clean & Optimized */
 .contacto-container {
-    padding: 10rem 2rem 6rem;
+    padding: var(--nav-height) 2rem 6rem;
     max-width: 1280px;
     margin: 0 auto;
     min-height: 100vh;
@@ -35,13 +35,13 @@
 /* Info Cards */
 .info-cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
 }
 
 .info-card {
     background: var(--bg-card);
-    padding: 2.5rem;
+    padding: 3.5rem 2rem;
     border-radius: 20px;
     text-align: center;
     border: 1px solid var(--glass-border);
@@ -56,8 +56,8 @@
 }
 
 .info-icon {
-    width: 70px;
-    height: 70px;
+    width: 90px;
+    height: 90px;
     background: rgba(255, 77, 77, 0.1);
     color: var(--primary);
     border-radius: 50%;
@@ -69,12 +69,13 @@
 }
 
 .info-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
     color: var(--text-main);
 }
 
 .info-card p {
+    font-size: 1.1rem;
     color: var(--text-muted);
 }
 
@@ -235,7 +236,7 @@
 /* RESPONSIVE */
 @media (max-width: 1024px) {
     .contacto-container {
-        padding-top: 8rem;
+        padding-top: var(--nav-height);
     }
     
     .info-cards {
@@ -248,6 +249,9 @@
 }
 
 @media (max-width: 768px) {
+    .contacto-container {
+        padding-top: var(--nav-height-mobile);
+    }
     .contacto-title {
         font-size: 2.8rem;
     }
@@ -321,13 +325,13 @@
 /* Info Cards */
 .info-cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
 }
 
 .info-card {
     background: var(--bg-card);
-    padding: 2.5rem;
+    padding: 3.5rem 2rem;
     border-radius: 20px;
     text-align: center;
     border: 1px solid var(--glass-border);
@@ -342,8 +346,8 @@
 }
 
 .info-icon {
-    width: 70px;
-    height: 70px;
+    width: 90px;
+    height: 90px;
     background: rgba(255, 77, 77, 0.1);
     color: var(--primary);
     border-radius: 50%;
@@ -359,12 +363,13 @@
 }
 
 .info-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
     color: var(--text-main);
 }
 
 .info-card p {
+    font-size: 1.1rem;
     color: var(--text-muted);
 }
 

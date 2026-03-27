@@ -9,10 +9,11 @@ import {
     Plus,
     Trash2,
     X,
-    Image as ImageIcon
+    Image as ImageIcon,
+    Edit2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { obtenerTodosEjercicios as getAllExercises, crearEjercicio as createExercise, eliminarEjercicio as deleteExercise } from '../services/exerciseService';
+import { obtenerTodosEjercicios as getAllExercises, crearEjercicio as createExercise, eliminarEjercicio as deleteExercise, actualizarEjercicio as updateExercise } from '../services/exerciseService';
 import '../styles/Ejercicios.css';
 
 const Ejercicios = () => {
@@ -24,8 +25,11 @@ const Ejercicios = () => {
     const [activeCategory, setActiveCategory] = useState('Todos');
     const [user, setUser] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
-    const [showTechniqueModal, setShowTechniqueModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [techniqueExercise, setTechniqueExercise] = useState(null);
     const [favorites, setFavorites] = useState([]);
+    const [exerciseToRemoveFav, setExerciseToRemoveFav] = useState(null);
+    const [exerciseToEdit, setExerciseToEdit] = useState(null);
 
     // Form state
     const [newExercise, setNewExercise] = useState({
@@ -34,7 +38,8 @@ const Ejercicios = () => {
         musculo: '',
         tiempo: '',
         imagen: '',
-        categoria: 'Pecho'
+        categoria: 'Pecho',
+        videoUrl: ''
     });
 
     const categories = ['Todos', 'Favoritos', 'Pecho', 'Espalda', 'Piernas', 'Hombros', 'Brazos', 'Core', 'Glúteos'];
@@ -43,10 +48,6 @@ const Ejercicios = () => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
-        }
-        const storedFavorites = localStorage.getItem('favorites');
-        if (storedFavorites) {
-            setFavorites(JSON.parse(storedFavorites));
         }
         loadExercises();
     }, []);
@@ -84,14 +85,22 @@ const Ejercicios = () => {
     }, [searchTerm, activeCategory, exercises, favorites]);
 
     const toggleFavorite = (id) => {
-        let updatedFavorites;
         if (favorites.includes(id)) {
-            updatedFavorites = favorites.filter(favId => favId !== id);
+            setExerciseToRemoveFav(id);
         } else {
-            updatedFavorites = [...favorites, id];
+            setFavorites([...favorites, id]);
         }
-        setFavorites(updatedFavorites);
-        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    };
+
+    const confirmRemoveFavorite = () => {
+        if (exerciseToRemoveFav) {
+            setFavorites(favorites.filter(favId => favId !== exerciseToRemoveFav));
+            setExerciseToRemoveFav(null);
+        }
+    };
+
+    const cancelRemoveFavorite = () => {
+        setExerciseToRemoveFav(null);
     };
 
     const handleDelete = async (id) => {
@@ -117,10 +126,28 @@ const Ejercicios = () => {
                 musculo: '',
                 tiempo: '',
                 imagen: '',
-                categoria: 'Pecho'
+                categoria: 'Pecho',
+                videoUrl: ''
             });
         } catch (error) {
             alert("Error al crear el ejercicio");
+        }
+    };
+
+    const openEditModal = (exercise) => {
+        setExerciseToEdit({ ...exercise });
+        setShowEditModal(true);
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        try {
+            const updated = await updateExercise(exerciseToEdit.id, exerciseToEdit);
+            setExercises(exercises.map(ex => ex.id === updated.id ? updated : ex));
+            setShowEditModal(false);
+            setExerciseToEdit(null);
+        } catch (error) {
+            alert("Error al actualizar el ejercicio");
         }
     };
 
@@ -176,11 +203,10 @@ const Ejercicios = () => {
                     {categories.map(cat => (
                         <button
                             key={cat}
-                            className={`category-tag ${activeCategory === cat ? 'active' : ''}`}
+                            className={`category-tag ${activeCategory === cat ? 'active' : ''} ${cat === 'Favoritos' ? 'fav-category' : ''}`}
                             onClick={() => setActiveCategory(cat)}
-                            style={cat === 'Favoritos' ? { display: 'flex', alignItems: 'center', gap: '4px' } : {}}
                         >
-                            {cat === 'Favoritos' && <Heart size={16} fill={activeCategory === 'Favoritos' ? "currentColor" : "none"} />}
+                            {cat === 'Favoritos' && <Heart className="fav-heart-icon" size={16} fill="currentColor" />}
                             {cat}
                         </button>
                     ))}
@@ -198,9 +224,14 @@ const Ejercicios = () => {
                             <img src={exercise.imagen} alt={exercise.nombre} />
                             <div className="time-tag">{exercise.tiempo}</div>
                             {isAdmin && (
-                                <button className="delete-btn-overlay" onClick={() => handleDelete(exercise.id)}>
-                                    <Trash2 size={18} />
-                                </button>
+                                <>
+                                    <button className="delete-btn-overlay" onClick={() => handleDelete(exercise.id)}>
+                                        <Trash2 size={18} />
+                                    </button>
+                                    <button className="edit-btn-overlay" onClick={() => openEditModal(exercise)}>
+                                        <Edit2 size={18} />
+                                    </button>
+                                </>
                             )}
                         </div>
                         <div className="card-info">
@@ -218,7 +249,7 @@ const Ejercicios = () => {
                                 <span className="tag-difficulty">{exercise.nivel}</span>
                                 <span className="tag-muscle">{exercise.musculo}</span>
                             </div>
-                            <button className="btn-technique" onClick={() => setShowTechniqueModal(true)}>
+                            <button className="btn-technique" onClick={() => setTechniqueExercise(exercise)}>
                                 <Play size={16} fill="currentColor" />
                                 Ver Técnica
                             </button>
@@ -230,20 +261,6 @@ const Ejercicios = () => {
             {filteredExercises.length === 0 && (
                 <div style={{ textAlign: 'center', padding: '50px', color: 'var(--text-dim)' }}>
                     <p>No se encontraron ejercicios con esos filtros.</p>
-                </div>
-            )}
-
-            {/* Modal de Técnica */}
-            {showTechniqueModal && (
-                <div className="modal-overlay" onClick={() => setShowTechniqueModal(false)}>
-                    <div className="modal-content animate-fade-up" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2>Técnica</h2>
-                            <button className="close-btn" onClick={() => setShowTechniqueModal(false)}>
-                                <X size={24} />
-                            </button>
-                        </div>
-                    </div>
                 </div>
             )}
 
@@ -287,7 +304,7 @@ const Ejercicios = () => {
                                         value={newExercise.categoria}
                                         onChange={e => setNewExercise({ ...newExercise, categoria: e.target.value })}
                                     >
-                                        {categories.filter(c => c !== 'Todos').map(c => (
+                                        {categories.filter(c => c !== 'Todos' && c !== 'Favoritos').map(c => (
                                             <option key={c} value={c}>{c}</option>
                                         ))}
                                     </select>
@@ -328,6 +345,18 @@ const Ejercicios = () => {
                                     />
                                 </div>
                             </div>
+                            <div className="form-group">
+                                <label>URL de Video YouTube (Embed)</label>
+                                <div className="input-with-icon">
+                                    <Play size={18} />
+                                    <input
+                                        type="url"
+                                        placeholder="Ej: https://www.youtube.com/embed/XXXXXX"
+                                        value={newExercise.videoUrl || ''}
+                                        onChange={e => setNewExercise({ ...newExercise, videoUrl: e.target.value })}
+                                    />
+                                </div>
+                            </div>
                             <button type="submit" className="submit-btn-premium">
                                 <Plus size={18} />
                                 Crear Ejercicio
@@ -336,8 +365,168 @@ const Ejercicios = () => {
                     </div>
                 </div>
             )}
+
+            {/* Modal de Editar Ejercicio */}
+            {showEditModal && exerciseToEdit && (
+                <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+                    <div className="modal-content animate-fade-up" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Editar Ejercicio</h2>
+                            <button className="close-btn" onClick={() => setShowEditModal(false)}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <form className="add-exercise-form" onSubmit={handleUpdate}>
+                            <div className="form-group">
+                                <label>Nombre del Ejercicio</label>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="Ej: Press de Banca"
+                                    value={exerciseToEdit.nombre}
+                                    onChange={e => setExerciseToEdit({ ...exerciseToEdit, nombre: e.target.value })}
+                                />
+                            </div>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Nivel</label>
+                                    <select
+                                        value={exerciseToEdit.nivel}
+                                        onChange={e => setExerciseToEdit({ ...exerciseToEdit, nivel: e.target.value })}
+                                    >
+                                        <option value="PRINCIPIANTE">PRINCIPIANTE</option>
+                                        <option value="INTERMEDIO">INTERMEDIO</option>
+                                        <option value="AVANZADO">AVANZADO</option>
+                                        <option value="EXPERTO">EXPERTO</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Categoría</label>
+                                    <select
+                                        value={exerciseToEdit.categoria}
+                                        onChange={e => setExerciseToEdit({ ...exerciseToEdit, categoria: e.target.value })}
+                                    >
+                                        {categories.filter(c => c !== 'Todos' && c !== 'Favoritos').map(c => (
+                                            <option key={c} value={c}>{c}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Músculo Secundario</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        placeholder="Ej: PECHO, TRÍCEPS"
+                                        value={exerciseToEdit.musculo}
+                                        onChange={e => setExerciseToEdit({ ...exerciseToEdit, musculo: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Tiempo Sugerido (Ej: 45 SEG)</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        placeholder="Ej: 45 SEG"
+                                        value={exerciseToEdit.tiempo}
+                                        onChange={e => setExerciseToEdit({ ...exerciseToEdit, tiempo: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label>URL de Imagen</label>
+                                <div className="input-with-icon">
+                                    <ImageIcon size={18} />
+                                    <input
+                                        type="url"
+                                        required
+                                        placeholder="https://images.unsplash.com/..."
+                                        value={exerciseToEdit.imagen}
+                                        onChange={e => setExerciseToEdit({ ...exerciseToEdit, imagen: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label>URL de Video YouTube (Embed)</label>
+                                <div className="input-with-icon">
+                                    <Play size={18} />
+                                    <input
+                                        type="url"
+                                        placeholder="Ej: https://www.youtube.com/embed/XXXXXX"
+                                        value={exerciseToEdit.videoUrl || ''}
+                                        onChange={e => setExerciseToEdit({ ...exerciseToEdit, videoUrl: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                            <button type="submit" className="submit-btn-premium" style={{ background: 'linear-gradient(135deg, rgba(65, 105, 225, 0.9) 0%, rgba(30, 64, 175, 0.9) 100%)' }}>
+                                <Edit2 size={18} />
+                                Guardar Cambios
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Ver Técnica */}
+            {techniqueExercise && (
+                <div className="modal-overlay" onClick={() => setTechniqueExercise(null)}>
+                    <div className="modal-content animate-fade-up" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Técnica: {techniqueExercise.nombre}</h2>
+                            <button className="close-btn" onClick={() => setTechniqueExercise(null)}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <div style={{ padding: '20px' }}>
+                            {techniqueExercise.videoUrl ? (
+                                <iframe 
+                                    width="100%" 
+                                    height="315" 
+                                    src={techniqueExercise.videoUrl} 
+                                    title="YouTube video player" 
+                                    style={{ border: 'none', borderRadius: '12px' }}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowFullScreen
+                                ></iframe>
+                            ) : (
+                                <p style={{ color: 'var(--text-dim)', textAlign: 'center' }}>
+                                    El video de técnica para este ejercicio aún no está disponible.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Confirmar Quitar Favorito */}
+            {exerciseToRemoveFav && (
+                <div className="modal-overlay" onClick={cancelRemoveFavorite}>
+                    <div className="modal-content animate-fade-up" style={{ maxWidth: '400px' }} onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Quitar Favorito</h2>
+                            <button className="close-btn" onClick={cancelRemoveFavorite}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <div style={{ padding: '30px', textAlign: 'center' }}>
+                            <p style={{ fontSize: '1.1rem', marginBottom: '25px', color: 'var(--text-main)', lineHeight: '1.5' }}>
+                                ¿Estás seguro de que deseas quitar este ejercicio de tus favoritos?
+                            </p>
+                            <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
+                                <button className="btn-home" style={{ margin: 0, padding: '12px 25px' }} onClick={cancelRemoveFavorite}>
+                                    Cancelar
+                                </button>
+                                <button className="submit-btn-premium" style={{ margin: 0, padding: '12px 25px' }} onClick={confirmRemoveFavorite}>
+                                    Sí, Quitar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
-    )
-}
+    );
+};
 
 export default Ejercicios;

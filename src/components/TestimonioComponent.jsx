@@ -15,21 +15,24 @@ const getTimeAgo = (dateString) => {
     const seconds = Math.floor((new Date() - date) / 1000);
 
     let interval = seconds / 31536000;
-    if (interval > 1) return `hace ${Math.floor(interval)} año${Math.floor(interval) !== 1 ? 's' : ''}`;
-    
+    if (interval >= 1) return `hace ${Math.floor(interval)} año${Math.floor(interval) !== 1 ? 's' : ''}`;
+
     interval = seconds / 2592000;
-    if (interval > 1) return `hace ${Math.floor(interval)} mes${Math.floor(interval) !== 1 ? 'es' : ''}`;
-    
+    if (interval >= 1) return `hace ${Math.floor(interval)} mes${Math.floor(interval) !== 1 ? 'es' : ''}`;
+
+    interval = Math.floor(seconds / 604800);
+    if (interval >= 1) return interval === 1 ? 'hace 1 semana' : `hace ${interval} semanas`;
+
     interval = Math.floor(seconds / 86400);
     if (interval >= 1) return interval === 1 ? 'hace 1 día' : `hace ${interval} días`;
-    
+
     interval = Math.floor(seconds / 3600);
     if (interval >= 1) return interval === 1 ? 'hace 1 hora' : `hace ${interval} horas`;
-    
+
     interval = Math.floor(seconds / 60);
     if (interval >= 1) return interval === 1 ? 'hace 1 minuto' : `hace ${interval} minutos`;
-    
-    return 'hace unos segundos';
+
+    return 'hace menos de un minuto';
 };
 
 const TestimonioComponent = () => {
@@ -41,6 +44,9 @@ const TestimonioComponent = () => {
     const [activeTab, setActiveTab] = useState('Todas las Historias');
     const [searchQuery, setSearchQuery] = useState('');
     const [localLikes, setLocalLikes] = useState({});
+
+    // Timer para forzar actualización de fechas cada minuto
+    const [, setTick] = useState(0);
 
     // User Search State
     const [allUsers, setAllUsers] = useState([]);
@@ -84,7 +90,14 @@ const TestimonioComponent = () => {
         setIsModalOpen(true);
     };
 
+    // Load up-to-date user and set up interval for time updates
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTick(t => t + 1);
+        }, 60000);
 
+        return () => clearInterval(interval);
+    }, []);
 
     // Avatar upload handler (Cloudinary)
     const handleCloudinaryAvatarUpload = async (imageUrl) => {
@@ -135,7 +148,8 @@ const TestimonioComponent = () => {
             category: newStory.category,
             image: newStory.image || null,
             likes: 0,
-            comments: 0
+            comments: 0,
+            likedBy: []
         };
 
         try {
@@ -211,18 +225,32 @@ const TestimonioComponent = () => {
             const { storiesData, topicsData } = await fetchStoriesData();
             const usersData = await getAllUsers();
 
-            setStories(storiesData);
+            // Ordenar historias: las más recientes primero apoyándose en la propiedad 'fecha'
+            // Si no tienen fecha, usamos su índice (el último en el array es el más reciente en db.json)
+            const sortedStories = [...storiesData].map((s, i) => ({ ...s, _originalIndex: i })).sort((a, b) => {
+                const dateA = new Date(a.fecha || 0).getTime() || 0;
+                const dateB = new Date(b.fecha || 0).getTime() || 0;
+                if (dateA !== dateB) {
+                    return dateB - dateA;
+                }
+                return b._originalIndex - a._originalIndex;
+            }).map(s => {
+                delete s._originalIndex;
+                return s;
+            });
+
+            setStories(sortedStories);
             setAllUsers(usersData);
             setTrendingTopics(topicsData);
 
-            const dynamicContributors = calculateTopContributors(storiesData, usersData);
+            const dynamicContributors = calculateTopContributors(sortedStories, usersData);
             setTopContributors(dynamicContributors);
 
             // Inicializar estados de likes locales desde la DB
             if (currentUser) {
                 const initialLikes = {};
                 storiesData.forEach(story => {
-                    if (story.likedBy && story.likedBy.includes(currentUser.id)) {
+                    if (story.likedBy && story.likedBy.some(id => String(id) === String(currentUser.id))) {
                         initialLikes[story.id] = true;
                     }
                 });
@@ -250,9 +278,11 @@ const TestimonioComponent = () => {
 
         let newLikedBy = story.likedBy || [];
         if (isCurrentlyLiked) {
-            newLikedBy = newLikedBy.filter(userId => userId !== currentUser.id);
+            newLikedBy = newLikedBy.filter(userId => String(userId) !== String(currentUser.id));
         } else {
-            newLikedBy = [...newLikedBy, currentUser.id];
+            if (!newLikedBy.some(id => String(id) === String(currentUser.id))) {
+                newLikedBy = [...newLikedBy, currentUser.id];
+            }
         }
 
         const newLikeValue = newLikedBy.length;
@@ -351,6 +381,7 @@ const TestimonioComponent = () => {
         try {
             const createdComment = await addComment(commentPayload);
             const newCount = (story.comments || 0) + 1;
+            await updateStoryCommentsCount(storyId, newCount);
 
             // Actualizar estado local
             setCommentsData(prev => ({
@@ -424,7 +455,7 @@ const TestimonioComponent = () => {
                                     {userSearchResults.map(user => (
                                         <Link to={`/perfil/${user.id}`} key={user.id} className="search-result-item">
                                             <img
-                                                src={`https://i.pravatar.cc/150?u=${user.id}`}
+                                                src={user.avatar || `https://i.pravatar.cc/150?u=${user.id}`}
                                                 alt={user.nombre}
                                                 className="search-result-avatar"
                                             />

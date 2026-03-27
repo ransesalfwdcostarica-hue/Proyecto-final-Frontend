@@ -5,7 +5,7 @@
   width: 100%;
   max-width: 860px;
   margin: 0 auto;
-  padding: 20px;
+  padding: var(--nav-height) 20px 40px;
   font-family: 'Inter', sans-serif;
   color: #ffffff;
 }
@@ -155,6 +155,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 2rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 .footer-notice {
@@ -206,22 +213,68 @@
 }
 
 @media (max-width: 768px) {
+  .form-fisic-container {
+    padding-top: var(--nav-height-mobile);
+  }
+
+  .form-fisic-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .form-fisic-header p {
+    font-size: 0.95rem;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
+  
+  .full-width {
+    grid-column: span 1;
+  }
+
   .form-fisic-card {
-    padding: 2rem 1.5rem;
+    padding: 2rem 1.25rem;
+    border-radius: 1rem;
   }
+
+  .section-title {
+    font-size: 1.2rem;
+    margin-bottom: 1.25rem;
+  }
+
   .form-footer {
     flex-direction: column;
     gap: 1.5rem;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
   }
+
+  .form-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
   .footer-notice {
     max-width: 100%;
+    font-size: 0.8rem;
+    order: 2;
   }
+  
+  .form-actions {
+    order: 1;
+  }
+
   .btn-submit, .btn-back {
     width: 100%;
     justify-content: center;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-fisic-header h1 {
+    font-size: 1.5rem;
   }
 }

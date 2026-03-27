@@ -77,7 +77,7 @@ const DashAdmin = () => {
       case 'routines':
         return <AdminRoutines />;
       case 'exercises':
-        return <AdminExercises />;
+        return <AdminExercises openAddModal={openAddModal} />;
       case 'messages':
         return <AdminMessages />;
       default:

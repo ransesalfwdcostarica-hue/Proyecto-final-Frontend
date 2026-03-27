@@ -177,7 +177,7 @@ export const actualizarImg = async (userId, imageUrl) => {
       throw new Error("La imagen no es una URL válida");
     }
 
-    const response = await fetch(`http://localhost:3001/usuarios/${userId}`, {
+    const response = await fetch(`${BASE_URL}/usuarios/${userId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
