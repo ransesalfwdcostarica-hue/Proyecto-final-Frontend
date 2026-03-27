@@ -6,6 +6,7 @@ import { getAllUsers, updateUser } from '../services/userService';
 import { Link } from 'react-router-dom';
 import SubirImagen from './SubirImagen';
 import '../styles/SuccessStories.css';
+import MotivationalQuote from './MotivationalQuote';
 
 const getTimeAgo = (dateString) => {
     if (!dateString) return '';
@@ -472,6 +473,8 @@ const TestimonioComponent = () => {
                         </div>
                     </div>
                 </header>
+
+                <MotivationalQuote />
 
                 <div className="stories-layout">
                     {/* Main Feed */}
