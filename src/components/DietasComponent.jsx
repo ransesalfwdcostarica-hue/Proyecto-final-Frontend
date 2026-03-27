@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Apple, Scale, Target, Activity, ChevronRight, Info, Utensils, Flame } from 'lucide-react';
 import '../styles/Dietas.css';
+import MotivationalQuote from './MotivationalQuote';
 
 const DietasComponent = () => {
     const [formData, setFormData] = useState({
@@ -35,6 +36,8 @@ const DietasComponent = () => {
                         Diseñamos una estrategia nutricional basada en tu biometría y objetivos únicos. Empieza hoy tu transformación.
                     </p>
                 </header>
+
+                <MotivationalQuote />
 
                 <div className="dietas-layout">
                     {/* Form Section */}
