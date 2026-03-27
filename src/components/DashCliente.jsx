@@ -30,6 +30,7 @@ import { UserContext } from '../context/UserContext';
 import Swal from 'sweetalert2';
 import SubirImagen from './SubirImagen';
 import '../styles/DashboardCliente.css';
+import MotivationalQuote from './MotivationalQuote';
 
 const DashCliente = () => {
   const { user, refreshUser, logout } = useContext(UserContext);
@@ -316,6 +317,8 @@ const DashCliente = () => {
                 </div>
               </div>
             </section>
+
+            <MotivationalQuote />
 
             {/* Stats Grid */}
             <section className="stats-grid">

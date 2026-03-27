@@ -82,9 +82,12 @@
       "alergias": "",
       "pesoMeta": 67,
       "plazoSemanas": 8,
-      "pesoActual": "95",
+      "pesoActual": "94.5",
       "deficitEstimado": 450,
-      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774535316/cvwwxdbvnbxtr6sho1ky.jpg"
+      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774535316/cvwwxdbvnbxtr6sho1ky.jpg",
+      "semanasEnProgreso": 2,
+      "ultimoFeedbackDieta": "Genial",
+      "ultimoFeedbackEjercicio": "Excelente"
     },
     {
       "id": "ebaa",
@@ -103,7 +106,6 @@
       "plazoSemanas": 8,
       "pesoActual": "120",
       "deficitEstimado": 450
-
     }
   ],
   "contactos": [
@@ -135,7 +137,6 @@
         "c695"
       ],
       "comments": 29
-
     },
     {
       "id": "s2",

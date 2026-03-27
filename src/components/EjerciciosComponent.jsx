@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../Services/exerciseService';
 import Swal from 'sweetalert2';
 import '../styles/Ejercicios.css';
+import MotivationalQuote from './MotivationalQuote';
 
 const EjerciciosComponent = () => {
     const navigate = useNavigate();
@@ -243,6 +244,8 @@ const EjerciciosComponent = () => {
                     ))}
                 </div>
             </section>
+
+            <MotivationalQuote />
 
             <div className="exercises-grid">
                 {filteredExercises.map((exercise, index) => (
