@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Phone, Send, MessageSquare, Bot, History, Target, Users, Instagram, Facebook, MessageCircle } from 'lucide-react';
+import { Mail, Phone, Send, MessageSquare, History, Target, Users, Instagram, Facebook, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { saveContactMessage } from '../Services/userService';
+import emailjs from '@emailjs/browser';
 import '../styles/Contacto.css';
 
 const FormContact = () => {
@@ -14,7 +15,6 @@ const FormContact = () => {
         pais: ''
     });
     const [loading, setLoading] = useState(false);
-    const [texto, setTexto] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
@@ -32,11 +32,10 @@ const FormContact = () => {
         }));
     };
 
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // 1. Validar Sesión
         if (!currentUser) {
             Swal.fire({
                 icon: 'warning',
@@ -44,7 +43,6 @@ const FormContact = () => {
                 text: 'Debes estar logueado para enviar un mensaje.',
                 background: '#171212',
                 color: '#ffffff',
-                iconColor: '#7d2020',
                 confirmButtonColor: '#7d2020',
                 confirmButtonText: 'Ir al Login'
             }).then((result) => {
@@ -55,14 +53,14 @@ const FormContact = () => {
             return;
         }
 
-        if (!formData.nombre?.trim() || !formData.contacto?.trim() || !formData.mensaje?.trim() || !formData.email?.trim()) {
+        // 2. Validar Campos
+        if (!formData.nombre?.trim() || !formData.contacto?.trim() || !formData.mensaje?.trim() || !formData.email?.trim() || !formData.pais?.trim()) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Campos incompletos',
                 text: 'Todos los campos son obligatorios.',
                 background: '#171212',
                 color: '#ffffff',
-                iconColor: '#7d2020',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -70,7 +68,24 @@ const FormContact = () => {
         }
 
         setLoading(true);
+
         try {
+            // 3. Enviar a EmailJS
+            // Los nombres de las propiedades (nombre, email, etc.) deben coincidir con las etiquetas {{}} en tu plantilla de EmailJS
+            await emailjs.send(
+                "service_welj85k",
+                "template_1j5253s",
+                {
+                    nombre: formData.nombre,
+                    email: formData.email,
+                    contacto: formData.contacto,
+                    pais: formData.pais,
+                    mensaje: formData.mensaje,
+                },
+                "KJWx-4nVHYQiwCkbh"
+            );
+
+            // 4. Guardar en tu base de datos (userService)
             await saveContactMessage({
                 ...formData,
                 fecha: new Date().toISOString()
@@ -87,16 +102,17 @@ const FormContact = () => {
                 showConfirmButton: false
             });
 
-            setFormData({ nombre: '', contacto: '', mensaje: '' });
+            // Limpiar formulario
+            setFormData({ nombre: '', contacto: '', email: '', mensaje: '', pais: '' });
+
         } catch (error) {
-            console.error(error);
+            console.error("Error detallado:", error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'Hubo un error al enviar tu mensaje. Inténtalo más tarde.',
                 background: '#171212',
                 color: '#ffffff',
-                iconColor: '#7d2020',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -115,7 +131,6 @@ const FormContact = () => {
             </div>
 
             <div className="contacto-content">
-                {/* Info Cards */}
                 <div className="info-cards animate-fade-in delay-100">
                     <div className="info-card">
                         <div className="info-icon"><Phone size={36} /></div>
@@ -130,9 +145,8 @@ const FormContact = () => {
                     </div>
                 </div>
 
-                {/* Social Media Section */}
                 <div className="social-section animate-fade-in delay-200">
-                    <h2 className="social-title">Siguenos en nuestras redes</h2>
+                    <h2 className="social-title">Síguenos en nuestras redes</h2>
                     <div className="social-grid">
                         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-card instagram">
                             <Instagram size={32} />
@@ -149,7 +163,6 @@ const FormContact = () => {
                     </div>
                 </div>
 
-                {/* Support Form */}
                 <div className="soporte-section animate-fade-in delay-300">
                     {!currentUser && (
                         <div style={{
@@ -190,11 +203,11 @@ const FormContact = () => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="pais">Pais</label>
+                                <label htmlFor="pais">País</label>
                                 <input
                                     type="text"
                                     id="pais"
-                                    placeholder="Ingresa tu pais"
+                                    placeholder="Ingresa tu país"
                                     value={formData.pais}
                                     onChange={handleChange}
                                     required
@@ -232,10 +245,7 @@ const FormContact = () => {
                                     rows="5"
                                     placeholder="Describe tu problema o duda técnica..."
                                     value={formData.mensaje}
-                                    onChange={(e) => {
-                                        handleChange(e);
-                                        setTexto(e.target.value);
-                                    }}
+                                    onChange={handleChange}
                                     required
                                     maxLength={1000}
                                 ></textarea>
@@ -248,10 +258,9 @@ const FormContact = () => {
                         </form>
                     </div>
                 </div>
-                {/* About Us Content: History and Mission */}
+
                 <div className="about-sections animate-fade-in delay-400">
                     <div className="about-grid">
-                        {/* History Card */}
                         <div className="about-card">
                             <div className="about-icon-wrapper">
                                 <History size={32} />
@@ -260,14 +269,10 @@ const FormContact = () => {
                                 <h2>Nuestra Historia</h2>
                                 <p>
                                     PowerFIT nació en 2026 con el objetivo de transformar la vida de las personas a través del fitness inteligente.
-                                    Lo que comenzó como una idea para simplificar los planes de entrenamiento, evolucionó en una plataforma
-                                    integral que combina tecnología avanzada con la pasión por el bienestar físico.
-                                    Hoy, somos una comunidad en constante crecimiento, unidos por el deseo de superación constante.
                                 </p>
                             </div>
                         </div>
 
-                        {/* Mission Card */}
                         <div className="about-card">
                             <div className="about-icon-wrapper">
                                 <Target size={32} />
@@ -275,7 +280,7 @@ const FormContact = () => {
                             <div className="about-text">
                                 <h2>Nuestra Misión</h2>
                                 <p>
-                                    Nuestra misión es proporcionar herramientas personalizadas, precisas y motivadoras para que cualquier persona, sin importar su lugar o nivel inicial, pueda alcanzar la mejor versión de sí misma. Creemos que la salud y el fitness deben estar al alcance de todos.
+                                    Nuestra misión es proporcionar herramientas personalizadas para que cualquier persona pueda alcanzar su mejor versión.
                                 </p>
                             </div>
                         </div>
@@ -285,7 +290,7 @@ const FormContact = () => {
                         <Users size={48} className="text-primary" />
                         <h3>Únete a nuestra comunidad</h3>
                         <p>
-                            Forma parte de los miles de usuarios que ya están transformando su físico y su mentalidad con PowerFIT.
+                            Forma parte de los miles de usuarios que ya están transformando su mentalidad con PowerFIT.
                         </p>
                         <Link to="/registro" className="btn-submit" style={{ textDecoration: 'none', width: 'auto', padding: '1rem 2.5rem' }}>
                             Comenzar ahora
@@ -293,7 +298,6 @@ const FormContact = () => {
                     </div>
                 </div>
             </div>
-
         </div>
     );
 };

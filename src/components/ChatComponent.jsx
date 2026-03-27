@@ -30,13 +30,13 @@ const ChatComponent = () => {
 
   const handleSendMessage = async (text = inputText) => {
     if (!text.trim()) return;
-    
+
     const newUserMessage = {
       role: 'user',
-      content: text,
+      content: "Busca la informacion en PubMed" + text,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
-    
+
     setMessages((prev) => [...prev, newUserMessage]);
     setInputText('');
     setIsTyping(true);
