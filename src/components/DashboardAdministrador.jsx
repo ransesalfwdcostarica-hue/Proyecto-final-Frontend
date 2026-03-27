@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Users, Activity, CheckCircle, Clock, Plus } from 'lucide-react';
 import { getAllUsers } from '../services/userService';
-import { getAllRoutines } from '../services/routineService';
-import { obtenerTodosEjercicios, obtenerEjerciciosPorCategoria, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
+import { getAllRoutines } from '../Services/routineService';
+import { obtenerTodosEjercicios, obtenerEjerciciosPorCategoria, crearEjercicio, eliminarEjercicio } from '../Services/exerciseService';
 
 
 const DashboardAdministrador = ({ changeTab, openAddModal }) => {

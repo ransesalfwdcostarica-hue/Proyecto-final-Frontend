@@ -84,7 +84,7 @@
       "plazoSemanas": 8,
       "pesoActual": "95",
       "deficitEstimado": 450,
-      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774470389/th9skn53ww8ra175uzis.jpg"
+      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774535316/cvwwxdbvnbxtr6sho1ky.jpg"
     },
     {
       "id": "ebaa",
@@ -180,8 +180,10 @@
       "category": "Ganancia de Músculo",
       "image": null,
       "likes": 2,
-      "likedBy": [],
-      "comments": 0
+      "likedBy": [
+        "c695"
+      ],
+      "comments": 1
     },
     {
       "id": "9d31",
@@ -491,6 +493,15 @@
       "userAvatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774294985/zg1lbikveirdjmc2orli.jpg",
       "text": "JAJAJAJA",
       "fecha": "2026-03-25T21:34:26.882Z"
+    },
+    {
+      "id": "7984",
+      "storyId": "4dca",
+      "userId": "c695",
+      "userName": "Ranses Alvir",
+      "userAvatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774294985/zg1lbikveirdjmc2orli.jpg",
+      "text": "hola",
+      "fecha": "2026-03-26T20:57:46.058Z"
     }
   ]
 }

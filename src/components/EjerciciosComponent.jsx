@@ -12,7 +12,7 @@ import {
     Image as ImageIcon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
+import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../Services/exerciseService';
 import Swal from 'sweetalert2';
 import '../styles/Ejercicios.css';
 

@@ -24,7 +24,7 @@ import {
   ClipboardList
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { obtenerTodosEjercicios } from '../services/exerciseService';
+import { obtenerTodosEjercicios } from '../Services/exerciseService';
 import { updateUser } from '../services/userService';
 import { UserContext } from '../context/UserContext';
 import Swal from 'sweetalert2';

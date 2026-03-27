@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import { Search, Plus, MessageSquare, ThumbsUp, Share2, Award, TrendingUp, Dumbbell, MoreHorizontal, X, Upload, Trash2, AlertTriangle, Send, User } from 'lucide-react';
-import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount } from '../services/testimonioService';
+import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount } from '../Services/testimonioService';
 import { getAllUsers, updateUser } from '../services/userService';
 import { Link } from 'react-router-dom';
 import SubirImagen from './SubirImagen';

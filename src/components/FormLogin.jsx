@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, CheckCircle, X } from "lucide-react";
-import { loginUser } from "../services/userService";
+import { loginUser } from "../Services/userService";
 import "../styles/Login.css";
 
 function FormLogin() {

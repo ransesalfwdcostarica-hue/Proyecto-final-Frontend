@@ -8,7 +8,7 @@ import {
     Image as ImageIcon,
     AlertTriangle
 } from 'lucide-react';
-import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
+import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../Services/exerciseService';
 import Swal from 'sweetalert2';
 
 const AdminExercises = ({ openAddModal }) => {

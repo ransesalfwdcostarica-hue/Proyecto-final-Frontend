@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Send, MessageSquare, Bot, History, Target, Users, Instagram, Facebook, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { saveContactMessage } from '../services/userService';
+import { saveContactMessage } from '../Services/userService';
 import '../styles/Contacto.css';
 
 const FormContact = () => {

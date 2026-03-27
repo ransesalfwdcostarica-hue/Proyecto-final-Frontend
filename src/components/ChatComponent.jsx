@@ -10,19 +10,70 @@ import '../styles/Chatbot.css';
 
 const ChatComponent = () => {
   const [inputText, setInputText] = useState('');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    {
+      role: 'bot',
+      content: '¡Hola! Soy tu asistente de salud impulsado por IA. He revisado tus datos de actividad recientes. Has completado 3 entrenamientos esta semana y la calidad de tu sueño ha mejorado en un 12%.\n\n¿Cómo puedo apoyar tus metas de fitness hoy?',
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }
+  ]);
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSendMessage = async (text = inputText) => {
+    if (!text.trim()) return;
+    
+    const newUserMessage = {
+      role: 'user',
+      content: text,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    
+    setMessages((prev) => [...prev, newUserMessage]);
+    setInputText('');
+    setIsTyping(true);
+
+    try {
+      const reply = await sendMessage(newUserMessage.content);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'bot',
+          content: reply,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'bot',
+          content: 'Lo siento, hubo un error al procesar tu solicitud.',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
 
   return (
     <div className="chatbot-wrapper">
       {/* Mobile Sidebar Overlay */}
-      {isSidebarOpen && (
-        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>
-      )}
+      <div className="sidebar-overlay" style={{ display: 'none' }}></div>
 
       {/* Header */}
       <header className="chatbot-header">
         <div className="header-left-mobile">
-          <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
+          <button className="mobile-menu-btn">
             <Menu size={24} />
           </button>
           <Link to="/" className="chatbot-logo-area">
@@ -44,10 +95,10 @@ const ChatComponent = () => {
       <div className="chatbot-body">
 
         {/* Left Sidebar */}
-        <aside className={`chatbot-sidebar-left ${isSidebarOpen ? 'mobile-open' : ''}`}>
+        <aside className="chatbot-sidebar-left">
           <div className="mobile-sidebar-header">
             <span>Historial de Chats</span>
-            <button className="close-sidebar-btn" onClick={() => setIsSidebarOpen(false)}>
+            <button className="close-sidebar-btn">
               <X size={24} />
             </button>
           </div>
@@ -165,52 +216,10 @@ const ChatComponent = () => {
             </div>
           </div>
         </main>
-
-        {/* Right Sidebar */}
-        <aside className="chatbot-sidebar-right">
-          <div className="right-section-title">
-            <BarChart2 size={20} color="#ca4a4a" /> Salud en Tiempo Real
-          </div>
-
-          <div className="score-card">
-            <div className="score-header">
-              <span>Puntuación de Actividad</span>
-              <span className="score-value">84/100</span>
-            </div>
-            <div className="score-bar-bg">
-              <div className="score-bar-fill"></div>
-            </div>
-          </div>
-
-          <div className="sidebar-title" style={{ marginLeft: 0, marginBottom: '16px' }}>ESTADÍSTICAS DE HOY</div>
-          <div className="stats-grid">
-            <div className="stat-box">
-              <Flame size={20} className="stat-icon" />
-              <div className="stat-label">Calorías</div>
-              <div className="stat-value">1,420</div>
-            </div>
-            <div className="stat-box">
-              <Footprints size={20} className="stat-icon" />
-              <div className="stat-label">Pasos</div>
-              <div className="stat-value">8,432</div>
-            </div>
-            <div className="stat-box">
-              <Heart size={20} className="stat-icon" />
-              <div className="stat-label">Ritmo Card.</div>
-              <div className="stat-value">72 bpm</div>
-            </div>
-            <div className="stat-box">
-              <Moon size={20} className="stat-icon" />
-              <div className="stat-label">Sueño</div>
-              <div className="stat-value">7h 20m</div>
-            </div>
-          </div>
-
-        </aside>
-
       </div>
     </div>
   );
 };
 
 export default ChatComponent;
+

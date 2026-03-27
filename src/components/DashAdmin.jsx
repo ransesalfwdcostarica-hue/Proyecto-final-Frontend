@@ -5,7 +5,7 @@ import DashboardAdministrador from './DashboardAdministrador';
 import AdminUsers from './AdminUsers';
 import AdminRoutines from './AdminRoutines';
 import AdminExercises from './AdminExercises';
-import { crearEjercicio } from '../services/exerciseService';
+import { crearEjercicio } from '../Services/exerciseService';
 import { Plus, X, Image as ImageIcon } from 'lucide-react';
 import Swal from 'sweetalert2';
 import AdminMessages from './AdminMessages';
