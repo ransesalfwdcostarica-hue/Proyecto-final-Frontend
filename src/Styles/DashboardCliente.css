@@ -706,6 +706,41 @@
   .header-actions {
     display: none;
   }
+
+  .section-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .btn-add-training-global {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .exercises-mini-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .client-main {
+    padding: 1.5rem 1.2rem;
+  }
+
+  .header-title h1 {
+    font-size: 1.6rem;
+  }
+
+  .section-header-row .header-text h2 {
+    font-size: 1.3rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .no-exercises {
+    padding: 3rem 1.5rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -713,6 +748,43 @@
     flex-direction: column;
     text-align: center;
     gap: 1rem;
+  }
+
+  .client-main {
+    padding: 1.2rem 1rem;
+  }
+
+  .header-title h1 {
+    font-size: 1.4rem;
+  }
+
+  .mini-card-img img {
+    height: 120px;
+  }
+
+  .mini-card-text {
+    padding: 1rem;
+  }
+
+  .mini-card-text h4 {
+    font-size: 0.9rem;
+  }
+
+  .muscle-group-title {
+    font-size: 1.1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-form-card {
+    padding: 1.5rem;
+  }
+
+  .btn-add-training-global {
+    font-size: 0.9rem;
+    padding: 10px 18px;
   }
 }
 

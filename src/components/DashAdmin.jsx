@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Users, Activity, Home, Dumbbell, Mail, Menu } from 'lucide-react';
+import { LayoutDashboard, Users, Activity, Home, Dumbbell, Mail, Menu, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import DashboardAdministrador from './DashboardAdministrador';
 import AdminUsers from './AdminUsers';
 import AdminRoutines from './AdminRoutines';
 import AdminExercises from './AdminExercises';
-import { obtenerTodosEjercicios } from '../services/exerciseService';
+import { obtenerTodosEjercicios } from '../Services/exerciseService';
 import { Plus, X, Image as ImageIcon } from 'lucide-react';
 import Swal from 'sweetalert2';
 import AdminMessages from './AdminMessages';
+import AdminReports from './AdminReports';
 import '../styles/dashboard.css';
 
 const DashAdmin = () => {
@@ -79,6 +80,8 @@ const DashAdmin = () => {
         return <AdminExercises openAddModal={openAddModal} />;
       case 'messages':
         return <AdminMessages />;
+      case 'reports':
+        return <AdminReports />;
       default:
         return <DashboardAdministrador changeTab={setActiveTab} openAddModal={openAddModal} />;
     }
@@ -116,6 +119,13 @@ const DashAdmin = () => {
           >
             <Mail size={20} />
             Mensajes
+          </button>
+          <button
+            className={`sidebar-btn ${activeTab === 'reports' ? 'active' : ''}`}
+            onClick={() => handleTabChange('reports')}
+          >
+            <AlertTriangle size={20} />
+            Reportes
           </button>
           <button
             className={`sidebar-btn ${activeTab === 'exercises' ? 'active' : ''}`}

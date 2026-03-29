@@ -7,31 +7,32 @@ import {
     Dumbbell,
     Home,
     Plus,
-    PlusCircle,
     Check,
+    ChevronRight,
     Trash2,
     X,
-    ChevronRight,
-    Image as ImageIcon
+    Image as ImageIcon,
+    Edit2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
-import { updateUser } from '../services/userService';
+import { obtenerTodosEjercicios as getAllExercises, crearEjercicio as createExercise, eliminarEjercicio as deleteExercise, actualizarEjercicio as updateExercise } from '../Services/exerciseService';
+import { updateUser } from '../Services/userService';
 import { useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import Swal from 'sweetalert2';
 import '../styles/Ejercicios.css';
-import MotivationalQuote from './MotivationalQuote';
 
-const EjerciciosComponent = () => {
+const Ejercicios = () => {
     const navigate = useNavigate();
     const { user, refreshUser } = useContext(UserContext);
     const [exercises, setExercises] = useState([]);
     const [filteredExercises, setFilteredExercises] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [activeCategory, setActiveCategory] = useState('Todos');
     const [showAddModal, setShowAddModal] = useState(false);
-    const [showTechniqueModal, setShowTechniqueModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [techniqueExercise, setTechniqueExercise] = useState(null);
 
     // Form state
     const [newExercise, setNewExercise] = useState({
@@ -40,7 +41,8 @@ const EjerciciosComponent = () => {
         musculo: '',
         tiempo: '',
         imagen: '',
-        categoria: 'Pecho'
+        categoria: 'Pecho',
+        videoUrl: ''
     });
 
     const categories = ['Todos', 'Pecho', 'Espalda', 'Piernas', 'Hombros', 'Brazos', 'Core', 'Glúteos'];
@@ -52,7 +54,7 @@ const EjerciciosComponent = () => {
     const loadExercises = async () => {
         try {
             setLoading(true);
-            const data = await obtenerTodosEjercicios();
+            const data = await getAllExercises();
             setExercises(data);
             setFilteredExercises(data);
         } catch (error) {
@@ -79,7 +81,7 @@ const EjerciciosComponent = () => {
         setFilteredExercises(result);
     }, [searchTerm, activeCategory, exercises]);
 
-    const [activeCategory, setActiveCategory] = useState('Todos');
+    const [exerciseToEdit, setExerciseToEdit] = useState(null);
 
     const toggleChooseExercise = async (id) => {
         if (!user) {
@@ -127,61 +129,20 @@ const EjerciciosComponent = () => {
     };
 
     const handleDelete = async (id) => {
-        const result = await Swal.fire({
-            title: '¿Estás seguro?',
-            text: "No podrás revertir esta acción",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#8b0000',
-            cancelButtonColor: '#333',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar',
-            background: '#171212',
-            color: '#fff'
-        });
-
-        if (result.isConfirmed) {
+        if (window.confirm('¿Estás seguro de que deseas eliminar este ejercicio?')) {
             try {
-                await eliminarEjercicio(id);
+                await deleteExercise(id);
                 setExercises(exercises.filter(ex => ex.id !== id));
-                Swal.fire({
-                    title: 'Eliminado',
-                    text: 'El ejercicio ha sido borrado.',
-                    icon: 'success',
-                    background: '#171212',
-                    color: '#fff',
-                    confirmButtonColor: '#8b0000'
-                });
             } catch (error) {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'No se pudo eliminar el ejercicio.',
-                    icon: 'error',
-                    background: '#171212',
-                    color: '#fff',
-                    confirmButtonColor: '#8b0000'
-                });
+                alert("Error al eliminar el ejercicio");
             }
         }
     };
 
     const handleCreate = async (e) => {
         e.preventDefault();
-        
-        if (!newExercise.nombre?.trim() || !newExercise.musculo?.trim() || !newExercise.tiempo?.trim() || !newExercise.imagen?.trim()) {
-            Swal.fire({
-                title: 'Atención',
-                text: 'Por favor, completa todos los campos del ejercicio.',
-                icon: 'warning',
-                background: '#171212',
-                color: '#fff',
-                confirmButtonColor: '#8b0000'
-            });
-            return;
-        }
-
         try {
-            const created = await crearEjercicio(newExercise);
+            const created = await createExercise(newExercise);
             setExercises([...exercises, created]);
             setShowAddModal(false);
             setNewExercise({
@@ -190,25 +151,28 @@ const EjerciciosComponent = () => {
                 musculo: '',
                 tiempo: '',
                 imagen: '',
-                categoria: 'Pecho'
-            });
-            Swal.fire({
-                title: '¡Éxito!',
-                text: 'El ejercicio ha sido agregado a la biblioteca.',
-                icon: 'success',
-                background: '#171212',
-                color: '#fff',
-                confirmButtonColor: '#8b0000'
+                categoria: 'Pecho',
+                videoUrl: ''
             });
         } catch (error) {
-            Swal.fire({
-                title: 'Error',
-                text: 'No se pudo agregar el ejercicio.',
-                icon: 'error',
-                background: '#171212',
-                color: '#fff',
-                confirmButtonColor: '#8b0000'
-            });
+            alert("Error al crear el ejercicio");
+        }
+    };
+
+    const openEditModal = (exercise) => {
+        setExerciseToEdit({ ...exercise });
+        setShowEditModal(true);
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        try {
+            const updated = await updateExercise(exerciseToEdit.id, exerciseToEdit);
+            setExercises(exercises.map(ex => ex.id === updated.id ? updated : ex));
+            setShowEditModal(false);
+            setExerciseToEdit(null);
+        } catch (error) {
+            alert("Error al actualizar el ejercicio");
         }
     };
 
@@ -273,8 +237,6 @@ const EjerciciosComponent = () => {
                 </div>
             </section>
 
-            <MotivationalQuote />
-
             <div className="exercises-grid">
                 {filteredExercises.map((exercise, index) => (
                     <div
@@ -286,9 +248,14 @@ const EjerciciosComponent = () => {
                             <img src={exercise.imagen} alt={exercise.nombre} />
                             <div className="time-tag">{exercise.tiempo}</div>
                             {isAdmin && (
-                                <button className="delete-btn-overlay" onClick={() => handleDelete(exercise.id)}>
-                                    <Trash2 size={18} />
-                                </button>
+                                <>
+                                    <button className="delete-btn-overlay" onClick={() => handleDelete(exercise.id)}>
+                                        <Trash2 size={18} />
+                                    </button>
+                                    <button className="edit-btn-overlay" onClick={() => openEditModal(exercise)}>
+                                        <Edit2 size={18} />
+                                    </button>
+                                </>
                             )}
                         </div>
                         <div className="card-info">
@@ -300,11 +267,10 @@ const EjerciciosComponent = () => {
                                 <span className="tag-muscle">{exercise.musculo}</span>
                             </div>
                             <div className="card-actions">
-                                <button className="btn-technique" onClick={() => setShowTechniqueModal(true)}>
+                                <button className="btn-technique" onClick={() => setTechniqueExercise(exercise)}>
                                     <Play size={16} fill="currentColor" />
                                     Técnica
                                 </button>
-                                {user && (
                                 <button 
                                     className={`btn-add-to-training ${(user?.ejerciciosElegidos || []).includes(exercise.id) ? 'active' : ''}`} 
                                     onClick={() => toggleChooseExercise(exercise.id)}
@@ -312,7 +278,6 @@ const EjerciciosComponent = () => {
                                     {(user?.ejerciciosElegidos || []).includes(exercise.id) ? <Check size={16} /> : <Plus size={16} />}
                                     <span>{(user?.ejerciciosElegidos || []).includes(exercise.id) ? 'En mi Rutina' : 'Añadir a Mi Rutina'}</span>
                                 </button>
-                                )}
                             </div>
                         </div>
                     </div>
@@ -322,23 +287,6 @@ const EjerciciosComponent = () => {
             {filteredExercises.length === 0 && (
                 <div style={{ textAlign: 'center', padding: '50px', color: 'var(--text-dim)' }}>
                     <p>No se encontraron ejercicios con esos filtros.</p>
-                </div>
-            )}
-
-            {/* Modal de Técnica */}
-            {showTechniqueModal && (
-                <div className="modal-overlay" onClick={() => setShowTechniqueModal(false)}>
-                    <div className="modal-content animate-fade-up" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2>Técnica</h2>
-                            <button className="close-btn" onClick={() => setShowTechniqueModal(false)}>
-                                <X size={24} />
-                            </button>
-                        </div>
-                        <div style={{ padding: '20px', textAlign: 'center' }}>
-                            <p>Instrucciones detalladas de técnica para este ejercicio.</p>
-                        </div>
-                    </div>
                 </div>
             )}
 
@@ -382,7 +330,7 @@ const EjerciciosComponent = () => {
                                         value={newExercise.categoria}
                                         onChange={e => setNewExercise({ ...newExercise, categoria: e.target.value })}
                                     >
-                                        {categories.filter(c => c !== 'Todos' && c !== 'Favoritos').map(c => (
+                                        {categories.filter(c => c !== 'Todos').map(c => (
                                             <option key={c} value={c}>{c}</option>
                                         ))}
                                     </select>
@@ -423,6 +371,18 @@ const EjerciciosComponent = () => {
                                     />
                                 </div>
                             </div>
+                            <div className="form-group">
+                                <label>URL de Video YouTube (Embed)</label>
+                                <div className="input-with-icon">
+                                    <Play size={18} />
+                                    <input
+                                        type="url"
+                                        placeholder="Ej: https://www.youtube.com/embed/XXXXXX"
+                                        value={newExercise.videoUrl || ''}
+                                        onChange={e => setNewExercise({ ...newExercise, videoUrl: e.target.value })}
+                                    />
+                                </div>
+                            </div>
                             <button type="submit" className="submit-btn-premium">
                                 <Plus size={18} />
                                 Crear Ejercicio
@@ -431,8 +391,143 @@ const EjerciciosComponent = () => {
                     </div>
                 </div>
             )}
+
+            {/* Modal de Editar Ejercicio */}
+            {showEditModal && exerciseToEdit && (
+                <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+                    <div className="modal-content animate-fade-up" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Editar Ejercicio</h2>
+                            <button className="close-btn" onClick={() => setShowEditModal(false)}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <form className="add-exercise-form" onSubmit={handleUpdate}>
+                            <div className="form-group">
+                                <label>Nombre del Ejercicio</label>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="Ej: Press de Banca"
+                                    value={exerciseToEdit.nombre}
+                                    onChange={e => setExerciseToEdit({ ...exerciseToEdit, nombre: e.target.value })}
+                                />
+                            </div>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Nivel</label>
+                                    <select
+                                        value={exerciseToEdit.nivel}
+                                        onChange={e => setExerciseToEdit({ ...exerciseToEdit, nivel: e.target.value })}
+                                    >
+                                        <option value="PRINCIPIANTE">PRINCIPIANTE</option>
+                                        <option value="INTERMEDIO">INTERMEDIO</option>
+                                        <option value="AVANZADO">AVANZADO</option>
+                                        <option value="EXPERTO">EXPERTO</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Categoría</label>
+                                    <select
+                                        value={exerciseToEdit.categoria}
+                                        onChange={e => setExerciseToEdit({ ...exerciseToEdit, categoria: e.target.value })}
+                                    >
+                                        {categories.filter(c => c !== 'Todos').map(c => (
+                                            <option key={c} value={c}>{c}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Músculo Secundario</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        placeholder="Ej: PECHO, TRÍCEPS"
+                                        value={exerciseToEdit.musculo}
+                                        onChange={e => setExerciseToEdit({ ...exerciseToEdit, musculo: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Tiempo Sugerido (Ej: 45 SEG)</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        placeholder="Ej: 45 SEG"
+                                        value={exerciseToEdit.tiempo}
+                                        onChange={e => setExerciseToEdit({ ...exerciseToEdit, tiempo: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label>URL de Imagen</label>
+                                <div className="input-with-icon">
+                                    <ImageIcon size={18} />
+                                    <input
+                                        type="url"
+                                        required
+                                        placeholder="https://images.unsplash.com/..."
+                                        value={exerciseToEdit.imagen}
+                                        onChange={e => setExerciseToEdit({ ...exerciseToEdit, imagen: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label>URL de Video YouTube (Embed)</label>
+                                <div className="input-with-icon">
+                                    <Play size={18} />
+                                    <input
+                                        type="url"
+                                        placeholder="Ej: https://www.youtube.com/embed/XXXXXX"
+                                        value={exerciseToEdit.videoUrl || ''}
+                                        onChange={e => setExerciseToEdit({ ...exerciseToEdit, videoUrl: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                            <button type="submit" className="submit-btn-premium" style={{ background: 'linear-gradient(135deg, rgba(65, 105, 225, 0.9) 0%, rgba(30, 64, 175, 0.9) 100%)' }}>
+                                <Edit2 size={18} />
+                                Guardar Cambios
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Ver Técnica */}
+            {techniqueExercise && (
+                <div className="modal-overlay" onClick={() => setTechniqueExercise(null)}>
+                    <div className="modal-content animate-fade-up" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Técnica: {techniqueExercise.nombre}</h2>
+                            <button className="close-btn" onClick={() => setTechniqueExercise(null)}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <div style={{ padding: '20px' }}>
+                            {techniqueExercise.videoUrl ? (
+                                <iframe 
+                                    width="100%" 
+                                    height="315" 
+                                    src={techniqueExercise.videoUrl} 
+                                    title="YouTube video player" 
+                                    style={{ border: 'none', borderRadius: '12px' }}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowFullScreen
+                                ></iframe>
+                            ) : (
+                                <p style={{ color: 'var(--text-dim)', textAlign: 'center' }}>
+                                    El video de técnica para este ejercicio aún no está disponible.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Confirmar Quitar Favorito removed */}
         </div>
     );
 };
 
-export default EjerciciosComponent;
+export default Ejercicios;

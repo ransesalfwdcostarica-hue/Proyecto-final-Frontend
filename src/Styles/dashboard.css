@@ -1187,3 +1187,5 @@ hr {
   color: white;
   box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
 }
+/* Admin Reports Responsive Overrides (preserving inline styles) */
+@media (max-width: 768px) { .reports-grid-premium { grid-template-columns: 1fr !important; } .report-card-premium { margin-bottom: 1rem !important; } .report-actions { flex-direction: column !important; gap: 8px !important; } .report-actions button { width: 100% !important; margin: 0 !important; } .preview-modal-content { width: 95% !important; max-width: 95% !important; margin: 10px !important; max-height: 90vh !important; } }

@@ -59,7 +59,7 @@ const ChatComponent = () => {
     setMessages([
       {
         role: 'bot',
-        content: '¡Hola! Soy tu asistente de salud impulsado por IA. He revisado tus datos de actividad recientes. Has completado 3 entrenamientos esta semana y la calidad de tu sueño ha mejorado en un 12%.\n\n¿Cómo puedo apoyar tus metas de fitness hoy?',
+        content: '¡Hola! Soy tu asistente de salud impulsado por IA.\n\n¿Cómo puedo apoyar tus metas de fitness hoy?',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ]);
@@ -147,8 +147,13 @@ const ChatComponent = () => {
 
   return (
     <div className="chatbot-wrapper">
+      {/* Checkbox Hack for Mobile Sidebar */}
+      <input type="checkbox" id="sidebar-toggle" className="sidebar-toggle-input" style={{ display: 'none' }} />
+      
       {/* Mobile Sidebar Overlay */}
-      <div className="sidebar-overlay" style={{ display: 'none' }}></div>
+      <label htmlFor="sidebar-toggle" className="sidebar-overlay-label">
+        <div className="sidebar-overlay"></div>
+      </label>
 
       {/* Main Layout Area */}
       <div className="chatbot-body">
@@ -157,9 +162,9 @@ const ChatComponent = () => {
         <aside className="chatbot-sidebar-left">
           <div className="mobile-sidebar-header">
             <span>Historial de Chats</span>
-            <button className="close-sidebar-btn">
+            <label htmlFor="sidebar-toggle" className="close-sidebar-btn">
               <X size={24} />
-            </button>
+            </label>
           </div>
 
           <div className="new-chat-btn-container" style={{ paddingBottom: '16px', borderBottom: '1px solid #2d1b1c', marginBottom: '16px' }}>
@@ -214,6 +219,14 @@ const ChatComponent = () => {
 
         {/* Chat Area */}
         <main className="chatbot-main">
+          {/* Mobile Chat Header with Hamburger */}
+          <div className="mobile-chat-header">
+            <label htmlFor="sidebar-toggle" className="mobile-menu-toggle">
+              <Menu size={24} />
+            </label>
+            <span className="mobile-bot-name">VitalBot Assist</span>
+          </div>
+
           <div className="chat-messages">
             {messages.map((msg, idx) => (
               <div key={idx} className={`msg-row ${msg.role === 'user' ? 'user-row' : ''}`}>

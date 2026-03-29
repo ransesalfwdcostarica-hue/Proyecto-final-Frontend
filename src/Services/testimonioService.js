@@ -134,3 +134,47 @@ export const getStoriesByUserId = async (userId) => {
     
     return stories;
 };
+
+export const createReport = async (reportPayload) => {
+    const response = await fetch(`${API_URL}/reports`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            ...reportPayload,
+            status: 'pending',
+            fecha: new Date().toISOString()
+        })
+    });
+    if (!response.ok) {
+        throw new Error('Error al enviar el reporte.');
+    }
+    return await response.json();
+};
+
+export const getAllReports = async () => {
+    const response = await fetch(`${API_URL}/reports`);
+    if (!response.ok) {
+        throw new Error('Error al cargar los reportes.');
+    }
+    return await response.json();
+};
+
+export const deleteReport = async (reportId) => {
+    const response = await fetch(`${API_URL}/reports/${reportId}`, {
+        method: 'DELETE'
+    });
+    if (!response.ok) {
+        throw new Error('Error al eliminar el reporte.');
+    }
+    return response;
+};
+
+export const getStoryById = async (storyId) => {
+    const response = await fetch(`${API_URL}/stories/${storyId}`);
+    if (!response.ok) {
+        throw new Error('Error al cargar la historia.');
+    }
+    return await response.json();
+};

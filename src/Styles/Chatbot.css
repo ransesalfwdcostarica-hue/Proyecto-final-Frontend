@@ -468,6 +468,38 @@
 /* Sidebar toggle overlay & mobile nav */
 .sidebar-overlay {
   display: none;
+  position: fixed;
+  inset: 0;
+  top: var(--nav-height-mobile, 60px);
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.sidebar-toggle-input:checked ~ .sidebar-overlay-label .sidebar-overlay {
+  display: block;
+}
+
+.mobile-chat-header {
+  display: none;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #1a1213;
+  border-bottom: 1px solid #2d1b1c;
+  gap: 12px;
+}
+
+.mobile-menu-toggle {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+
+.mobile-bot-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--primary);
 }
 .mobile-menu-btn {
   display: none;
@@ -527,9 +559,10 @@
     width: 280px;
     max-width: 85vw;
     box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+    padding-top: 60px; /* Added padding to avoid clashing with menu icons */
   }
 
-  .chatbot-sidebar-left.mobile-open {
+  .sidebar-toggle-input:checked ~ .chatbot-body .chatbot-sidebar-left {
     transform: translateX(0);
   }
 
@@ -537,11 +570,15 @@
     display: flex;
   }
 
+  .mobile-chat-header {
+    display: flex;
+  }
+
   .sidebar-overlay {
-    display: block;
+    /* display is controlled by checkbox state at top level */
     position: fixed;
     inset: 0;
-    top: var(--nav-height-mobile);
+    top: var(--nav-height-mobile, 60px);
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 1000;
     backdrop-filter: blur(2px);
