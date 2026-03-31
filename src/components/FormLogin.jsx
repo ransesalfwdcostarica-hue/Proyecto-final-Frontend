@@ -48,9 +48,9 @@ function FormLogin() {
       // but here we can just wait 1.5s or handle on close
       setTimeout(() => {
         if (user.rol === "admin") {
-          window.location.href = "/admin";
+          navigate("/admin");
         } else {
-          window.location.href = "/dashboard";
+          navigate("/dashboard");
         }
       }, 1500);
     } catch (err) {

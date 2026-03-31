@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { UserContext } from '../context/UserContext';
 import { Link } from 'react-router-dom';
 import { sendMessage } from '../services/Chatbot';
 import {
@@ -7,8 +8,18 @@ import {
   BarChart2, Paperclip, Send, Flame, Footprints, Heart, Moon, Menu, X
 } from 'lucide-react';
 import '../styles/Chatbot.css';
+import toast from 'react-hot-toast';
+
+const systemPrompt = `ACTÚA COMO UN PREPARADOR FÍSICO PROFESIONAL Y COACH DE SALUD.
+Tu misión es REFORZAR y profundizar en la solicitud del usuario bajo estas reglas:
+1. Respuestas cortas, concretas y directas al punto.
+2. Usa evidencia científica (PubMed) para validar tus consejos.
+3. Mantén un tono motivador pero estrictamente profesional.
+4. REGLA DE REFUERZO: Si el usuario pide algo específico, analízalo desde una perspectiva experta y dales consejos que potencien su solicitud (ej: si piden una rutina de pecho, añade un consejo sobre retracción escapular o cadencia).
+5. REGLA DE CONTEXTO: Si la información es insuficiente para una recomendación segura, DEBES preguntar por su nivel, objetivos o limitaciones antes de responder.`;
 
 const ChatComponent = () => {
+  const { user } = useContext(UserContext);
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState([
     {
@@ -18,22 +29,66 @@ const ChatComponent = () => {
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
+  const [historialChat, setHistorialChat] = useState(() => {
+    const saved = localStorage.getItem("historialChatFitness");
+    return saved ? JSON.parse(saved) : [];
+  });
   const messagesEndRef = useRef(null);
+
+  const esConsultaFitness = (mensaje) => {
+    if (!mensaje) return false;
+    const palabrasClave = [
+      "ejercicio", "rutina", "gym", "entrenamiento", "musculación", "cardio", 
+      "dieta", "proteína", "calorías", "fitness", "peso", "salud", "comida", 
+      "músculo", "fuerza", "hipertrofia", "suplementos", "vitaminas", "grasas", 
+      "carbohidratos", "macros", "imc", "movilidad", "estiramiento", "yoga", 
+      "atleta", "entrenador", "coach", "rendimiento", "calistenia", "crossfit",
+      "nutrición", "ayuno", "carbohidrato", "proteina", "caloria", "musculo",
+      "hola", "buenos días", "buenas tardes", "buenas noches", "hey", "hi", "saludos", "ayuda"
+    ];
+    
+    const mensajeMin = mensaje.toLowerCase();
+    return palabrasClave.some(palabra => mensajeMin.includes(palabra));
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleNewChat = () => {
+    setMessages([
+      {
+        role: 'bot',
+        content: '¡Hola! Soy tu asistente de salud impulsado por IA.\n\n¿Cómo puedo apoyar tus metas de fitness hoy?',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+    ]);
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async (text = inputText) => {
-    if (!text.trim()) return;
+  const handleSendMessage = async (manualText) => {
+    // Si viene de un chip o historial, usamos manualText. Si no, usamos inputText.
+    const textToSend = (typeof manualText === 'string') ? manualText : inputText;
+    
+    if (!textToSend || !textToSend.trim()) return;
+
+    if (!esConsultaFitness(textToSend)) {
+      toast.error("Solo se permiten consultas relacionadas con fitness 💪", {
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+      });
+      return;
+    }
     
     const newUserMessage = {
       role: 'user',
-      content: text,
+      content: textToSend,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     
@@ -42,7 +97,16 @@ const ChatComponent = () => {
     setIsTyping(true);
 
     try {
-      const reply = await sendMessage(newUserMessage.content);
+      const perfilFitness = JSON.parse(localStorage.getItem("perfilFitness") || "{}");
+      const nivel = perfilFitness.nivel || user?.nivel || "No especificado";
+      const objetivo = perfilFitness.objetivo || user?.objetivo || "No especificado";
+
+      const contextoUsuario = `El usuario tiene un nivel ${nivel} y su objetivo es ${objetivo}. Adapta todas las recomendaciones a este perfil.`;
+
+      const promptFinal = `${systemPrompt}\n\nContexto del usuario:\n${contextoUsuario}\n\nMensaje del usuario:\n${textToSend}`;
+      
+      const reply = await sendMessage(promptFinal);
+      
       setMessages((prev) => [
         ...prev,
         {
@@ -51,7 +115,23 @@ const ChatComponent = () => {
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
+
+      // Guardar en el historial
+      const nuevoChat = {
+        id: Date.now(),
+        pregunta: textToSend,
+        respuesta: reply,
+        fecha: new Date().toISOString()
+      };
+      
+      setHistorialChat((prev) => {
+        const nuevoHistorial = [nuevoChat, ...prev].slice(0, 20);
+        localStorage.setItem("historialChatFitness", JSON.stringify(nuevoHistorial));
+        return nuevoHistorial;
+      });
+
     } catch (error) {
+      console.error("Error sending message:", error);
       setMessages((prev) => [
         ...prev,
         {
@@ -67,8 +147,13 @@ const ChatComponent = () => {
 
   return (
     <div className="chatbot-wrapper">
+      {/* Checkbox Hack for Mobile Sidebar */}
+      <input type="checkbox" id="sidebar-toggle" className="sidebar-toggle-input" style={{ display: 'none' }} />
+      
       {/* Mobile Sidebar Overlay */}
-      <div className="sidebar-overlay" style={{ display: 'none' }}></div>
+      <label htmlFor="sidebar-toggle" className="sidebar-overlay-label">
+        <div className="sidebar-overlay"></div>
+      </label>
 
       {/* Main Layout Area */}
       <div className="chatbot-body">
@@ -77,51 +162,71 @@ const ChatComponent = () => {
         <aside className="chatbot-sidebar-left">
           <div className="mobile-sidebar-header">
             <span>Historial de Chats</span>
-            <button className="close-sidebar-btn">
+            <label htmlFor="sidebar-toggle" className="close-sidebar-btn">
               <X size={24} />
-            </button>
+            </label>
           </div>
 
           <div className="new-chat-btn-container" style={{ paddingBottom: '16px', borderBottom: '1px solid #2d1b1c', marginBottom: '16px' }}>
             <button
+              onClick={handleNewChat}
               style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', backgroundColor: '#7c2626', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
               <PlusSquare size={18} /> Nuevo Chat
             </button>
           </div>
 
           <div className="sidebar-section">
-            <div className="sidebar-title">Hoy</div>
-            <div className="nav-item active">
-              <MessageSquare size={18} /> Análisis de Estadísticas
-            </div>
-            <div className="nav-item">
-              <MessageSquare size={18} /> Recuperación de Rodilla
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <div className="sidebar-title">Ayer</div>
-            <div className="nav-item">
-              <MessageSquare size={18} /> Preparación de Dieta Keto
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <div className="sidebar-title">Últimos 7 Días</div>
-            <div className="nav-item">
-              <MessageSquare size={18} /> Rutina HIIT 30 min
-            </div>
-            <div className="nav-item">
-              <MessageSquare size={18} /> Suplementación deportiva
-            </div>
-            <div className="nav-item">
-              <MessageSquare size={18} /> Calcular macros
-            </div>
+            <div className="sidebar-title">Historial Reciente</div>
+            {historialChat.length > 0 ? (
+              historialChat.map((chat) => (
+                <div 
+                  key={chat.id} 
+                  className="nav-item"
+                  onClick={() => {
+                    setMessages([
+                      {
+                        role: 'user',
+                        content: chat.pregunta,
+                        time: new Date(chat.fecha).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                      },
+                      {
+                        role: 'bot',
+                        content: chat.respuesta,
+                        time: new Date(chat.fecha).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                      }
+                    ]);
+                  }}
+                  title={chat.pregunta}
+                >
+                  <MessageSquare size={18} /> 
+                  <span style={{ 
+                    whiteSpace: 'nowrap', 
+                    overflow: 'hidden', 
+                    textOverflow: 'ellipsis',
+                    maxWidth: '180px'
+                  }}>
+                    {chat.pregunta}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div style={{ padding: '8px 12px', fontSize: '0.85rem', color: '#666', fontStyle: 'italic' }}>
+                No hay chats previos
+              </div>
+            )}
           </div>
         </aside>
 
         {/* Chat Area */}
         <main className="chatbot-main">
+          {/* Mobile Chat Header with Hamburger */}
+          <div className="mobile-chat-header">
+            <label htmlFor="sidebar-toggle" className="mobile-menu-toggle">
+              <Menu size={24} />
+            </label>
+            <span className="mobile-bot-name">VitalBot Assist</span>
+          </div>
+
           <div className="chat-messages">
             {messages.map((msg, idx) => (
               <div key={idx} className={`msg-row ${msg.role === 'user' ? 'user-row' : ''}`}>

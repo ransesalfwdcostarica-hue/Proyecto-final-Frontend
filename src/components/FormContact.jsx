@@ -14,7 +14,6 @@ const FormContact = () => {
         pais: ''
     });
     const [loading, setLoading] = useState(false);
-    const [texto, setTexto] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
@@ -232,10 +231,7 @@ const FormContact = () => {
                                     rows="5"
                                     placeholder="Describe tu problema o duda técnica..."
                                     value={formData.mensaje}
-                                    onChange={(e) => {
-                                        handleChange(e);
-                                        setTexto(e.target.value);
-                                    }}
+                                    onChange={handleChange}
                                     required
                                     maxLength={1000}
                                 ></textarea>

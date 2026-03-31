@@ -16,8 +16,8 @@ app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
 
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-flash",
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
       systemInstruction: "Eres un asistente útil especializado en fitness, salud, y entrenamiento. Solo responde de forma amigable y concisa."
     });
 

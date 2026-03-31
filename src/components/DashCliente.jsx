@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState, useContext } from 'react';
 import {
   LayoutDashboard,
@@ -114,7 +115,7 @@ const DashCliente = () => {
         color: '#fff',
         confirmButtonColor: '#8b0000'
       });
-    } catch (error) {
+    } catch {
       Swal.fire({
         icon: 'error',
         title: 'Error',
@@ -189,7 +190,7 @@ const DashCliente = () => {
         color: '#fff',
         confirmButtonColor: '#8b0000'
       });
-    } catch (error) {
+    } catch {
       Swal.fire({
         icon: 'error',
         title: 'Error',

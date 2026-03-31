@@ -59,7 +59,7 @@ const AdminUsers = () => {
       setUsers(users.map(u => u.id === selectedUser.id ? { ...u, ...editForm } : u));
       setIsEditModalOpen(false);
       setSelectedUser(null);
-    } catch (error) {
+    } catch {
       alert("Error al actualizar usuario");
     }
   };
@@ -84,7 +84,7 @@ const AdminUsers = () => {
       setUsers(users.filter(u => u.id !== userIdToDelete));
       setIsDeleteModalOpen(false);
       setUserIdToDelete(null);
-    } catch (error) {
+    } catch {
       alert("Error al eliminar usuario");
     }
   };

@@ -28,7 +28,7 @@ const AdminMessages = () => {
     try {
       await deleteContactMessage(id);
       setMessages(messages.filter(m => m.id !== id));
-    } catch (error) {
+    } catch {
       alert("Error al eliminar el mensaje");
     }
   };

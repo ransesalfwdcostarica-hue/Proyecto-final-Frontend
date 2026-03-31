@@ -1,12 +1,14 @@
 import { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import { Search, Plus, MessageSquare, ThumbsUp, Share2, Award, TrendingUp, Dumbbell, MoreHorizontal, X, Upload, Trash2, AlertTriangle, Send, User } from 'lucide-react';
-import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount } from '../Services/testimonioService';
+import { fetchStoriesData, createStory, deleteStory, updateStoryLikes, fetchCommentsByStory, addComment, updateStoryCommentsCount, createReport } from '../services/testimonioService';
 import { getAllUsers, updateUser } from '../services/userService';
 import { Link } from 'react-router-dom';
 import SubirImagen from './SubirImagen';
 import '../styles/SuccessStories.css';
 import MotivationalQuote from './MotivationalQuote';
+import Swal from 'sweetalert2';
+import FormPublicaciones from './FormPublicaciones';
 
 const getTimeAgo = (dateString) => {
     if (!dateString) return '';
@@ -83,13 +85,130 @@ const TestimonioComponent = () => {
     // Login Alert Modal state
     const [isLoginAlertOpen, setIsLoginAlertOpen] = useState(false);
 
+    // Reporting state
+    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+    const [reportingStoryId, setReportingStoryId] = useState(null);
+    const [reportReason, setReportReason] = useState('');
+    const [reportSubReason, setReportSubReason] = useState('');
+    const [reportOtherText, setReportOtherText] = useState('');
+    const [isReporting, setIsReporting] = useState(false);
+    const [isButtonClicked, setIsButtonClicked] = useState(false);
+
+    const reportOptions = [
+        {
+            category: 'Contenido inapropiado',
+            options: ['Desnudos o contenido sexual', 'Violencia o contenido gráfico', 'Lenguaje ofensivo o vulgar']
+        },
+        {
+            category: 'Acoso o bullying',
+            options: ['Insultos directos', 'Amenazas', 'Hostigamiento repetido']
+        },
+        {
+            category: 'Información falsa',
+            options: ['Noticias falsas', 'Información engañosa', 'Desinformación (salud, política, etc.)']
+        },
+        {
+            category: 'Spam o publicidad no deseada',
+            options: ['Promociones excesivas', 'Links sospechosos', 'Bots o cuentas falsas']
+        },
+        {
+            category: 'Discurso de odio',
+            options: ['Racismo', 'Xenofobia', 'Discriminación (género, religión, orientación, etc.)']
+        },
+        {
+            category: 'Violación de derechos',
+            options: ['Uso de contenido sin permiso', 'Suplantación de identidad', 'Robo de propiedad intelectual']
+        },
+        {
+            category: 'Autolesión o contenido sensible',
+            options: ['Promoción de daño propio', 'Contenido que pueda afectar emocionalmente']
+        },
+        {
+            category: 'Otro',
+            options: []
+        }
+    ];
+
+    const handleOpenReportModal = (storyId) => {
+        if (!currentUser) {
+            setIsLoginAlertOpen(true);
+            return;
+        }
+        setReportingStoryId(storyId);
+        setIsReportModalOpen(true);
+        setReportReason('');
+        setReportSubReason('');
+        setReportOtherText('');
+    };
+
+    const handleReportSubmit = async (e) => {
+        e.preventDefault();
+        if (!reportReason) {
+            alert('Por favor selecciona una razón para el reporte.');
+            return;
+        }
+        if (reportReason === 'Otro' && !reportOtherText.trim()) {
+            alert('Por favor describe el motivo del reporte.');
+            return;
+        }
+
+        setIsReporting(true);
+        try {
+            await createReport({
+                storyId: reportingStoryId,
+                reporterId: currentUser.id,
+                reporterName: currentUser.nombre,
+                reason: reportReason,
+                subReason: reportSubReason,
+                otherText: reportOtherText
+            });
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Reporte enviado',
+                text: 'Gracias por ayudarnos a mantener la comunidad segura.',
+                background: '#171212',
+                color: '#fff',
+                confirmButtonColor: '#8b0000'
+            });
+            setIsReportModalOpen(false);
+        } catch (error) {
+            console.error('Error reporting:', error);
+            alert('Error al enviar el reporte. Por favor intenta de nuevo.');
+        } finally {
+            setIsReporting(false);
+        }
+    };
+
     const handleOpenModal = () => {
         if (!currentUser) {
             setIsLoginAlertOpen(true);
             return;
         }
-        setIsModalOpen(true);
+        
+        // Efecto visual en el botón
+        setIsButtonClicked(true);
+        setTimeout(() => setIsButtonClicked(false), 400);
+        
+        // Pequeño delay para dejar que la animación del botón se vea antes de abrir el modal
+        setTimeout(() => {
+            setIsModalOpen(true);
+        }, 150);
     };
+
+    // Close on escape key
+    useEffect(() => {
+        const handleEsc = (e) => {
+            if (e.key === 'Escape') {
+                if (isModalOpen) handleCloseModal();
+                if (isReportModalOpen) setIsReportModalOpen(false);
+                if (isDeleteModalOpen) setIsDeleteModalOpen(false);
+                if (isLoginAlertOpen) setIsLoginAlertOpen(false);
+            }
+        };
+        window.addEventListener('keydown', handleEsc);
+        return () => window.removeEventListener('keydown', handleEsc);
+    }, [isModalOpen, isReportModalOpen, isDeleteModalOpen, isLoginAlertOpen]);
 
     // Load up-to-date user and set up interval for time updates
     useEffect(() => {
@@ -218,6 +337,7 @@ const TestimonioComponent = () => {
 
     useEffect(() => {
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const loadData = async () => {
@@ -247,7 +367,7 @@ const TestimonioComponent = () => {
             const dynamicContributors = calculateTopContributors(sortedStories, usersData);
             setTopContributors(dynamicContributors);
 
-            // Inicializar estados de likes locales desde la DB
+            // Inicializar estados de likes locales desde la DB y localStorage
             if (currentUser) {
                 const initialLikes = {};
                 storiesData.forEach(story => {
@@ -255,7 +375,14 @@ const TestimonioComponent = () => {
                         initialLikes[story.id] = true;
                     }
                 });
-                setLocalLikes(initialLikes);
+                
+                // Cargar likes persistidos de localStorage
+                const savedLikes = JSON.parse(localStorage.getItem(`likes_${currentUser.id}`) || '{}');
+                const mergedLikes = { ...initialLikes, ...savedLikes };
+                
+                setLocalLikes(mergedLikes);
+                // Sincronizar localStorage con la DB por si acaso
+                localStorage.setItem(`likes_${currentUser.id}`, JSON.stringify(mergedLikes));
             }
         } catch (error) {
             console.error("Error loading data:", error);
@@ -288,11 +415,16 @@ const TestimonioComponent = () => {
 
         const newLikeValue = newLikedBy.length;
 
-        // UI Optimista
-        setLocalLikes(prev => ({
-            ...prev,
+        // UI Optimista y Persistencia Local
+        const updatedLikes = {
+            ...localLikes,
             [id]: !isCurrentlyLiked
-        }));
+        };
+        setLocalLikes(updatedLikes);
+        
+        if (currentUser) {
+            localStorage.setItem(`likes_${currentUser.id}`, JSON.stringify(updatedLikes));
+        }
 
         try {
             // Actualizar en el servidor con el nuevo array de IDs y el contador
@@ -306,10 +438,14 @@ const TestimonioComponent = () => {
             );
         } catch (error) {
             console.error('Error updating likes:', error);
-            setLocalLikes(prev => ({
-                ...prev,
+            const revertedLikes = {
+                ...localLikes,
                 [id]: isCurrentlyLiked
-            }));
+            };
+            setLocalLikes(revertedLikes);
+            if (currentUser) {
+                localStorage.setItem(`likes_${currentUser.id}`, JSON.stringify(revertedLikes));
+            }
             alert('No se pudo guardar tu reacción. Inténtalo de nuevo.');
         }
     };
@@ -405,6 +541,39 @@ const TestimonioComponent = () => {
         );
     }
 
+    if (!currentUser) {
+        return (
+            <div className="success-stories-page" style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                justifyContent: 'center', 
+                alignItems: 'center',
+                height: '80vh',
+                textAlign: 'center',
+                padding: '2rem'
+            }}>
+                <div style={{ 
+                    background: 'rgba(255, 77, 77, 0.1)', 
+                    padding: '3rem', 
+                    borderRadius: '24px', 
+                    border: '1px solid rgba(255, 77, 77, 0.2)',
+                    maxWidth: '500px'
+                }}>
+                    <User size={64} color="var(--primary)" style={{ marginBottom: '1.5rem', opacity: 0.8 }} />
+                    <h2 style={{ fontSize: '2rem', color: '#fff', marginBottom: '1rem' }}>¡Únete a la Comunidad!</h2>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: '1.6', marginBottom: '2rem' }}>
+                        Para ver las historias de éxito, dar likes y comentar, necesitas iniciar sesión en tu cuenta.
+                    </p>
+                    <Link to="/login" style={{ textDecoration: 'none' }}>
+                        <button className="btn-share" style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>
+                            Iniciar Sesión
+                        </button>
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="success-stories-page">
             <div className="success-stories-container">
@@ -417,7 +586,10 @@ const TestimonioComponent = () => {
                                 Historias de éxito de nuestra comunidad dedicada. Inspírate y comparte tu propio viaje.
                             </p>
                         </div>
-                        <button className="btn-share" onClick={handleOpenModal}>
+                        <button 
+                            className={`btn-share ${isButtonClicked ? 'clicked' : ''}`} 
+                            onClick={handleOpenModal}
+                        >
                             <Plus size={20} />
                             <span>Comparte tu historia</span>
                         </button>
@@ -497,13 +669,24 @@ const TestimonioComponent = () => {
                                             </div>
                                         </div>
                                         <div className="story-header-actions">
-                                            {currentUser && currentUser.id === story.userId && (
+                                            {currentUser && currentUser.id === story.userId ? (
                                                 <button
                                                     className="btn-delete"
                                                     onClick={() => handleDeleteStory(story.id)}
                                                     title="Eliminar testimonio"
                                                 >
                                                     <Trash2 size={18} />
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className="btn-report"
+                                                    onClick={() => handleOpenReportModal(story.id)}
+                                                    title="Reportar publicación"
+                                                    style={{ color: 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', padding: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.2s' }}
+                                                    onMouseOver={(e) => e.currentTarget.style.color = 'var(--primary)'}
+                                                    onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+                                                >
+                                                    <AlertTriangle size={18} />
                                                 </button>
                                             )}
                                             <button className="btn-more">
@@ -543,7 +726,7 @@ const TestimonioComponent = () => {
                                                 onClick={() => handleLike(story.id)}
                                             >
                                                 <ThumbsUp size={18} />
-                                                <span>Útil ({story.likes})</span>
+                                                <span>Likes ({story.likes})</span>
                                             </button>
                                             <button
                                                 className={`btn-action ${showComments[story.id] ? 'active' : ''}`}
@@ -701,87 +884,106 @@ const TestimonioComponent = () => {
             </div>
 
             {/* Modal para nueva historia */}
-            {isModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-content animate-fade-in">
-                        <div className="modal-header">
-                            <h2>Compartir mi Historia</h2>
-                            <button className="btn-close" onClick={handleCloseModal}>
-                                <X size={24} />
-                            </button>
-                        </div>
-                        <form onSubmit={handleSubmitStory} className="story-form">
-                            <div className="form-group">
-                                <label>Título de tu experiencia</label>
-                                <input
-                                    type="text"
-                                    placeholder="Ej: ¡Perdí 5kg y me siento increíble!"
-                                    value={newStory.title}
-                                    onChange={(e) => setNewStory({ ...newStory, title: e.target.value })}
-                                    required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Categoría</label>
-                                <select
-                                    value={newStory.category}
-                                    onChange={(e) => setNewStory({ ...newStory, category: e.target.value })}
-                                    required
-                                >
-                                    <option value="Pérdida de Peso">Pérdida de Peso</option>
-                                    <option value="Ganancia de Músculo">Ganancia de Músculo</option>
-                                    <option value="Consejos de Expertos">Consejos de Expertos</option>
-                                    <option value="General">General</option>
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label>Tu historia</label>
-                                <textarea
-                                    rows="5"
-                                    placeholder="Cuenta a la comunidad sobre tu progreso..."
-                                    value={newStory.text}
-                                    onChange={(e) => setNewStory({ ...newStory, text: e.target.value })}
-                                    required
-                                ></textarea>
-                            </div>
-                            <div className="form-group">
-                                <label>Foto de progreso (Opcional)</label>
-                                <div className="upload-container">
-                                    <SubirImagen onImageUpload={handleCloudinaryStoryImage}>
-                                        <div className="upload-label" style={{ cursor: 'pointer' }}>
-                                            <Upload size={20} />
-                                            <span>{newStory.image ? 'Cambiar imagen' : 'Subir imagen'}</span>
-                                        </div>
-                                    </SubirImagen>
-                                </div>
-                                {newStory.image && (
-                                    <div className="image-preview">
-                                        <img src={newStory.image} alt="Preview" />
-                                    </div>
-                                )}
-                            </div>
-                            <div className="modal-actions">
-                                <button type="button" className="btn-cancel" onClick={handleCloseModal}>Cancelar</button>
-                                <button type="submit" className="btn-submit">Publicar Historia</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            <FormPublicaciones 
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                newStory={newStory}
+                setNewStory={setNewStory}
+                onSubmit={handleSubmitStory}
+                onImageUpload={handleCloudinaryStoryImage}
+            />
 
             {/* Modal de confirmación de eliminación */}
             {isDeleteModalOpen && (
                 <div className="modal-overlay">
                     <div className="modal-content confirm-modal animate-fade-in">
-                        <div className="confirm-icon-container">
-                            <AlertTriangle size={48} color="#ff4d4d" />
+                        <div className="confirm-modal-inner">
+                            <div className="confirm-icon-container">
+                                <AlertTriangle size={48} color="#ff4d4d" />
+                            </div>
+                            <h3>¿Eliminar testimonio?</h3>
+                            <p>Esta acción no se puede deshacer. Tu historia será eliminada permanentemente de la comunidad.</p>
+                            <div className="modal-actions full-width">
+                                <button className="btn-cancel" onClick={() => setIsDeleteModalOpen(false)}>Cancelar</button>
+                                <button className="btn-delete-confirm" onClick={confirmDelete}>Eliminar permanentemente</button>
+                            </div>
                         </div>
-                        <h3>¿Eliminar testimonio?</h3>
-                        <p>Esta acción no se puede deshacer. Tu historia será eliminada permanentemente de la comunidad.</p>
-                        <div className="modal-actions full-width">
-                            <button className="btn-cancel" onClick={() => setIsDeleteModalOpen(false)}>Cancelar</button>
-                            <button className="btn-delete-confirm" onClick={confirmDelete}>Eliminar permanentemente</button>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Reportar Publicación */}
+            {isReportModalOpen && (
+                <div className="modal-overlay" style={{ zIndex: 3000 }}>
+                    <div className="modal-content animate-fade-in" style={{ maxWidth: '500px' }}>
+                        <div className="modal-header">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <AlertTriangle size={24} color="var(--primary)" />
+                                <h2>Reportar Publicación</h2>
+                            </div>
+                            <button className="btn-close" onClick={() => setIsReportModalOpen(false)}>
+                                <X size={24} />
+                            </button>
                         </div>
+                        <form onSubmit={handleReportSubmit} className="story-form">
+                            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+                                Selecciona el motivo por el cual estás reportando esta publicación. Tu reporte será revisado por el equipo de moderación.
+                            </p>
+                            
+                            <div className="form-group">
+                                <label>Motivo principal</label>
+                                <select 
+                                    value={reportReason} 
+                                    onChange={(e) => {
+                                        setReportReason(e.target.value);
+                                        setReportSubReason('');
+                                    }}
+                                    required
+                                >
+                                    <option value="">Selecciona una opción</option>
+                                    {reportOptions.map(opt => (
+                                        <option key={opt.category} value={opt.category}>{opt.category}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {reportReason && reportReason !== 'Otro' && reportOptions.find(o => o.category === reportReason)?.options.length > 0 && (
+                                <div className="form-group animate-fade-in">
+                                    <label>Detalle del motivo</label>
+                                    <select 
+                                        value={reportSubReason} 
+                                        onChange={(e) => setReportSubReason(e.target.value)}
+                                        required
+                                    >
+                                        <option value="">Selecciona el detalle</option>
+                                        {reportOptions.find(o => o.category === reportReason).options.map(sub => (
+                                            <option key={sub} value={sub}>{sub}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+
+                            {reportReason === 'Otro' && (
+                                <div className="form-group animate-fade-in">
+                                    <label>Describe el problema</label>
+                                    <textarea
+                                        rows="4"
+                                        placeholder="Escribe aquí los detalles del reporte..."
+                                        value={reportOtherText}
+                                        onChange={(e) => setReportOtherText(e.target.value)}
+                                        required
+                                    ></textarea>
+                                </div>
+                            )}
+
+                            <div className="modal-actions" style={{ marginTop: '2rem' }}>
+                                <button type="button" className="btn-cancel" onClick={() => setIsReportModalOpen(false)}>Cancelar</button>
+                                <button type="submit" className="btn-submit" disabled={isReporting} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                    {isReporting ? 'Enviando...' : 'Enviar Reporte'}
+                                    {!isReporting && <Send size={18} />}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}
@@ -794,7 +996,7 @@ const TestimonioComponent = () => {
                             <User size={48} color="var(--primary)" />
                         </div>
                         <h3>Inicia sesión para interactuar</h3>
-                        <p>Para compartir tu historia, dar me gusta o comentar, necesitas ser parte de nuestra comunidad.</p>
+                        <p>Para compartir tu historia, dar me gusta, comentar o reportar, necesitas ser parte de nuestra comunidad.</p>
                         <div className="modal-actions full-width">
                             <Link to="/login" className="btn-submit" style={{ textAlign: 'center', textDecoration: 'none' }}>
                                 Iniciar Sesión

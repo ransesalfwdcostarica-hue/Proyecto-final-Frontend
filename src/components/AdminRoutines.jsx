@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAllRoutines, updateRoutineStatus, deleteRoutine } from '../Services/routineService';
+import { getAllRoutines, updateRoutineStatus, deleteRoutine } from '../services/routineService';
 import { Check, X, Trash2 } from 'lucide-react';
 
 const AdminRoutines = () => {
@@ -27,7 +27,7 @@ const AdminRoutines = () => {
     try {
       const updated = await updateRoutineStatus(routineId, newStatus);
       setRoutines(routines.map(r => r.id === routineId ? updated : r));
-    } catch (error) {
+    } catch {
       alert("Error al actualizar la rutina");
     }
   };
@@ -37,7 +37,7 @@ const AdminRoutines = () => {
       try {
         await deleteRoutine(routineId);
         setRoutines(routines.filter(r => r.id !== routineId));
-      } catch (error) {
+      } catch {
         alert("Error al eliminar la rutina");
       }
     }

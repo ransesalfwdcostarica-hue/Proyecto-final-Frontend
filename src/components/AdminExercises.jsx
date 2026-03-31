@@ -8,15 +8,13 @@ import {
     Image as ImageIcon,
     AlertTriangle
 } from 'lucide-react';
-import { obtenerTodosEjercicios, crearEjercicio, eliminarEjercicio } from '../services/exerciseService';
+import { obtenerTodosEjercicios, eliminarEjercicio } from '../services/exerciseService';
 import Swal from 'sweetalert2';
 
 const AdminExercises = ({ openAddModal }) => {
     const [exercises, setExercises] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [exerciseToDelete, setExerciseToDelete] = useState(null);
 
     useEffect(() => {
         loadExercises();
@@ -72,7 +70,7 @@ const AdminExercises = ({ openAddModal }) => {
                 color: '#fff',
                 confirmButtonColor: '#8b0000'
             });
-        } catch (error) {
+        } catch {
             Swal.fire({
                 title: 'Error',
                 text: 'No se pudo eliminar el ejercicio.',
