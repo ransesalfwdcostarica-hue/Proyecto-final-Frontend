@@ -36,7 +36,7 @@
       "plazoSemanas": 8,
       "pesoActual": "67",
       "deficitEstimado": 450,
-      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774365274/admk4azg1ovszeyfysoe.jpg",
+      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774825669/dv36wuoqgpxvkkfxi5tx.jpg",
       "semanasEnProgreso": 1,
       "ultimoFeedbackDieta": "muy bien ",
       "ultimoFeedbackEjercicio": "no mucho",
@@ -511,5 +511,6 @@
       "text": "hola",
       "fecha": "2026-03-26T20:57:46.058Z"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

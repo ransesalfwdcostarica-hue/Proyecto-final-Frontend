@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { sendMessage } from '../Services/Chatbot';
+import { sendMessage } from '../services/Chatbot';
 import {
   PlusSquare, Settings, User, LayoutDashboard, MessageSquare,
   Dumbbell, Apple, Clock, CheckCircle, Activity, Utensils,

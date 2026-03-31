@@ -53,17 +53,6 @@ const DashCliente = () => {
     setIsMobileMenuOpen(false);
   };
 
-  useEffect(() => {
-    if (user) {
-      setEditForm(user);
-      setProgressForm(prev => ({
-        ...prev,
-        semanasEnProgreso: user.semanasEnProgreso || 1
-      }));
-      loadExercises();
-    }
-  }, [user]);
-
   const loadExercises = async () => {
     try {
       const data = await obtenerTodosEjercicios();
@@ -74,6 +63,17 @@ const DashCliente = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      setEditForm(user);
+      setProgressForm(prev => ({
+        ...prev,
+        semanasEnProgreso: user.semanasEnProgreso || 1
+      }));
+      loadExercises();
+    }
+  }, [user]);
 
   const handleLogout = () => {
     logout();
