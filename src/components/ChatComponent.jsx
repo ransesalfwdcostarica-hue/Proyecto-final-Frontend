@@ -8,7 +8,6 @@ import {
   BarChart2, Paperclip, Send, Flame, Footprints, Heart, Moon, Menu, X
 } from 'lucide-react';
 import '../styles/Chatbot.css';
-import toast from 'react-hot-toast';
 
 const systemPrompt = `ACTÚA COMO UN PREPARADOR FÍSICO PROFESIONAL Y COACH DE SALUD.
 Tu misión es REFORZAR y profundizar en la solicitud del usuario bajo estas reglas:
@@ -35,22 +34,6 @@ const ChatComponent = () => {
   });
   const messagesEndRef = useRef(null);
 
-  const esConsultaFitness = (mensaje) => {
-    if (!mensaje) return false;
-    const palabrasClave = [
-      "ejercicio", "rutina", "gym", "entrenamiento", "musculación", "cardio", 
-      "dieta", "proteína", "calorías", "fitness", "peso", "salud", "comida", 
-      "músculo", "fuerza", "hipertrofia", "suplementos", "vitaminas", "grasas", 
-      "carbohidratos", "macros", "imc", "movilidad", "estiramiento", "yoga", 
-      "atleta", "entrenador", "coach", "rendimiento", "calistenia", "crossfit",
-      "nutrición", "ayuno", "carbohidrato", "proteina", "caloria", "musculo",
-      "hola", "buenos días", "buenas tardes", "buenas noches", "hey", "hi", "saludos", "ayuda"
-    ];
-    
-    const mensajeMin = mensaje.toLowerCase();
-    return palabrasClave.some(palabra => mensajeMin.includes(palabra));
-  };
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -69,29 +52,15 @@ const ChatComponent = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async (manualText) => {
-    // Si viene de un chip o historial, usamos manualText. Si no, usamos inputText.
-    const textToSend = (typeof manualText === 'string') ? manualText : inputText;
-    
-    if (!textToSend || !textToSend.trim()) return;
+  const handleSendMessage = async (text = inputText) => {
+    if (!text.trim()) return;
 
-    if (!esConsultaFitness(textToSend)) {
-      toast.error("Solo se permiten consultas relacionadas con fitness 💪", {
-        style: {
-          borderRadius: '10px',
-          background: '#333',
-          color: '#fff',
-        },
-      });
-      return;
-    }
-    
     const newUserMessage = {
       role: 'user',
-      content: textToSend,
+      content: "Busca la informacion en PubMed" + text,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
-    
+
     setMessages((prev) => [...prev, newUserMessage]);
     setInputText('');
     setIsTyping(true);
@@ -103,7 +72,7 @@ const ChatComponent = () => {
 
       const contextoUsuario = `El usuario tiene un nivel ${nivel} y su objetivo es ${objetivo}. Adapta todas las recomendaciones a este perfil.`;
 
-      const promptFinal = `${systemPrompt}\n\nContexto del usuario:\n${contextoUsuario}\n\nMensaje del usuario:\n${textToSend}`;
+      const promptFinal = `${systemPrompt}\n\nContexto del usuario:\n${contextoUsuario}\n\nMensaje del usuario:\n${text}`;
       
       const reply = await sendMessage(promptFinal);
       
@@ -119,7 +88,7 @@ const ChatComponent = () => {
       // Guardar en el historial
       const nuevoChat = {
         id: Date.now(),
-        pregunta: textToSend,
+        pregunta: text,
         respuesta: reply,
         fecha: new Date().toISOString()
       };

@@ -149,6 +149,42 @@
       "mensaje": "HOLA BROOO ",
       "pais": "Costa Rica ",
       "fecha": "2026-03-24T22:12:43.534Z"
+    },
+    {
+      "id": "3fdb",
+      "nombre": "jheycob",
+      "contacto": "222222222",
+      "email": "jheycobalt@gmail.com",
+      "mensaje": "holaaaaaaaaaaaaaaaaaa",
+      "pais": "alemania",
+      "fecha": "2026-03-27T19:46:07.139Z"
+    },
+    {
+      "id": "18d1",
+      "nombre": "Jeanca",
+      "contacto": "911",
+      "email": "jjjjjjjjj@gmail.com",
+      "mensaje": "caca",
+      "pais": "Uzbekistan",
+      "fecha": "2026-03-27T20:04:42.521Z"
+    },
+    {
+      "id": "095a",
+      "nombre": "z",
+      "contacto": "1",
+      "email": "jporrasfwdcostarica@gmail.com",
+      "mensaje": "a",
+      "pais": "z",
+      "fecha": "2026-03-27T20:05:43.561Z"
+    },
+    {
+      "id": "f333",
+      "nombre": "j",
+      "contacto": "1111111111",
+      "email": "jporrasfwdcostarica@gmail.com",
+      "mensaje": "adasdasdadada",
+      "pais": "j",
+      "fecha": "2026-03-27T20:21:21.555Z"
     }
   ],
   "stories": [
@@ -313,8 +349,9 @@
       "nivel": "INTERMEDIO",
       "musculo": "PIERNAS",
       "tiempo": "60 SEG",
-      "imagen": "/exercises/squat.png",
-      "categoria": "Piernas"
+      "imagen": "https://images.unsplash.com/photo-1718633561231-864a4c466991?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "categoria": "Piernas",
+      "videoUrl": "https://www.youtube.com/embed/qsAkuNORgmk?si=LMgSYd4iIB_ELU5X"
     },
     {
       "id": "e3",
@@ -322,8 +359,9 @@
       "nivel": "EXPERTO",
       "musculo": "ESPALDA",
       "tiempo": "30 SEG",
-      "imagen": "/exercises/pullups.png",
-      "categoria": "Espalda"
+      "imagen": "https://plus.unsplash.com/premium_photo-1663134070608-85c0ce9e3f3b?q=80&w=1136&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "categoria": "Espalda",
+      "videoUrl": "https://www.youtube.com/embed/aAggnpPyR6E?si=FaNyPHsiJ2J-3N7j"
     },
     {
       "id": "e4",
@@ -331,8 +369,9 @@
       "nivel": "AVANZADO",
       "musculo": "FULL BODY",
       "tiempo": "50 SEG",
-      "imagen": "/exercises/deadlift.png",
-      "categoria": "Piernas"
+      "imagen": "https://images.unsplash.com/photo-1744551472900-d23f4997e1cd?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "categoria": "Piernas",
+      "videoUrl": "https://www.youtube.com/embed/0XL4cZR2Ink?si=LDmwMH4WdnSpkPmA"
     },
     {
       "id": "e5",
@@ -340,8 +379,9 @@
       "nivel": "INTERMEDIO",
       "musculo": "HOMBROS",
       "tiempo": "40 SEG",
-      "imagen": "/exercises/military-press.png",
-      "categoria": "Hombros"
+      "imagen": "https://titanboxwear.com/wp-content/uploads/press-militar-con-mancuernas-como-hacerlo-correctamente.jpg",
+      "categoria": "Hombros",
+      "videoUrl": "https://www.youtube.com/embed/mbIhJZ2Sbcc?si=DPgOtE1nVPBK6Bwy"
     },
     {
       "id": "e6",
@@ -349,8 +389,9 @@
       "nivel": "AVANZADO",
       "musculo": "ESPALDA",
       "tiempo": "45 SEG",
-      "imagen": "/exercises/barbell-row.png",
-      "categoria": "Espalda"
+      "imagen": "https://www.zonawod.com/wp-content/uploads/remo-con-barra-barbell-row.jpeg",
+      "categoria": "Espalda",
+      "videoUrl": "https://www.youtube.com/embed/3uiWjik2yEQ?si=5kOa7Lk5dxqYJP6Y"
     },
     {
       "id": "e7",
@@ -358,8 +399,9 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "BRAZOS",
       "tiempo": "35 SEG",
-      "imagen": "/exercises/curl-biceps.jpg",
-      "categoria": "Brazos"
+      "imagen": "https://images.unsplash.com/photo-1762744962625-2bbc69c13cca?q=80&w=749&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "categoria": "Brazos",
+      "videoUrl": "https://www.youtube.com/embed/LAO7HuppUm0?si=3bQ47sbRM1kwPNK-"
     },
     {
       "id": "e8",
@@ -367,8 +409,9 @@
       "nivel": "INTERMEDIO",
       "musculo": "PECHO",
       "tiempo": "45 SEG",
-      "imagen": "/exercises/aperturas-mancuernas.jpg",
-      "categoria": "Pecho"
+      "imagen": "https://vitalitica.com/wp-content/uploads/2022/04/aperturas-para-pecho.png",
+      "categoria": "Pecho",
+      "videoUrl": "https://www.youtube.com/embed/b1xBbjEKFVs?si=GwtpktjIDGIe3t1r"
     },
     {
       "id": "e9",
@@ -377,7 +420,8 @@
       "musculo": "PECHO",
       "tiempo": "60 SEG",
       "imagen": "https://images.unsplash.com/photo-1598971457999-ca4ef48a9a71?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "categoria": "Pecho"
+      "categoria": "Pecho",
+      "videoUrl": "https://www.youtube.com/embed/WDIpL0pjun0?si=ByL0NwFTxAqePtCB"
     },
     {
       "id": "e10",
@@ -385,8 +429,9 @@
       "nivel": "INTERMEDIO",
       "musculo": "ESPALDA",
       "tiempo": "40 SEG",
-      "imagen": "/exercises/jalon-pecho.jpg",
-      "categoria": "Espalda"
+      "imagen": "https://www.myprotein.es/images?url=https://blogscdn.thehut.net/app/uploads/sites/450/2019/09/jal%C3%B3n-al-pecho_1568199201_1200x672_acf_cropped.jpg&auto=avif&width=1200&fit=crop",
+      "categoria": "Espalda",
+      "videoUrl": "https://www.youtube.com/embed/ld-6cqyRTQQ?si=REyo54Ihli7WxgkC"
     },
     {
       "id": "e11",
@@ -394,8 +439,9 @@
       "nivel": "INTERMEDIO",
       "musculo": "CUÁDRICEPS",
       "tiempo": "50 SEG",
-      "imagen": "/exercises/prensa-piernas.jpg",
-      "categoria": "Piernas"
+      "imagen": "https://www.clubesportiupalleja.com/wp-content/uploads/2024/11/posiciones-de-prensa-1024x585.webp",
+      "categoria": "Piernas",
+      "videoUrl": "https://www.youtube.com/embed/oBCacg1zsdg?si=RqhOEQWshXqfEdD0"
     },
     {
       "id": "e12",
@@ -403,8 +449,9 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "HOMBROS",
       "tiempo": "45 SEG",
-      "imagen": "/exercises/elevaciones-laterales.jpg",
-      "categoria": "Hombros"
+      "imagen": "https://hips.hearstapps.com/hmg-prod/images/man-training-with-dumbbells-royalty-free-image-1736766370.pjpeg?crop=1xw:0.84335xh;0,0",
+      "categoria": "Hombros",
+      "videoUrl": "https://www.youtube.com/embed/MwhnGYwxkS0?si=GZ-5oxs2xS_NUURc"
     },
     {
       "id": "e13",
@@ -412,8 +459,9 @@
       "nivel": "AVANZADO",
       "musculo": "HOMBROS",
       "tiempo": "40 SEG",
-      "imagen": "/exercises/press-arnold.jpg",
-      "categoria": "Hombros"
+      "imagen": "https://mundoentrenamiento.com/wp-content/uploads/2021/11/arnold-press.jpg",
+      "categoria": "Hombros",
+      "videoUrl": "https://www.youtube.com/embed/pQDrcNoDNVM?si=y4PbkQyB-IaS8qJK"
     },
     {
       "id": "e14",
@@ -421,8 +469,9 @@
       "nivel": "INTERMEDIO",
       "musculo": "TRÍCEPS",
       "tiempo": "40 SEG",
-      "imagen": "/exercises/press-frances.jpg",
-      "categoria": "Brazos"
+      "imagen": "https://www.vitasport.co/wp-content/uploads/2025/06/press-frances-1-1024x681-1.png",
+      "categoria": "Brazos",
+      "videoUrl": "https://www.youtube.com/embed/Rn6LgSEPsDc?si=cU8TaXkVWb1AZ1da"
     },
     {
       "id": "e15",
@@ -431,7 +480,8 @@
       "musculo": "CORE",
       "tiempo": "60 SEG",
       "imagen": "https://plus.unsplash.com/premium_photo-1672352100050-65cb2ee4d818?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "categoria": "Core"
+      "categoria": "Core",
+      "videoUrl": "https://www.youtube.com/embed/9KVAbTy9hoQ?si=A4NLA9Zsidaj5OxF"
     },
     {
       "id": "e16",
@@ -439,8 +489,9 @@
       "nivel": "INTERMEDIO",
       "musculo": "GLÚTEOS",
       "tiempo": "45 SEG",
-      "imagen": "/exercises/hip-thrust.jpg",
-      "categoria": "Glúteos"
+      "imagen": "https://hips.hearstapps.com/hmg-prod/images/hip-thrust-1583326229.jpg",
+      "categoria": "Glúteos",
+      "videoUrl": "https://www.youtube.com/embed/5S8SApGU_Lk?si=tcHOuRSgBxT-Cmr4"
     },
     {
       "id": "e17",
@@ -448,8 +499,9 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "PIERNAS",
       "tiempo": "45 SEG",
-      "imagen": "/exercises/zancadas.jpg",
-      "categoria": "Piernas"
+      "imagen": "https://hips.hearstapps.com/hmg-prod/images/lunge-man-1598357094.jpg?crop=0.668xw:1.00xh;0.299xw,0&resize=640:*",
+      "categoria": "Piernas",
+      "videoUrl": "https://www.youtube.com/embed/FtNBlVNKrs0?si=RX6lCx-U9YHoe7LZ"
     },
     {
       "id": "e18",
@@ -457,8 +509,9 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "CORE",
       "tiempo": "30 SEG",
-      "imagen": "/exercises/crunch.jpg",
-      "categoria": "Core"
+      "imagen": "https://contents.mediadecathlon.com/p2519542/k$24eb6c2bb6d8a2dc65ceeb6f7166debe/1800x0/3253pt2169/6506xcr4337/default.jpg?format=auto",
+      "categoria": "Core",
+      "videoUrl": "https://www.youtube.com/embed/JWUyng_c-G0?si=XG06xzFqCXzFvfR4"
     },
     {
       "id": "e19",
@@ -466,8 +519,9 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "GLÚTEOS",
       "tiempo": "50 SEG",
-      "imagen": "/exercises/patada-gluteo.jpg",
-      "categoria": "Glúteos"
+      "imagen": "https://focuscde.com/wp-content/uploads/2024/12/151_11zon.webp",
+      "categoria": "Glúteos",
+      "videoUrl": "https://www.youtube.com/embed/5jJ3CxVTAas?si=CLLT0eOQ6vF09zSF"
     },
     {
       "id": "e20",
@@ -476,7 +530,8 @@
       "musculo": "FULL BODY",
       "tiempo": "60 SEG",
       "imagen": "https://static.nike.com/a/images/f_auto,cs_srgb/w_1536,c_limit/4399d325-3fd7-41f8-ac24-219ee6751668/%C2%BFqu%C3%A9-es-un-burpee-los-entrenadores-personales-lo-explican.jpg",
-      "categoria": "Core"
+      "categoria": "Core",
+      "videoUrl": "https://www.youtube.com/embed/Uy2nUNX38xE?si=RK90W0I5GrOZJ4w4"
     },
     {
       "id": "e21",
@@ -484,8 +539,9 @@
       "nivel": "INTERMEDIO",
       "musculo": "OBLICUOS",
       "tiempo": "45 SEG",
-      "imagen": "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&q=80",
-      "categoria": "Core"
+      "imagen": "https://hips.hearstapps.com/hmg-prod/images/gettyimages-2159279524-68507f004ee1d.jpg?crop=0.668xw:1.00xh;0.0865xw,0&resize=1200:*",
+      "categoria": "Core",
+      "videoUrl": "https://www.youtube.com/embed/Tau0hsW8iR0?si=7HP5RW09Ka-by8Y1"
     },
     {
       "id": "e22",
@@ -493,8 +549,9 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "BÍCEPS",
       "tiempo": "40 SEG",
-      "imagen": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=80",
-      "categoria": "Brazos"
+      "imagen": "https://boxlifemagazine.com/wp-content/uploads/2023/08/Untitled-design-2023-08-10T162830.761-1.png",
+      "categoria": "Brazos",
+      "videoUrl": "https://www.youtube.com/embed/OPqe0kCxmR8?si=AEJ4gMhFyHPFilw-"
     },
     {
       "id": "e23",
@@ -503,7 +560,8 @@
       "musculo": "ESPALDA",
       "tiempo": "45 SEG",
       "imagen": "https://plus.unsplash.com/premium_photo-1664299683145-d5ae24790f8e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "categoria": "Espalda"
+      "categoria": "Espalda",
+      "videoUrl": "https://www.youtube.com/embed/hiujo_wbkLU?si=_tTw3Wc7JNSQSPI5"
     },
     {
       "id": "e24",
@@ -511,8 +569,9 @@
       "nivel": "PRINCIPIANTE",
       "musculo": "CUÁDRICEPS",
       "tiempo": "40 SEG",
-      "imagen": "/exercises/extension-cuadriceps.jpg",
-      "categoria": "Piernas"
+      "imagen": "https://physiotutors.com/wp-content/uploads/2022/01/Seated-Leg-Extension-featured.jpg",
+      "categoria": "Piernas",
+      "videoUrl": "https://www.youtube.com/embed/3iycSVpbD6Y?si=Ut7Orgw5xEntuz50"
     },
     {
       "id": "e25",
@@ -520,8 +579,9 @@
       "nivel": "INTERMEDIO",
       "musculo": "HOMBRO POSTERIOR",
       "tiempo": "45 SEG",
-      "imagen": "/exercises/face-pull.jpg",
-      "categoria": "Hombros"
+      "imagen": "https://cdn.mos.cms.futurecdn.net/3ZAEXcd7cA3W2fMrVQY9EE-1200-80.jpg",
+      "categoria": "Hombros",
+      "videoUrl": "https://www.youtube.com/embed/0Po47vvj9g4?si=q0JbinJM_pKj7vae"
     }
   ],
   "comentarios": [
