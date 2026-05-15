@@ -95,59 +95,6 @@ const DashAdmin = () => {
   const adminInitial = adminName.charAt(0).toUpperCase();
 
   return (
-<<<<<<< HEAD:src/components/DashAdmin.jsx
-    <div className="admin-dashboard">
-      {isMobileMenuOpen && (
-        <div className="admin-mobile-overlay" onClick={() => setIsMobileMenuOpen(false)}></div>
-      )}
-      <aside className={`admin-sidebar ${isMobileMenuOpen ? 'open' : ''}`} style={{ zIndex: 1000 }}>
-        <button className="admin-mobile-close" onClick={() => setIsMobileMenuOpen(false)}>
-          <X size={24} />
-        </button>
-        <h2>Admin Panel</h2>
-        <nav className="sidebar-nav">
-          <button
-            className={`sidebar-btn ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => handleTabChange('overview')}
-          >
-            <LayoutDashboard size={20} />
-            Overview
-          </button>
-          <button
-            className={`sidebar-btn ${activeTab === 'users' ? 'active' : ''}`}
-            onClick={() => handleTabChange('users')}
-          >
-            <Users size={20} />
-            Usuarios
-          </button>
-
-          <button
-            className={`sidebar-btn ${activeTab === 'messages' ? 'active' : ''}`}
-            onClick={() => handleTabChange('messages')}
-          >
-            <Mail size={20} />
-            Mensajes
-          </button>
-          <button
-            className={`sidebar-btn ${activeTab === 'reports' ? 'active' : ''}`}
-            onClick={() => handleTabChange('reports')}
-          >
-            <AlertTriangle size={20} />
-            Reportes
-          </button>
-          <button
-            className={`sidebar-btn ${activeTab === 'exercises' ? 'active' : ''}`}
-            onClick={() => handleTabChange('exercises')}
-          >
-            <Dumbbell size={20} />
-            Ejercicios
-          </button>
-          <hr style={{ margin: '1rem 0', border: 'none', borderTop: '1px solid #e9edff' }} />
-          <Link to="/" style={{ textDecoration: 'none' }}>
-            <button className="sidebar-btn">
-              <Home size={20} />
-              Volver a Inicio
-=======
     <div className="da-layout">
       {/* ── Sidebar ── */}
       {isSidebarOpen && <div className="da-overlay" onClick={() => setIsSidebarOpen(false)} />}
@@ -179,9 +126,8 @@ const DashAdmin = () => {
             >
               <Icon size={18} />
               <span>{label}</span>
->>>>>>> b11006d6ca1e11e510683bb4e337ace1f2043bcb:Front-End/src/components/DashAdmin.jsx
             </button>
-          </Link>
+          ))}
         </nav>
 
         {/* Back to Home */}

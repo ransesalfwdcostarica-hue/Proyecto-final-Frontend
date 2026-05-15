@@ -194,9 +194,31 @@
       "plazoSemanas": 8,
       "pesoActual": "100",
       "deficitEstimado": 450
+    },
+    {
+      "id": "b8d8",
+      "email": "Rsalas00@gmail.com",
+      "password": "123456",
+      "nombre": "Ronny Salas ",
+      "edad": "18",
+      "rol": "client",
+      "edadFisica": "18",
+      "sexo": "m",
+      "altura": "180",
+      "peso": "69.9",
+      "lugarEntrenamiento": "gym",
+      "alergias": "ninguno",
+      "pesoMeta": 65,
+      "plazoSemanas": 4,
+      "pesoActual": 70,
+      "deficitEstimado": 450,
+      "followers": [],
+      "following": [],
+      "avatar": "",
+      "cover": ""
     }
   ],
-  "contactos": [
+  "mensajes": [
     {
       "id": "5156",
       "nombre": "RANSES MATIAS",
@@ -431,7 +453,7 @@
       "avatar": "https://i.pravatar.cc/150?u=tyler"
     }
   ],
-  "routines": [],
+  "rutinas": [],
   "ejercicios": [
     {
       "id": "e1",
@@ -1050,7 +1072,7 @@
       "fecha": "2026-05-12T19:28:24.922Z"
     }
   ],
-  "reports": [
+  "reportes": [
     {
       "id": "e68f",
       "storyId": "9d31",

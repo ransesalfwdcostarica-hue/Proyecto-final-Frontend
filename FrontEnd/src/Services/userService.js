@@ -9,11 +9,15 @@ const multiFetch = async (endpoint, options = {}) => {
 export const registerUser = async (userData) => {
   try {
     const mappedData = {
+      ...userData,
+      email: userData.email,
+      password: userData.password,
       nombre: userData.nombre,
-      correo: userData.email,
-      contrasenia: userData.password,
-      edad: userData.edad || null,
-      Rol_idRol: userData.rol === 'admin' ? 1 : 2 // Mapping role to IDs
+      rol: userData.rol || 'client',
+      followers: [],
+      following: [],
+      avatar: '',
+      cover: ''
     };
     const response = await fetch(`${BASE_URL}/usuarios`, {
       method: "POST",
@@ -36,40 +40,42 @@ export const registerUser = async (userData) => {
 
 export const loginUser = async (email, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/usuarios/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ correo: email, contrasenia: password }),
-    });
+    // Para json-server, los filtros son case-sensitive.
+    // Para evitar problemas, traemos los usuarios y filtramos en JS.
+    const response = await fetch(`${BASE_URL}/usuarios`);
 
     if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error("Credenciales inválidas. Revisa tu correo y contraseña.");
-      }
       throw new Error(`Error del servidor (${response.status}). Asegúrate de que el backend esté activo.`);
     }
 
-    const user = await response.json();
+    const allUsers = await response.json();
+    
+    // Buscamos ignorando mayúsculas/minúsculas en el email
+    const user = allUsers.find(u => 
+      u.email.toLowerCase() === email.toLowerCase() && 
+      u.password === password
+    );
+    
+    if (!user) {
+      throw new Error("Credenciales inválidas. Revisa tu correo y contraseña.");
+    }
+    
+    // Mapeo para mantener compatibilidad con el resto de la app
     return {
-      id: user.idUsuario,
-      email: user.correo,
+      id: user.id,
+      email: user.email,
       nombre: user.nombre,
-      rol: user.Rol ? user.Rol.nombre : (user.Rol_idRol === 1 ? 'admin' : 'client'),
+      rol: user.rol || (user.rol === 'admin' ? 'admin' : 'client'),
       ...user,
-      ...(user.DatosUsuario || {}),
-      pesoActual: user.DatosUsuario?.peso,
-      deficitEstimado: user.DatosUsuario?.decifitEstimado,
-      semanasEnProgreso: user.DatosUsuario?.semanas_En_Progreso || 1,
-      ultimoFeedbackDieta: user.DatosUsuario?.ultimo_Feedback_Dieta,
-      ultimoFeedbackEjercicio: user.DatosUsuario?.ultimo_Feedback_Ejercicio,
-      ...(user.Perfil || {}),
-      avatar: user.Perfil?.foto_Perfil || user.avatar || '',
-      cover: user.Perfil?.foto_Portada || user.cover || '',
-      following: user.Perfil?.Following?.map(p => p.Usuario_idUsuario) || [],
-      followers: user.Perfil?.Followers?.map(p => p.Usuario_idUsuario) || [],
-      ejerciciosElegidos: user.DatosUsuario?.Rutinas?.[0]?.Ejercicios?.map(e => e.idEjercicios) || []
+      pesoActual: user.peso,
+      semanasEnProgreso: user.semanasEnProgreso || 1,
+      ultimoFeedbackDieta: user.ultimoFeedbackDieta,
+      ultimoFeedbackEjercicio: user.ultimoFeedbackEjercicio,
+      avatar: user.avatar || '',
+      cover: user.cover || '',
+      following: user.following || [],
+      followers: user.followers || [],
+      ejerciciosElegidos: user.ejerciciosElegidos || []
     };
   } catch (error) {
     console.error("Login error:", error);
@@ -85,10 +91,10 @@ export const getAllUsers = async () => {
     }
     const usersRaw = await response.json();
     return usersRaw.map(user => ({
-      id: user.idUsuario,
-      email: user.correo,
+      id: user.id,
+      email: user.email,
       nombre: user.nombre,
-      rol: user.Rol_idRol === 1 ? 'admin' : 'client',
+      rol: user.rol === 'admin' ? 'admin' : 'client',
       ...user
     }));
   } catch (error) {
@@ -99,20 +105,25 @@ export const getAllUsers = async () => {
 
 export const getPaginatedUsers = async (page = 1, limit = 10) => {
   try {
-    const response = await multiFetch(`?page=${page}&limit=${limit}`);
+    // json-server por defecto devuelve un array
+    const response = await multiFetch(`?_page=${page}&_limit=${limit}`);
     if (!response.ok) {
       throw new Error("Error fetching paginated users");
     }
     const data = await response.json();
+    
+    // Si json-server devuelve un objeto con 'data' (v1+) o solo un array (v0.x)
+    const usersArray = Array.isArray(data) ? data : (data.data || []);
+    
     return {
-      ...data,
-      data: data.data.map(user => ({
-        id: user.idUsuario,
-        email: user.correo,
+      data: usersArray.map(user => ({
+        id: user.id,
+        email: user.email,
         nombre: user.nombre,
-        rol: user.Rol_idRol === 1 ? 'admin' : 'client',
+        rol: user.rol || (user.rol === 'admin' ? 'admin' : 'client'),
         ...user
-      }))
+      })),
+      total: parseInt(response.headers.get('X-Total-Count') || usersArray.length)
     };
   } catch (error) {
     console.error("Error fetching paginated users:", error);
@@ -200,23 +211,20 @@ export const getUserById = async (userId) => {
     }
     const user = await response.json();
     return {
-      id: user.idUsuario,
-      email: user.correo,
+      id: user.id,
+      email: user.email,
       nombre: user.nombre,
-      rol: user.Rol ? user.Rol.nombre : (user.Rol_idRol === 1 ? 'admin' : 'client'),
+      rol: user.rol || (user.rol === 'admin' ? 'admin' : 'client'),
       ...user,
-      ...(user.DatosUsuario || {}),
-      pesoActual: user.DatosUsuario?.peso,
-      deficitEstimado: user.DatosUsuario?.decifitEstimado,
-      semanasEnProgreso: user.DatosUsuario?.semanas_En_Progreso || 1,
-      ultimoFeedbackDieta: user.DatosUsuario?.ultimo_Feedback_Dieta,
-      ultimoFeedbackEjercicio: user.DatosUsuario?.ultimo_Feedback_Ejercicio,
-      ...(user.Perfil || {}),
-      avatar: user.Perfil?.foto_Perfil || user.avatar || '',
-      cover: user.Perfil?.foto_Portada || user.cover || '',
-      following: user.Perfil?.Following?.map(p => p.Usuario_idUsuario) || [],
-      followers: user.Perfil?.Followers?.map(p => p.Usuario_idUsuario) || [],
-      ejerciciosElegidos: user.DatosUsuario?.Rutinas?.[0]?.Ejercicios?.map(e => e.idEjercicios) || []
+      pesoActual: user.peso,
+      semanasEnProgreso: user.semanasEnProgreso || 1,
+      ultimoFeedbackDieta: user.ultimoFeedbackDieta,
+      ultimoFeedbackEjercicio: user.ultimoFeedbackEjercicio,
+      avatar: user.avatar || '',
+      cover: user.cover || '',
+      following: user.following || [],
+      followers: user.followers || [],
+      ejerciciosElegidos: user.ejerciciosElegidos || []
     };
   } catch (error) {
     console.error("Error fetching user by ID:", error);
