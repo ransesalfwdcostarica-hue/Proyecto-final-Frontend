@@ -15,17 +15,17 @@ process.env.NODE_ENV = 'test';
 describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
     let testRol;
     let createdUser;
-    let userToken; // Para compatibilidad en caso de JWT futura
+    let userToken; // Para compatibilidad con JWT
     let testAlergia;
 
     // Inicializar y sincronizar base de datos limpia en memoria antes de comenzar
     beforeAll(async () => {
         await sequelize.sync({ force: true });
 
-        // Crear rol por defecto para los usuarios de prueba
+        // Crear rol admin para poder probar todas las rutas incluyendo las restringidas
         testRol = await Rol.create({
-            nombre: 'Cliente',
-            descripcion: 'Usuario regular del sistema de pruebas'
+            nombre: 'admin',
+            descripcion: 'Usuario administrador del sistema de pruebas'
         });
     });
 
@@ -82,10 +82,13 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
                 });
 
             expect(res.statusCode).toBe(200);
-            expect(res.body).toHaveProperty('id_usuario');
-            expect(res.body.correo).toBe('test.user@powerfit.com');
-            expect(res.body).toHaveProperty('Rol');
-            expect(res.body.Rol.nombre).toBe('Cliente');
+            expect(res.body).toHaveProperty('token');
+            expect(res.body.usuario).toHaveProperty('id_usuario');
+            expect(res.body.usuario.correo).toBe('test.user@powerfit.com');
+            expect(res.body.usuario).toHaveProperty('Rol');
+            expect(res.body.usuario.Rol.nombre).toBe('admin');
+            
+            userToken = res.body.token; // Guardamos el token para peticiones protegidas
         });
 
         // Escenario de Fallo: Login con contraseña incorrecta
@@ -105,7 +108,8 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
         // Escenario Exitoso: Obtener todos los usuarios
         test('GET /api/usuarios - Debería listar todos los usuarios registrados (Código 200)', async () => {
             const res = await request(app)
-                .get('/api/usuarios');
+                .get('/api/usuarios')
+                .set('Authorization', `Bearer ${userToken}`);
 
             expect(res.statusCode).toBe(200);
             expect(Array.isArray(res.body)).toBe(true);
@@ -115,7 +119,8 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
         // Escenario Exitoso: Obtener usuario por ID
         test('GET /api/usuarios/:id - Debería retornar los detalles del usuario existente (Código 200)', async () => {
             const res = await request(app)
-                .get(`/api/usuarios/${createdUser.id_usuario}`);
+                .get(`/api/usuarios/${createdUser.id_usuario}`)
+                .set('Authorization', `Bearer ${userToken}`);
 
             expect(res.statusCode).toBe(200);
             expect(res.body.id_usuario).toBe(createdUser.id_usuario);
@@ -125,7 +130,8 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
         // Escenario de Fallo: Obtener usuario inexistente
         test('GET /api/usuarios/:id - Debería responder 404 para un usuario inexistente', async () => {
             const res = await request(app)
-                .get('/api/usuarios/99999');
+                .get('/api/usuarios/99999')
+                .set('Authorization', `Bearer ${userToken}`);
 
             expect(res.statusCode).toBe(404);
             expect(res.body.message).toBe('Usuario no encontrado');
@@ -158,6 +164,7 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
 
             const res = await request(app)
                 .put(`/api/usuarios/${createdUser.id_usuario}`)
+                .set('Authorization', `Bearer ${userToken}`)
                 .send({
                     correo: 'test.updated@powerfit.com',
                     contrasenia: 'newpassword123',
@@ -181,6 +188,7 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
         test('PUT /api/usuarios/:id - Debería fallar la actualización si faltan campos requeridos (Código 400)', async () => {
             const res = await request(app)
                 .put(`/api/usuarios/${createdUser.id_usuario}`)
+                .set('Authorization', `Bearer ${userToken}`)
                 .send({
                     nombre: 'Update Incompleto'
                     // Falta correo y contrasenia
@@ -201,6 +209,7 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
         test('POST /api/alergias - Debería registrar una nueva alergia (Código 201)', async () => {
             const res = await request(app)
                 .post('/api/alergias')
+                .set('Authorization', `Bearer ${userToken}`)
                 .send({
                     nombre: 'Lactosa'
                 });
@@ -215,6 +224,7 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
         test('POST /api/alergias - Debería denegar la creación si falta el nombre (Código 400)', async () => {
             const res = await request(app)
                 .post('/api/alergias')
+                .set('Authorization', `Bearer ${userToken}`)
                 .send({});
 
             expect(res.statusCode).toBe(400);
@@ -236,6 +246,7 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
         test('PUT /api/alergias/:id - Debería editar la alergia de forma exitosa (Código 200)', async () => {
             const res = await request(app)
                 .put(`/api/alergias/${testAlergia.id_alergia}`)
+                .set('Authorization', `Bearer ${userToken}`)
                 .send({
                     nombre: 'Lácteos e Intolerancia'
                 });
@@ -247,7 +258,8 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
         // Escenario de Fallo: Borrar alergia no existente
         test('DELETE /api/alergias/:id - Debería retornar 404 para una alergia inexistente', async () => {
             const res = await request(app)
-                .delete('/api/alergias/99999');
+                .delete('/api/alergias/99999')
+                .set('Authorization', `Bearer ${userToken}`);
 
             expect(res.statusCode).toBe(404);
             expect(res.body.message).toBe('Alergia no encontrado');
@@ -256,7 +268,8 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
         // Escenario Exitoso: Eliminar alergia
         test('DELETE /api/alergias/:id - Debería borrar la alergia correctamente (Código 200)', async () => {
             const res = await request(app)
-                .delete(`/api/alergias/${testAlergia.id_alergia}`);
+                .delete(`/api/alergias/${testAlergia.id_alergia}`)
+                .set('Authorization', `Bearer ${userToken}`);
 
             expect(res.statusCode).toBe(200);
             expect(res.body.message).toBe('Alergia eliminado correctamente');
@@ -269,7 +282,8 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
     describe('3. Teardown: Eliminación del usuario de pruebas', () => {
         test('DELETE /api/usuarios/:id - Debería eliminar el usuario de pruebas al final (Código 200)', async () => {
             const res = await request(app)
-                .delete(`/api/usuarios/${createdUser.id_usuario}`);
+                .delete(`/api/usuarios/${createdUser.id_usuario}`)
+                .set('Authorization', `Bearer ${userToken}`);
 
             expect(res.statusCode).toBe(200);
             expect(res.body.message).toBe('Usuario eliminado correctamente');
@@ -277,7 +291,8 @@ describe('Suite de Pruebas de Integración de Endpoints API (PowerFit)', () => {
 
         test('GET /api/usuarios/:id - Debería responder 404 después de ser eliminado', async () => {
             const res = await request(app)
-                .get(`/api/usuarios/${createdUser.id_usuario}`);
+                .get(`/api/usuarios/${createdUser.id_usuario}`)
+                .set('Authorization', `Bearer ${userToken}`);
 
             expect(res.statusCode).toBe(404);
         });

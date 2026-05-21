@@ -1,5 +1,5 @@
-import { API_BASE_URL } from './apiConfig';
-const BASE_URL = API_BASE_URL;
+import { MOCK_BASE_URL } from './apiConfig';
+const BASE_URL = MOCK_BASE_URL;
 
 export const getAllRoutines = async () => {
   try {

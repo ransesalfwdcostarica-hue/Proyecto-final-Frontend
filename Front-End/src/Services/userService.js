@@ -1,294 +1,205 @@
 import { API_BASE_URL } from './apiConfig';
-const BASE_URL = API_BASE_URL;
 
-// Helper to handle endpoint names (usuarios is the one in db.json)
-const multiFetch = async (endpoint, options = {}) => {
-  return await fetch(`${BASE_URL}/usuarios${endpoint}`, options);
+const BASE_URL = API_BASE_URL; // http://localhost:3000
+
+const authHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {})
+  };
+};
+
+const mapUsuario = (u) => {
+  if (!u) return null;
+  return {
+    id: u.id ?? u.id_usuario ?? u.idUsuario,
+    email: u.correo ?? u.email,
+    correo: u.correo ?? u.email,
+    nombre: u.nombre,
+    edad: u.edad,
+    id_rol: u.id_rol ?? u.Rol_idRol,
+    rol: u.rol ?? u.Rol?.nombre ?? (u.Rol_idRol === 1 ? 'admin' : 'client'),
+    avatar: u.avatar ?? u.Perfil?.foto_perfil ?? u.Perfil?.foto_Perfil ?? '',
+    cover: u.cover ?? u.Perfil?.foto_portada ?? u.Perfil?.foto_Portada ?? '',
+    pesoActual: u.pesoActual ?? u.DatosUsuario?.peso ?? null,
+    pesoMeta: u.pesoMeta ?? u.DatosUsuario?.peso_meta ?? null,
+    altura: u.altura ?? u.DatosUsuario?.altura ?? null,
+    plazoSemanas: u.plazoSemanas ?? u.DatosUsuario?.plazo_semanas ?? null,
+    deficitEstimado: u.deficitEstimado ?? u.DatosUsuario?.deficit_estimado ?? u.DatosUsuario?.decifitEstimado ?? null,
+    semanasEnProgreso: u.semanasEnProgreso ?? u.DatosUsuario?.semanas_progreso ?? u.DatosUsuario?.semanas_En_Progreso ?? 1,
+    ultimoFeedbackDieta: u.ultimoFeedbackDieta ?? u.DatosUsuario?.feedback_dieta ?? u.DatosUsuario?.ultimo_Feedback_Dieta ?? null,
+    ultimoFeedbackEjercicio: u.ultimoFeedbackEjercicio ?? u.DatosUsuario?.feedback_ejercicio ?? u.DatosUsuario?.ultimo_Feedback_Ejercicio ?? null,
+    sexo: u.sexo ?? u.DatosUsuario?.sexo ?? null,
+    lugarEntrenamiento: u.lugarEntrenamiento ?? u.DatosUsuario?.lugar_entrenamiento ?? null,
+    following: u.following ?? u.Perfil?.Following?.map(p => p.Usuario_idUsuario) ?? [],
+    followers: u.followers ?? u.Perfil?.Followers?.map(p => p.Usuario_idUsuario) ?? [],
+    ejerciciosElegidos: u.ejerciciosElegidos ?? u.DatosUsuario?.Rutinas?.[0]?.Ejercicios?.map(e => e.idEjercicios) ?? []
+  };
 };
 
 export const registerUser = async (userData) => {
-  try {
-    const mappedData = {
-      email: userData.email,
-      password: userData.password,
-      nombre: userData.nombre,
-      edad: userData.edad || null,
-      rol: userData.rol || 'client',
-      followers: [],
-      following: [],
-      avatar: userData.avatar || '',
-      cover: userData.cover || '',
-      sexo: userData.sexo || '',
-      altura: userData.altura || '',
-      peso: userData.peso || '',
-      lugarEntrenamiento: userData.lugarEntrenamiento || '',
-      alergias: userData.alergias || '',
-      pesoMeta: userData.pesoMeta || 0,
-      plazoSemanas: userData.plazoSemanas || 8,
-      pesoActual: userData.pesoActual || userData.peso || '',
-      deficitEstimado: userData.deficitEstimado || 450,
-      semanasEnProgreso: 1,
-      ejerciciosElegidos: []
-    };
-    const response = await fetch(API_BASE_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(mappedData),
-    });
+  const payload = {
+    correo: userData.email || userData.correo,
+    contrasenia: userData.password || userData.contrasenia,
+    nombre: userData.nombre,
+    edad: userData.edad ? Number(userData.edad) : 18
+  };
 
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    }
+  const response = await fetch(`${BASE_URL}/api/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
 
-    return await response.json();
-    const savedUser = await response.json();
-    return mapUser(savedUser);
-  } catch (error) {
-    console.error("Registration error:", error);
-    throw error;
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Error al registrar el usuario.');
   }
+
+  return data;
 };
 
 export const loginUser = async (email, password) => {
-  try {
-    const response = await fetch(`${BASE_URL}/usuarios/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ correo: email, contrasenia: password }),
-    });
+  const response = await fetch(`${BASE_URL}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ correo: email, contrasenia: password })
+  });
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error("Credenciales inválidas. Revisa tu correo y contraseña.");
-      }
-      throw new Error(`Error del servidor (${response.status}). Asegúrate de que el backend esté activo.`);
-    }
+  const data = await response.json();
 
-    const user = await response.json();
-    return {
-      id: user.idUsuario,
-      email: user.correo,
-      nombre: user.nombre,
-      rol: user.Rol ? user.Rol.nombre : (user.Rol_idRol === 1 ? 'admin' : 'client'),
-      ...user,
-      ...(user.DatosUsuario || {}),
-      pesoActual: user.DatosUsuario?.peso,
-      deficitEstimado: user.DatosUsuario?.decifitEstimado,
-      semanasEnProgreso: user.DatosUsuario?.semanas_En_Progreso || 1,
-      ultimoFeedbackDieta: user.DatosUsuario?.ultimo_Feedback_Dieta,
-      ultimoFeedbackEjercicio: user.DatosUsuario?.ultimo_Feedback_Ejercicio,
-      ...(user.Perfil || {}),
-      avatar: user.Perfil?.foto_Perfil || user.avatar || '',
-      cover: user.Perfil?.foto_Portada || user.cover || '',
-      following: user.Perfil?.Following?.map(p => p.Usuario_idUsuario) || [],
-      followers: user.Perfil?.Followers?.map(p => p.Usuario_idUsuario) || [],
-      ejerciciosElegidos: user.DatosUsuario?.Rutinas?.[0]?.Ejercicios?.map(e => e.idEjercicios) || []
-    };
-  } catch (error) {
-    console.error("Login error:", error);
-    throw error;
+  if (!response.ok) {
+    throw new Error(data.error || 'Error al iniciar sesión.');
   }
+
+  if (data.token) {
+    localStorage.setItem('token', data.token);
+  }
+
+  return mapUsuario(data.usuario);
+};
+
+export const getCurrentUser = async () => {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+
+  const response = await fetch(`${BASE_URL}/api/auth/me`, {
+    headers: authHeaders()
+  });
+
+  if (!response.ok) {
+    localStorage.removeItem('token');
+    return null;
+  }
+
+  const data = await response.json();
+  return mapUsuario(data);
 };
 
 export const getAllUsers = async () => {
-  try {
-    const response = await multiFetch("");
-    if (!response.ok) {
-      throw new Error("Error fetching users");
-    }
-    const usersRaw = await response.json();
-    return usersRaw.map(user => ({
-      id: user.idUsuario,
-      email: user.correo,
-      nombre: user.nombre,
-      rol: user.Rol_idRol === 1 ? 'admin' : 'client',
-      ...user
-    }));
-  } catch (error) {
-    console.error("Error fetching all users:", error);
-    throw error;
-  }
+  const response = await fetch(`${BASE_URL}/api/usuarios`, { headers: authHeaders() });
+  if (!response.ok) throw new Error('Error al obtener usuarios.');
+  const data = await response.json();
+  const arr = Array.isArray(data) ? data : (data.data || []);
+  return arr.map(mapUsuario);
 };
 
 export const getPaginatedUsers = async (page = 1, limit = 10) => {
-  try {
-    const response = await multiFetch(`?page=${page}&limit=${limit}`);
-    if (!response.ok) {
-      throw new Error("Error fetching paginated users");
-    }
-    const data = await response.json();
-    return {
-      ...data,
-      data: data.data.map(user => ({
-        id: user.idUsuario,
-        email: user.correo,
-        nombre: user.nombre,
-        rol: user.Rol_idRol === 1 ? 'admin' : 'client',
-        ...user
-      }))
-    };
-  } catch (error) {
-    console.error("Error fetching paginated users:", error);
-    throw error;
-  }
-};
-
-export const deleteUser = async (userId) => {
-  try {
-    const response = await multiFetch(`/${userId}`, {
-      method: "DELETE",
-    });
-    if (!response.ok) {
-      throw new Error("Error deleting user");
-    }
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    throw error;
-  }
-};
-
-export const checkUserExists = async (email) => {
-  try {
-    // Optimization: Use server-side filtering
-    const response = await fetch(`${BASE_URL}/usuarios?email=${encodeURIComponent(email)}`);
-    if (!response.ok) {
-      throw new Error("Error fetching users");
-    }
-    const users = await response.json();
-    return users.length > 0;
-  } catch (error) {
-    console.error("Check user error:", error);
-    throw error;
-  }
-};
-
-export const updateUser = async (userId, userData) => {
-  try {
-    const response = await multiFetch(`/${userId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Update error:", error);
-    throw error;
-  }
-};
-
-export const saveContactMessage = async (messageData) => {
-  try {
-    const response = await fetch(`${BASE_URL}/mensajes`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(messageData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Contact form error:", error);
-    throw error;
-  }
+  const response = await fetch(`${BASE_URL}/api/usuarios?page=${page}&limit=${limit}`, {
+    headers: authHeaders()
+  });
+  if (!response.ok) throw new Error('Error al obtener usuarios paginados.');
+  const data = await response.json();
+  const arr = Array.isArray(data) ? data : (data.data || []);
+  return {
+    data: arr.map(mapUsuario),
+    total: data.total ?? arr.length,
+    totalPages: data.totalPages ?? 1,
+    currentPage: data.currentPage ?? page
+  };
 };
 
 export const getUserById = async (userId) => {
-  try {
-    const response = await multiFetch(`/${userId}`);
-    if (!response.ok) {
-      throw new Error("Error fetching user");
-    }
-    const user = await response.json();
-    return {
-      id: user.idUsuario,
-      email: user.correo,
-      nombre: user.nombre,
-      rol: user.Rol ? user.Rol.nombre : (user.Rol_idRol === 1 ? 'admin' : 'client'),
-      ...user,
-      ...(user.DatosUsuario || {}),
-      pesoActual: user.DatosUsuario?.peso,
-      deficitEstimado: user.DatosUsuario?.decifitEstimado,
-      semanasEnProgreso: user.DatosUsuario?.semanas_En_Progreso || 1,
-      ultimoFeedbackDieta: user.DatosUsuario?.ultimo_Feedback_Dieta,
-      ultimoFeedbackEjercicio: user.DatosUsuario?.ultimo_Feedback_Ejercicio,
-      ...(user.Perfil || {}),
-      avatar: user.Perfil?.foto_Perfil || user.avatar || '',
-      cover: user.Perfil?.foto_Portada || user.cover || '',
-      following: user.Perfil?.Following?.map(p => p.Usuario_idUsuario) || [],
-      followers: user.Perfil?.Followers?.map(p => p.Usuario_idUsuario) || [],
-      ejerciciosElegidos: user.DatosUsuario?.Rutinas?.[0]?.Ejercicios?.map(e => e.idEjercicios) || []
-    };
-  } catch (error) {
-    console.error("Error fetching user by ID:", error);
-    throw error;
+  const response = await fetch(`${BASE_URL}/api/usuarios/${userId}`, {
+    headers: authHeaders()
+  });
+  if (!response.ok) throw new Error('Error al obtener el usuario.');
+  const data = await response.json();
+  return mapUsuario(data);
+};
+
+export const updateUser = async (userId, userData) => {
+  const payload = { ...userData };
+  if (userData.email) { payload.correo = userData.email; delete payload.email; }
+  if (userData.password) { payload.contrasenia = userData.password; delete payload.password; }
+
+  const response = await fetch(`${BASE_URL}/api/usuarios/${userId}`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify(payload)
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || 'Error al actualizar el usuario.');
   }
+  const data = await response.json();
+  return mapUsuario(data);
+};
+
+export const deleteUser = async (userId) => {
+  const response = await fetch(`${BASE_URL}/api/usuarios/${userId}`, {
+    method: 'DELETE',
+    headers: authHeaders()
+  });
+  if (!response.ok) throw new Error('Error al eliminar el usuario.');
+};
+
+export const checkUserExists = async (email) => {
+  const response = await fetch(`${BASE_URL}/api/usuarios?correo=${encodeURIComponent(email)}`, {
+    headers: authHeaders()
+  });
+  if (!response.ok) return false;
+  const data = await response.json();
+  const arr = Array.isArray(data) ? data : (data.data || []);
+  return arr.some(u => (u.correo || u.email || '').toLowerCase() === email.toLowerCase());
+};
+
+export const saveContactMessage = async (messageData) => {
+  const response = await fetch(`${BASE_URL}/api/mensajes`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(messageData)
+  });
+  if (!response.ok) throw new Error('Error al guardar el mensaje.');
+  return await response.json();
 };
 
 export const getAllContactMessages = async () => {
-  try {
-    const response = await fetch(`${BASE_URL}/mensajes`);
-    if (!response.ok) {
-      throw new Error("Error fetching contact messages");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching contact messages:", error);
-    throw error;
-  }
+  const response = await fetch(`${BASE_URL}/api/mensajes`, { headers: authHeaders() });
+  if (!response.ok) throw new Error('Error al obtener los mensajes.');
+  return await response.json();
 };
 
 export const deleteContactMessage = async (messageId) => {
-  try {
-    const response = await fetch(`${BASE_URL}/mensajes/${messageId}`, {
-      method: "DELETE",
-    });
-    if (!response.ok) {
-      throw new Error("Error deleting contact message");
-    }
-  } catch (error) {
-    console.error("Error deleting contact message:", error);
-    throw error;
-  }
+  const response = await fetch(`${BASE_URL}/api/mensajes/${messageId}`, {
+    method: 'DELETE',
+    headers: authHeaders()
+  });
+  if (!response.ok) throw new Error('Error al eliminar el mensaje.');
 };
+
 export const actualizarImg = async (userId, imageUrl) => {
-  try {
-    if (!imageUrl || imageUrl.startsWith("data:")) {
-      throw new Error("La imagen no es una URL válida");
-    }
-
-    const response = await fetch(`${BASE_URL}/usuarios/${userId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        avatar: imageUrl,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error actualizando imagen:", error);
-    throw error;
+  if (!imageUrl || imageUrl.startsWith('data:')) {
+    throw new Error('La imagen no es una URL válida.');
   }
+  const response = await fetch(`${BASE_URL}/api/usuarios/${userId}`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify({ avatar: imageUrl })
+  });
+  if (!response.ok) throw new Error('Error al actualizar la imagen.');
+  const data = await response.json();
+  return mapUsuario(data);
 };

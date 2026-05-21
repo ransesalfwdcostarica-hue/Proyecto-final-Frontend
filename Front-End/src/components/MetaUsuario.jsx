@@ -47,13 +47,14 @@ const MetaUsuario = ({ userData, onBack }) => {
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Error',
-        text: 'No se pudo completar el registro: ' + error.message,
+        title: 'Error de Registro',
+        text: error.message || 'No se pudo completar el registro.',
         background: '#171212',
         color: '#ffffff',
         iconColor: '#7d2020',
-        timer: 2000,
-        showConfirmButton: false
+        timer: 3000,
+        showConfirmButton: true,
+        confirmButtonColor: '#8b0000'
       });
     } finally {
       setLoading(false);

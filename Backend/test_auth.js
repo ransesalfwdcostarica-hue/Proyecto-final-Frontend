@@ -1,7 +1,7 @@
 const axios = require('axios');
-const { sequelize } = require('c:/Users/Ramses/Documents/PRYECTO FULL STACK 2/Proyecto-final-Frontend/Backend/src/index');
-const Usuario = require('c:/Users/Ramses/Documents/PRYECTO FULL STACK 2/Proyecto-final-Frontend/Backend/src/models/Usuario');
-const Rol = require('c:/Users/Ramses/Documents/PRYECTO FULL STACK 2/Proyecto-final-Frontend/Backend/src/models/Rol');
+const { sequelize } = require('./src/index');
+const Usuario = require('./src/models/Usuario');
+const Rol = require('./src/models/Rol');
 
 async function runTest() {
     console.log("=== INICIANDO PRUEBA DE AUTENTICACION JWT ===");

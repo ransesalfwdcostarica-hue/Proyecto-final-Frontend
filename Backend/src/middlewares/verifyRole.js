@@ -5,8 +5,14 @@ const verifyRole = (rolesPermitidos) => {
             return res.status(401).json({ error: 'Usuario no autenticado. Token no válido o ausente.' });
         }
 
-        // Verifica si el rol del usuario está dentro del arreglo de roles permitidos
-        if (!rolesPermitidos.includes(req.usuario.rol)) {
+        const allowed = rolesPermitidos.map(r => r.toLowerCase());
+        let userRole = req.usuario.rol;
+        if (!userRole) {
+            if (req.usuario.id_rol === 1) userRole = 'admin';
+            else if (req.usuario.id_rol === 2) userRole = 'client';
+        }
+
+        if (!userRole || !allowed.includes(userRole.toLowerCase())) {
             return res.status(403).json({ 
                 error: `Acceso denegado. Se requiere uno de los siguientes roles: ${rolesPermitidos.join(', ')}` 
             });

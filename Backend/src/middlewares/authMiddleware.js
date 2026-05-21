@@ -13,10 +13,12 @@ const authMiddleware = (req, res, next) => {
         
         // Adjuntar los datos decodificados del usuario a la petición
         req.usuario = decoded;
+        req.user = decoded;
         next();
     } catch (error) {
         return res.status(401).json({ error: 'Token inválido o expirado.' });
     }
 };
 
+authMiddleware.verifyToken = authMiddleware;
 module.exports = authMiddleware;

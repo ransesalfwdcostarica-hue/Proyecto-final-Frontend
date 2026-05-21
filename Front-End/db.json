@@ -406,6 +406,18 @@
       "likes": 0,
       "comments": 0,
       "likedBy": []
+    },
+    {
+      "id": "6caa",
+      "title": "no se",
+      "text": "nose",
+      "image": null,
+      "category": "Pérdida de Peso",
+      "tag": "Pérdida de Peso",
+      "userId": 3,
+      "time": "2026-05-21T19:30:47.639Z",
+      "likes": 0,
+      "likedBy": []
     }
   ],
   "trendingTopics": [

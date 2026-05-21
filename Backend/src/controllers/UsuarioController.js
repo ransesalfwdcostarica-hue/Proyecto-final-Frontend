@@ -239,7 +239,13 @@ const UsuarioController = {
 
             // Firmar el token JWT
             const token = jwt.sign(
-                { id_usuario: usuario.id_usuario, correo: usuario.correo, id_rol: usuario.id_rol },
+                { 
+                    id: usuario.id_usuario,
+                    id_usuario: usuario.id_usuario, 
+                    correo: usuario.correo, 
+                    id_rol: usuario.id_rol,
+                    rol: usuario.Rol?.nombre || 'client'
+                },
                 config.jwtSecret,
                 { expiresIn: '24h' }
             );

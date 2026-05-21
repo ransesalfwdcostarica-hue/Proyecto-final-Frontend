@@ -3,12 +3,34 @@ const Reporte = require('../models/Reporte');
 const ReporteController = {
     getAll: async (req, res) => {
         try {
-            const reportes = await Reporte.findAll();
+            const { Usuario, RazonReporte, DetalleRazonReporte } = require('../index');
+            const reportes = await Reporte.findAll({
+                include: [
+                    { model: Usuario },
+                    {
+                        model: RazonReporte,
+                        include: [{ model: DetalleRazonReporte }]
+                    }
+                ]
+            });
 
-            if (!reportes || reportes.length === 0) {
-                return res.status(404).json({ message: "No se encontraron reportes" });
+            if (!reportes) {
+                return res.status(200).json([]);
             }
-            res.status(200).json(reportes);
+
+            const mapped = reportes.map(r => ({
+                id: r.id_reporte,
+                storyId: r.id_publicacion,
+                reporterId: r.id_usuario,
+                reporterName: r.Usuario?.nombre || 'Usuario',
+                reason: r.RazonReporte?.nombre || 'Reporte',
+                subReason: r.RazonReporte?.DetalleRazonReporte?.nombre || 'Contenido reportado',
+                otherText: r.descripcion,
+                status: r.estado || 'pending',
+                fecha: r.fecha_hora || new Date()
+            }));
+
+            res.status(200).json(mapped);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -29,13 +51,32 @@ const ReporteController = {
     },
     create: async (req, res) => {
         try {
-            const { id_usuario, id_publicacion, id_razon, descripcion, estado, fecha_hora } = req.body;
+            let { id_usuario, reporterId, id_publicacion, storyId, id_razon, reason, descripcion, subReason, otherText, estado, status, fecha_hora, fecha } = req.body;
+            
+            const finalUserId = id_usuario || reporterId;
+            const finalPublicacionId = id_publicacion || storyId;
+            let finalRazonId = id_razon;
+            
+            if (!finalRazonId && reason) {
+                const { RazonReporte } = require('../index');
+                const r = await RazonReporte.findOne({ where: { nombre: reason } });
+                if (r) finalRazonId = r.id_razon;
+            }
+            if (!finalRazonId) finalRazonId = 1; // Fallback to 1
 
-            if (!id_usuario || !id_publicacion || !id_razon) {
-                return res.status(400).json({ error: 'El id_usuario, id_publicacion, id_razon es requerido' });
+            if (!finalUserId || !finalPublicacionId) {
+                return res.status(400).json({ error: 'El id_usuario/reporterId y el id_publicacion/storyId son requeridos' });
             }
 
-            const nuevo = await Reporte.create({ id_usuario, id_publicacion, id_razon, descripcion, estado, fecha_hora });
+            const nuevo = await Reporte.create({
+                id_usuario: finalUserId,
+                id_publicacion: finalPublicacionId,
+                id_razon: finalRazonId,
+                descripcion: descripcion || otherText || subReason || 'Reporte de contenido',
+                estado: estado || status || 'pending',
+                fecha_hora: fecha_hora || fecha || new Date()
+            });
+
             res.status(201).json(nuevo);
         } catch (error) {
             res.status(500).json({ error: error.message });
