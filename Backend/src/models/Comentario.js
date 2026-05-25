@@ -22,3 +22,4 @@ const Comentario = sequelize.define('Comentario', {
 });
 
 module.exports = Comentario;
+

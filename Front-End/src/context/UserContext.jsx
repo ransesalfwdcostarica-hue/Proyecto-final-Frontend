@@ -2,7 +2,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { BASE_URL } from '../Services/apiConfig';
 import { getUserById } from '../Services/userService';
-import toast from 'react-hot-toast';
+import toast from 'react-hot-toast'; 
 
 export const UserContext = createContext();
 
