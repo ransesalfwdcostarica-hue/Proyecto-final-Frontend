@@ -33,6 +33,7 @@ import {
 import { Link } from 'react-router-dom';
 import { obtenerTodosEjercicios } from '../Services/exerciseService';
 import { updateUser, getAllUsers } from '../Services/userService';
+import { fetchStoriesData } from '../Services/testimonioService';
 import { UserContext } from '../context/UserContext';
 import { API_BASE_URL } from '../Services/apiConfig';
 import Swal from 'sweetalert2';
@@ -64,14 +65,14 @@ const DashCliente = () => {
 
   const loadData = async () => {
     try {
-      const [exData, usersData, storiesData] = await Promise.all([
+      const { storiesData } = await fetchStoriesData();
+      const [exData, usersData] = await Promise.all([
         obtenerTodosEjercicios(),
-        getAllUsers(),
-        fetch(`${API_BASE_URL}/publicaciones`).then(res => res.json())
+        getAllUsers()
       ]);
       setExercises(exData);
       setAllUsers(usersData);
-      setStories(storiesData);
+      setStories(storiesData || []);
       setLoading(false);
     } catch (error) {
       console.error("Error loading data:", error);

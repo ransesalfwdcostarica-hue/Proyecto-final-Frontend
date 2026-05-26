@@ -88,7 +88,8 @@ const FormContact = () => {
             // 4. Guardar en tu base de datos (userService)
             await saveContactMessage({
                 ...formData,
-                fecha: new Date().toISOString()
+                fecha: new Date().toISOString(),
+                id_usuario: currentUser.id
             });
 
             Swal.fire({

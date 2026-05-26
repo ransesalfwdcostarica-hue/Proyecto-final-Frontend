@@ -194,9 +194,31 @@
       "plazoSemanas": 8,
       "pesoActual": "100",
       "deficitEstimado": 450
+    },
+    {
+      "id": "b8d8",
+      "email": "Rsalas00@gmail.com",
+      "password": "123456",
+      "nombre": "Ronny Salas ",
+      "edad": "18",
+      "rol": "client",
+      "edadFisica": "18",
+      "sexo": "m",
+      "altura": "180",
+      "peso": "69.9",
+      "lugarEntrenamiento": "gym",
+      "alergias": "ninguno",
+      "pesoMeta": 65,
+      "plazoSemanas": 4,
+      "pesoActual": 70,
+      "deficitEstimado": 450,
+      "followers": [],
+      "following": [],
+      "avatar": "",
+      "cover": ""
     }
   ],
-  "contactos": [
+  "mensajes": [
     {
       "id": "5156",
       "nombre": "RANSES MATIAS",
@@ -384,6 +406,48 @@
       "likes": 0,
       "comments": 0,
       "likedBy": []
+    },
+    {
+      "id": "6caa",
+      "title": "no se",
+      "text": "nose",
+      "image": null,
+      "category": "Pérdida de Peso",
+      "tag": "Pérdida de Peso",
+      "userId": 3,
+      "time": "2026-05-21T19:30:47.639Z",
+      "likes": 0,
+      "likedBy": []
+    },
+    {
+      "id": "63c4",
+      "title": "stay se para",
+      "text": "una rarita",
+      "image": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1779393490/yl4d6uwrnvt5swjwp56a.jpg",
+      "category": "General",
+      "tag": "General",
+      "userId": 3,
+      "userName": "Ronny Salas",
+      "userAvatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1778622464/vuv30vdhmbhglssqxyx0.jpg",
+      "time": "Justo ahora",
+      "fecha": "2026-05-21T19:58:35.895Z",
+      "likes": 0,
+      "likedBy": []
+    },
+    {
+      "id": "4e69",
+      "title": "umk",
+      "text": "se busca bot",
+      "image": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1779393592/rl98zuxzcxfudry0f9qw.jpg",
+      "category": "Pérdida de Peso",
+      "tag": "Pérdida de Peso",
+      "userId": 3,
+      "userName": "Ronny Salas",
+      "userAvatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1778622464/vuv30vdhmbhglssqxyx0.jpg",
+      "time": "Justo ahora",
+      "fecha": "2026-05-21T20:00:04.372Z",
+      "likes": 0,
+      "likedBy": []
     }
   ],
   "trendingTopics": [
@@ -431,7 +495,7 @@
       "avatar": "https://i.pravatar.cc/150?u=tyler"
     }
   ],
-  "routines": [],
+  "rutinas": [],
   "ejercicios": [
     {
       "id": "e1",
@@ -1050,7 +1114,7 @@
       "fecha": "2026-05-12T19:28:24.922Z"
     }
   ],
-  "reports": [
+  "reportes": [
     {
       "id": "e68f",
       "storyId": "9d31",

@@ -6,15 +6,24 @@ const ALERGIAS_PREDEFINIDAS = {
   alimentos: [
     { id: 'frutos_secos', label: 'Frutos secos / Nueces' },
     { id: 'mariscos', label: 'Mariscos' },
-    { id: 'trigo', label: 'Trigo / Gluten' }
+    { id: 'trigo', label: 'Trigo / Gluten' },
+    { id: 'lacteos', label: 'Lácteos / Lactosa' },
+    { id: 'huevo', label: 'Huevo' },
+    { id: 'soya', label: 'Soya' },
+    { id: 'pescado', label: 'Pescado' },
+    { id: 'mani', label: 'Maní' }
   ],
   medicamentos: [
     { id: 'analgesicos', label: 'Analgésicos (Ibuprofeno, Aspirina)' },
-    { id: 'penicilina', label: 'Penicilina' }
+    { id: 'penicilina', label: 'Penicilina' },
+    { id: 'sulfas', label: 'Sulfas' },
+    { id: 'anestesicos', label: 'Anestésicos locales' }
   ],
   contacto: [
     { id: 'latex', label: 'Látex (en bandas, colchonetas)' },
-    { id: 'niquel_goma', label: 'Níquel / Goma (en máquinas)' }
+    { id: 'niquel_goma', label: 'Níquel / Goma (en máquinas)' },
+    { id: 'polvo_acaros', label: 'Polvo / Ácaros' },
+    { id: 'polen', label: 'Polen' }
   ]
 };
 

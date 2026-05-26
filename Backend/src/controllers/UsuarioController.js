@@ -82,58 +82,84 @@ const UsuarioController = {
                 return res.status(400).json({ error: 'El correo, contrasenia, nombre es requerido' });
             }
 
-            // Create Usuario record
+            // Crear el usuario con id_rol por defecto a 2 (Cliente) si no se especifica
             const nuevo = await Usuario.create({
-                correo: finalCorreo,
-                contrasenia: finalContrasenia,
+                correo,
+                contrasenia,
                 nombre,
-                edad: edad || 20,
-                id_rol: id_rol || 2 // Default client role
-            });
-            const id = nuevo.id_usuario;
-
-            const { DatosUsuario, Perfil, Alergia, DatosUsuarioAlergia } = require('../index');
-
-            // Create default Perfil
-            const foto_perfil = req.body.avatar || '';
-            const foto_portada = req.body.cover || '';
-            await Perfil.create({
-                foto_perfil,
-                foto_portada,
-                biografia: 'Miembro de PowerFit',
-                id_usuario: id
+                edad: edad ? Number(edad) : 18,
+                id_rol: id_rol || 1
             });
 
-            // Create DatosUsuario with mapped camelCase to snake_case properties
-            const physicalData = {
-                sexo: req.body.sexo || 'm',
-                altura: req.body.altura ? parseFloat(req.body.altura) : 0,
-                peso: req.body.pesoActual ? parseFloat(req.body.pesoActual) : (req.body.peso ? parseFloat(req.body.peso) : 0),
-                lugar_entrenamiento: req.body.lugarEntrenamiento || 'gym',
-                peso_meta: req.body.pesoMeta ? parseFloat(req.body.pesoMeta) : 0,
-                plazo_semanas: req.body.plazoSemanas ? parseInt(req.body.plazoSemanas, 10) : 8,
-                deficit_estimado: req.body.deficitEstimado ? parseInt(req.body.deficitEstimado, 10) : 450,
-                semanas_progreso: req.body.semanasEnProgreso ? parseInt(req.body.semanasEnProgreso, 10) : 1,
-                feedback_dieta: req.body.ultimoFeedbackDieta || 'Ninguno',
-                feedback_ejercicio: req.body.ultimoFeedbackEjercicio || 'Ninguno',
-                imagen: req.body.imagen || ''
-            };
+            const { Perfil, DatosUsuario, Alergia } = require('../index');
 
-            const datosUsuario = await DatosUsuario.create({ ...physicalData, id_usuario: id });
+            // Crear Perfil y DatosUsuario si hay campos de registro físico/completo
+            const isFullRegistration = req.body.sexo !== undefined || req.body.peso !== undefined || req.body.altura !== undefined;
+            
+            if (isFullRegistration) {
+                // Crear Perfil
+                const foto_perfil = req.body.avatar || req.body.foto_perfil || 'avatar.png';
+                const foto_portada = req.body.cover || req.body.foto_portada || 'banner.jpg';
+                const biografia = req.body.biografia || 'Miembro de PowerFit';
+                
+                await Perfil.create({
+                    foto_perfil,
+                    foto_portada,
+                    biografia,
+                    id_usuario: nuevo.id_usuario
+                });
 
-            // Handle Alergias if present
-            if (req.body.alergias) {
-                const alergiasList = req.body.alergias
-                    .split(',')
-                    .map(name => name.replace('Adicional:', '').trim())
-                    .filter(name => name && name.toLowerCase() !== 'ninguna');
+                // Crear DatosUsuario
+                const sexo = req.body.sexo || 'Masculino';
+                const altura = req.body.altura !== undefined ? Number(req.body.altura) : 1.70;
+                const peso = req.body.peso !== undefined ? Number(req.body.peso) : 70.0;
+                const lugar_entrenamiento = req.body.lugarEntrenamiento || req.body.lugar_entrenamiento || 'Casa';
+                const peso_meta = req.body.pesoMeta !== undefined ? Number(req.body.pesoMeta) : 70.0;
+                const plazo_semanas = req.body.plazoSemanas !== undefined ? Number(req.body.plazoSemanas) : 8;
+                const deficit_estimado = req.body.deficitEstimado !== undefined ? Number(req.body.deficitEstimado) : 450;
+                const imagen = req.body.imagen || 'inicial.png';
+                const semanas_progreso = req.body.semanasEnProgreso !== undefined ? Number(req.body.semanasEnProgreso) : 0;
+                const feedback_dieta = req.body.ultimoFeedbackDieta || req.body.feedback_dieta || 'Ninguno';
+                const feedback_ejercicio = req.body.ultimoFeedbackEjercicio || req.body.feedback_ejercicio || 'Ninguno';
 
-                for (const nombreAlergia of alergiasList) {
-                    const [alergia] = await Alergia.findOrCreate({ where: { nombre: nombreAlergia } });
-                    await DatosUsuarioAlergia.create({
-                        id_datos_usuario: datosUsuario.id_datos_usuario,
-                        id_alergia: alergia.id_alergia
-                    });
+                const datosUsuario = await DatosUsuario.create({
+                    sexo,
+                    altura,
+                    peso,
+                    lugar_entrenamiento,
+                    peso_meta,
+                    plazo_semanas,
+                    deficit_estimado,
+                    imagen,
+                    id_usuario: nuevo.id_usuario,
+                    semanas_progreso,
+                    feedback_dieta,
+                    feedback_ejercicio
+                });
+
+                // Procesar alergias si se enviaron
+                if (req.body.alergias && typeof req.body.alergias === 'string' && req.body.alergias.trim() !== '') {
+                    const cleanedAlergias = req.body.alergias.replace(/ Adicional:\s*/i, ', ');
+                    const alergiasList = cleanedAlergias
+                        .split(',')
+                        .map(name => name.trim())
+                        .filter(name => name.length > 0 && name.toLowerCase() !== 'ninguna' && name.toLowerCase() !== 'ninguno');
+
+                    if (alergiasList.length > 0) {
+                        const alergiaRecords = [];
+                        for (const name of alergiasList) {
+                            const [alergiaRecord] = await Alergia.findOrCreate({
+                                where: { nombre: name }
+                            });
+                            alergiaRecords.push(alergiaRecord);
+                        }
+                        // Use correct singular setAlergia helper generated by Sequelize due to pluralization behavior
+                        if (typeof datosUsuario.setAlergia === 'function') {
+                            await datosUsuario.setAlergia(alergiaRecords);
+                        } else if (typeof datosUsuario.setAlergias === 'function') {
+                            await datosUsuario.setAlergias(alergiaRecords);
+                        }
+                    }
                 }
             }
 
@@ -353,7 +379,13 @@ const UsuarioController = {
 
             // Firmar el token JWT
             const token = jwt.sign(
-                { id_usuario: usuario.id_usuario, correo: usuario.correo, id_rol: usuario.id_rol },
+                { 
+                    id: usuario.id_usuario,
+                    id_usuario: usuario.id_usuario, 
+                    correo: usuario.correo, 
+                    id_rol: usuario.id_rol,
+                    rol: usuario.Rol?.nombre || 'client'
+                },
                 config.jwtSecret,
                 { expiresIn: '24h' }
             );

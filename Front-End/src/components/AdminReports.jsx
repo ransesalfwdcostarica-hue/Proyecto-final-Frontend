@@ -97,8 +97,11 @@ const AdminReports = () => {
 
         if (result.isConfirmed) {
             try {
+                // Delete report first (FK references publication), then delete the publication
+                if (reportId) {
+                    await deleteReport(reportId);
+                }
                 await deleteStory(storyId);
-                await deleteReport(reportId);
                 setReports(reports.filter(r => r.storyId !== storyId));
                 Swal.fire({
                     icon: 'success',
@@ -108,7 +111,8 @@ const AdminReports = () => {
                     confirmButtonColor: '#8b0000'
                 });
                 if (selectedStory?.id === storyId) setShowStoryModal(false);
-            } catch {
+            } catch (error) {
+                console.error('Error deleting post:', error, { storyId, reportId });
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',

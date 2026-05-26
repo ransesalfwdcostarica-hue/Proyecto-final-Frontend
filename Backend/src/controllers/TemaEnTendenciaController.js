@@ -6,9 +6,17 @@ const TemaEnTendenciaController = {
             const temas = await TemaEnTendencia.findAll();
 
             if (!temas || temas.length === 0) {
-                return res.status(404).json({ message: "No se encontraron temas" });
+                return res.status(200).json([]);
             }
-            res.status(200).json(temas);
+            
+            const formattedTemas = temas.map(t => ({
+                ...t.toJSON(),
+                id: t.id_tema,
+                topic: t.tema,
+                count: t.miembros
+            }));
+            
+            res.status(200).json(formattedTemas);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

@@ -22,28 +22,32 @@ const Ejercicio = sequelize.define('Ejercicio', {
     },
     video: {
         type: DataTypes.TEXT,
-        allowNull: false
-    },
-    videoUrl: {
-        type: DataTypes.TEXT,
-        field: 'video', 
-        allowNull: false
+        allowNull: true,
+        defaultValue: ''
     },
     imagen: {
         type: DataTypes.TEXT,
-        allowNull: false
+        allowNull: true,
+        defaultValue: ''
     },
     tiempo: {
         type: DataTypes.STRING(45),
-        allowNull: false
+        allowNull: true,
+        defaultValue: ''
+    },
+    categoria: {
+        type: DataTypes.STRING(120),
+        allowNull: true
     },
     repeticiones: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true,
+        defaultValue: 0
     },
     series: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true,
+        defaultValue: 0
     }
 }, {
     tableName: 'ejercicio',

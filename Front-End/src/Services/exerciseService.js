@@ -1,5 +1,5 @@
 import { API_BASE_URL } from './apiConfig';
-const BASE_URL = API_BASE_URL;
+const BASE_URL = `${API_BASE_URL}/api`;
 
 //Obtener todos los ejercicios
 export const obtenerTodosEjercicios = async () => {
@@ -10,7 +10,7 @@ export const obtenerTodosEjercicios = async () => {
     }
     const data = await response.json();
     return data.map(ex => ({
-      id: ex.idEjercicios,
+      id: ex.id_ejercicio || ex.idEjercicios || ex.id,
       ...ex
     }));
   } catch (error) {
@@ -29,7 +29,7 @@ export const getPaginatedExercises = async (page = 1, limit = 10) => {
     return {
       ...data,
       data: data.data.map(ex => ({
-        id: ex.idEjercicios,
+        id: ex.id_ejercicio || ex.idEjercicios || ex.id,
         ...ex
       }))
     };
@@ -54,14 +54,28 @@ export const obtenerEjerciciosPorCategoria = async (category) => {
 };
 
 //Crear un ejercicio
+const authHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {})
+  };
+};
+
+// Crear un ejercicio
 export const crearEjercicio = async (exerciseData) => {
   try {
+    // Ensure required optional fields have defaults to satisfy DB constraints
+    const payload = {
+      ...exerciseData,
+      video: exerciseData.video || '',
+      imagen: exerciseData.imagen || '',
+      tiempo: exerciseData.tiempo || '',
+    };
     const response = await fetch(`${BASE_URL}/ejercicios`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(exerciseData),
+      headers: authHeaders(),
+      body: JSON.stringify(payload),
     });
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);
@@ -73,14 +87,12 @@ export const crearEjercicio = async (exerciseData) => {
   }
 };
 
-//Actualizar un ejercicio
+// Actualizar un ejercicio
 export const actualizarEjercicio = async (id, exerciseData) => {
   try {
     const response = await fetch(`${BASE_URL}/ejercicios/${id}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: authHeaders(),
       body: JSON.stringify(exerciseData),
     });
     if (!response.ok) {
@@ -93,11 +105,12 @@ export const actualizarEjercicio = async (id, exerciseData) => {
   }
 };
 
-//Eliminar un ejercicio
+// Eliminar un ejercicio
 export const eliminarEjercicio = async (id) => {
   try {
     const response = await fetch(`${BASE_URL}/ejercicios/${id}`, {
       method: 'DELETE',
+      headers: authHeaders(),
     });
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);

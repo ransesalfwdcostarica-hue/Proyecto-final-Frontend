@@ -34,7 +34,7 @@ const MensajeContacto = sequelize.define('MensajeContacto', {
     },
     id_usuario: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     }
 }, {
     tableName: 'mensaje_contacto',

@@ -48,9 +48,12 @@ const DashAdmin = () => {
     if (newExercise.musculo.trim().length < 3) {
       return Swal.fire({ title: 'Validación', text: 'Especifique un músculo válido.', icon: 'warning', background: '#0f0f0f', color: '#fff' });
     }
-    const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-    if (!urlPattern.test(newExercise.imagen)) {
-      return Swal.fire({ title: 'Validación', text: 'La URL de la imagen no es válida.', icon: 'warning', background: '#0f0f0f', color: '#fff' });
+    if (newExercise.imagen.trim()) {
+      try {
+        new URL(newExercise.imagen);
+      } catch (_) {
+        return Swal.fire({ title: 'Validación', text: 'La URL de la imagen no es válida.', icon: 'warning', background: '#0f0f0f', color: '#fff' });
+      }
     }
 
     try {

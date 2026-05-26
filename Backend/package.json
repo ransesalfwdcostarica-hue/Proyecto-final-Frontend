@@ -14,10 +14,17 @@
   "description": "",
   "main": "index.js",
   "devDependencies": {
-    "sequelize-cli": "^6.6.5"
+    "jest": "^30.4.2",
+    "sequelize-cli": "^6.6.5",
+    "sqlite3": "^6.0.1",
+    "supertest": "^7.2.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js",
+    "test": "jest --runInBand --detectOpenHandles",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage --runInBand"
   },
   "keywords": [],
   "author": "",
