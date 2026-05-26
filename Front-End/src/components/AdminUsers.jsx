@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getPaginatedUsers, deleteUser, updateUser } from '../Services/userService';
-import { Trash2, UserPlus, AlertTriangle, X, Edit2, Save, Eye, Activity, ClipboardList, Target, Calendar, User as UserIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+  Trash2, UserPlus, X, Edit2, Save, Activity, ClipboardList, 
+  Target, User as UserIcon, ChevronLeft, ChevronRight, Search, 
+  Shield, Users, Loader2, Mail, Calendar
+} from 'lucide-react';
 import Swal from 'sweetalert2';
 
 const AdminUsers = () => {
@@ -19,6 +23,7 @@ const AdminUsers = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailUser, setDetailUser] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     loadUsers(currentPage);
@@ -27,7 +32,7 @@ const AdminUsers = () => {
   const loadUsers = async (page) => {
     try {
       setLoading(true);
-      const res = await getPaginatedUsers(page, 5); // 5 users per page
+      const res = await getPaginatedUsers(page, 8);
       setUsers(res.data);
       setTotalPages(res.totalPages);
     } catch (error) {
@@ -79,7 +84,6 @@ const AdminUsers = () => {
     e.preventDefault();
     if (!selectedUser) return;
 
-    // Client-side validation
     if (editForm.nombre.trim().length < 3) {
       return Swal.fire({ title: 'Error de validación', text: 'El nombre debe tener al menos 3 caracteres.', icon: 'warning', background: '#171212', color: '#fff' });
     }
@@ -93,12 +97,11 @@ const AdminUsers = () => {
 
     try {
       setProcessing(true);
-      const updated = await updateUser(selectedUser.id, editForm);
-      // Optimistic Update
+      await updateUser(selectedUser.id, editForm);
       setUsers(users.map(u => u.id === selectedUser.id ? { ...u, ...editForm } : u));
       setIsEditModalOpen(false);
       setSelectedUser(null);
-      
+
       Swal.fire({
         title: '¡Actualizado!',
         text: 'Los datos del usuario han sido guardados.',
@@ -134,12 +137,19 @@ const AdminUsers = () => {
     return (inicio - actual).toFixed(1);
   };
 
+  const getProgressPercentage = (user) => {
+    if (!user.plazoSemanas || user.plazoSemanas === 0) return 0;
+    const progress = ((user.semanasEnProgreso || 0) / user.plazoSemanas) * 100;
+    return Math.min(100, Math.round(progress));
+  };
+
   const confirmDeleteUser = async (userId) => {
     try {
       setProcessing(true);
       await deleteUser(userId);
       setUsers(users.filter(u => u.id !== userId));
-      
+      window.dispatchEvent(new CustomEvent('refreshAdminStats'));
+
       Swal.fire({
         title: 'Eliminado',
         text: 'El usuario ha sido removido del sistema.',
@@ -162,29 +172,67 @@ const AdminUsers = () => {
     }
   };
 
-  return (
-    <div className="admin-panel animate-fade-in">
-      <div className="dashboard-header">
-        <h1>Gestión de Usuarios</h1>
-        <p>Administra los usuarios registrados en la plataforma</p>
-      </div>
+  // Client-side search over fetched page
+  const displayedUsers = users.filter(user => {
+    if (!searchTerm.trim()) return true;
+    const term = searchTerm.toLowerCase();
+    return (
+      user.nombre?.toLowerCase().includes(term) ||
+      user.email?.toLowerCase().includes(term) ||
+      user.rol?.toLowerCase().includes(term)
+    );
+  });
 
-      <div className="panel-header">
-        <h2>Lista de Usuarios</h2>
-        <button className="btn-primary" onClick={() => window.location.href = '/registro'}>
-          <UserPlus size={18} />
-          Agregar Usuario
+  return (
+    <div className="admin-panel au-panel animate-fade-in">
+      {/* Premium Header */}
+      <div className="au-header">
+        <div className="au-header-text">
+          <h1 className="au-title">
+            <Users size={28} className="au-title-icon" />
+            Gestión de Usuarios
+          </h1>
+          <p className="au-subtitle">
+            Administra los usuarios registrados en la plataforma
+          </p>
+        </div>
+        <button className="au-add-btn" onClick={() => window.location.href = '/registro'}>
+          <UserPlus size={20} />
+          <span>Agregar Usuario</span>
         </button>
       </div>
 
+      {/* Search Bar */}
+      <div className="au-toolbar">
+        <div className="au-search-wrapper">
+          <Search size={18} className="au-search-icon" />
+          <input
+            type="text"
+            className="au-search-input"
+            placeholder="Buscar por nombre, email o rol..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {searchTerm && (
+            <button className="au-search-clear" onClick={() => setSearchTerm('')}>
+              <X size={16} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Loading */}
       {loading ? (
-        <p>Cargando usuarios...</p>
+        <div className="au-loading">
+          <Loader2 size={40} className="ae-spinner" />
+          <p>Cargando usuarios...</p>
+        </div>
       ) : (
-        <div className="admin-table-container">
-          <table className="admin-table">
+        <div className="au-table-wrap">
+          <table className="au-table">
             <thead>
               <tr>
-                <th>Nombre</th>
+                <th>Usuario</th>
                 <th>Email</th>
                 <th>Edad</th>
                 <th>Rol</th>
@@ -192,129 +240,188 @@ const AdminUsers = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map(user => (
-                <tr key={user.id}>
-                  <td>{user.nombre}</td>
-                  <td>{user.email}</td>
-                  <td>{user.edad}</td>
+              {displayedUsers.map((user, idx) => (
+                <tr key={user.id} className="au-row" style={{ animationDelay: `${idx * 40}ms` }}>
                   <td>
-                    <span className={`badge ${user.rol}`}>
-                      {user.rol === 'admin' ? 'Administrador' : 'Cliente'}
+                    <div className="au-user-cell">
+                      <div className="au-avatar">
+                        <img src={user.avatar || `https://i.pravatar.cc/150?u=${user.id}`} alt={user.nombre} />
+                      </div>
+                      <span className="au-user-name">{user.nombre}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span className="au-email">{user.email}</span>
+                  </td>
+                  <td>
+                    <span className="au-age">{user.edad}</span>
+                  </td>
+                  <td>
+                    <span className={`au-role-badge ${user.rol === 'admin' ? 'au-role-admin' : 'au-role-client'}`}>
+                      <Shield size={13} />
+                      {user.rol === 'admin' ? 'Admin' : 'Cliente'}
                     </span>
                   </td>
                   <td>
-                    <div className="actions-cell">
+                    <div className="au-actions">
                       <button
-                        className="btn-action edit"
+                        className="au-action-btn au-action-edit"
                         onClick={() => handleEdit(user)}
                         title="Editar usuario"
                       >
-                        <Edit2 size={18} />
+                        <Edit2 size={16} />
                       </button>
                       {user.rol !== 'admin' && (
                         <button
-                          className="btn-view-progress"
+                          className="au-action-btn au-action-progress"
                           onClick={() => handleOpenDetail(user)}
+                          title="Ver progreso"
                         >
-                          Ver progreso del usuario
+                          <Activity size={16} />
+                          <span>Progreso</span>
                         </button>
                       )}
                       <button
-                        className="btn-action delete"
+                        className="au-action-btn au-action-delete"
                         onClick={() => handleDelete(user.id)}
                         title="Eliminar usuario"
                       >
-                        <Trash2 size={18} />
+                        <Trash2 size={16} />
                       </button>
                     </div>
                   </td>
                 </tr>
               ))}
-              {users.length === 0 && (
+              {displayedUsers.length === 0 && (
                 <tr>
-                  <td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>
-                    No se encontraron usuarios.
+                  <td colSpan="5">
+                    <div className="au-empty">
+                      <Users size={48} />
+                      <p>No se encontraron usuarios.</p>
+                    </div>
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-          <div className="pagination-controls" style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem', alignItems: 'center' }}>
-            <button 
-              className="btn-secondary" 
-              disabled={currentPage === 1} 
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            >
-              <ChevronLeft size={18} /> Anterior
-            </button>
-            <span>Página {currentPage} de {totalPages}</span>
-            <button 
-              className="btn-secondary" 
-              disabled={currentPage === totalPages || totalPages === 0} 
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-            >
-              Siguiente <ChevronRight size={18} />
-            </button>
-          </div>
         </div>
       )}
 
-      {/* Modal de edición de usuario */}
+      {/* Pagination */}
+      {!loading && totalPages > 1 && (
+        <div className="au-pagination">
+          <button
+            className="ae-page-btn"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          >
+            <ChevronLeft size={16} /> Anterior
+          </button>
+          <div className="au-page-numbers">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <button
+                key={page}
+                className={`ae-page-btn ae-page-num ${currentPage === page ? 'active' : ''}`}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+          <button
+            className="ae-page-btn"
+            disabled={currentPage === totalPages || totalPages === 0}
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+          >
+            Siguiente <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* ── Edit Modal ── */}
       {isEditModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content animate-fade-in" style={{ maxWidth: '650px', width: '90%', textAlign: 'left' }}>
-            <div className="modal-header">
-              <h2>Editar Usuario</h2>
-              <button className="btn-close" onClick={() => setIsEditModalOpen(false)}>
-                <X size={24} />
+        <div className="modal-overlay au-modal-overlay">
+          <div className="au-edit-modal animate-fade-in" onClick={e => e.stopPropagation()}>
+            <div className="au-modal-header">
+              <div className="au-modal-title-group">
+                <div className="au-modal-icon-wrap">
+                  <Edit2 size={20} />
+                </div>
+                <h2>Editar Usuario</h2>
+              </div>
+              <button className="ae-tech-close" onClick={() => setIsEditModalOpen(false)}>
+                <X size={22} />
               </button>
             </div>
-            <form onSubmit={handleUpdateUser} className="story-form">
-              <div className="form-group">
+
+            <form onSubmit={handleUpdateUser} className="au-edit-form">
+              <div className="au-form-group">
                 <label>Nombre Completo</label>
-                <input
-                  type="text"
-                  value={editForm.nombre}
-                  onChange={(e) => setEditForm({ ...editForm, nombre: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Email</label>
-                <input
-                  type="email"
-                  value={editForm.email}
-                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-grid">
-                <div className="form-group">
-                  <label>Edad</label>
+                <div className="au-input-wrap">
+                  <UserIcon size={16} className="au-input-icon" />
                   <input
-                    type="number"
-                    value={editForm.edad}
-                    onChange={(e) => setEditForm({ ...editForm, edad: e.target.value })}
+                    type="text"
+                    value={editForm.nombre}
+                    onChange={(e) => setEditForm({ ...editForm, nombre: e.target.value })}
                     required
+                    placeholder="Nombre del usuario"
                   />
                 </div>
-                <div className="form-group">
-                  <label>Rol</label>
-                  <select
-                    value={editForm.rol}
-                    onChange={(e) => setEditForm({ ...editForm, rol: e.target.value })}
+              </div>
+              <div className="au-form-group">
+                <label>Email</label>
+                <div className="au-input-wrap">
+                  <Mail size={16} className="au-input-icon" />
+                  <input
+                    type="email"
+                    value={editForm.email}
+                    onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                     required
-                  >
-                    <option value="cliente">Cliente</option>
-                    <option value="admin">Administrador</option>
-                  </select>
+                    placeholder="correo@ejemplo.com"
+                  />
                 </div>
               </div>
-              <div className="modal-actions" style={{ marginTop: '1.5rem' }}>
-                <button type="button" className="btn-cancel" onClick={() => setIsEditModalOpen(false)}>Cancelar</button>
-                <button type="submit" className="btn-submit" disabled={processing}>
+              <div className="au-form-row">
+                <div className="au-form-group">
+                  <label>Edad</label>
+                  <div className="au-input-wrap">
+                    <Calendar size={16} className="au-input-icon" />
+                    <input
+                      type="number"
+                      value={editForm.edad}
+                      onChange={(e) => setEditForm({ ...editForm, edad: e.target.value })}
+                      required
+                      min="14"
+                      max="100"
+                    />
+                  </div>
+                </div>
+                <div className="au-form-group">
+                  <label>Rol</label>
+                  <div className="au-input-wrap">
+                    <Shield size={16} className="au-input-icon" />
+                    <select
+                      value={editForm.rol}
+                      onChange={(e) => setEditForm({ ...editForm, rol: e.target.value })}
+                      required
+                    >
+                      <option value="cliente">Cliente</option>
+                      <option value="admin">Administrador</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="au-modal-actions">
+                <button type="button" className="au-btn-cancel" onClick={() => setIsEditModalOpen(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="au-btn-save" disabled={processing}>
                   {processing ? (
-                    'Guardando...'
+                    <>
+                      <Loader2 size={18} className="ae-spinner" />
+                      Guardando...
+                    </>
                   ) : (
                     <>
                       <Save size={18} />
@@ -328,100 +435,127 @@ const AdminUsers = () => {
         </div>
       )}
 
-      {/* Modal de detalles de progreso y perfil */}
+      {/* ── Detail / Progress Modal ── */}
       {isDetailModalOpen && detailUser && (
-        <div className="modal-overlay">
-          <div className="modal-content admin-detail-modal animate-fade-in" style={{ maxWidth: '800px', width: '95%', textAlign: 'left' }}>
-            <div className="modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                <div className="detail-avatar">
+        <div className="modal-overlay au-modal-overlay">
+          <div className="au-detail-modal animate-fade-in" onClick={e => e.stopPropagation()}>
+            {/* Header with user info */}
+            <div className="au-detail-header">
+              <div className="au-detail-user-info">
+                <div className="au-detail-avatar">
                   <img src={detailUser.avatar || `https://i.pravatar.cc/150?u=${detailUser.id}`} alt={detailUser.nombre} />
                 </div>
                 <div>
-                  <h2 style={{ margin: 0 }}>{detailUser.nombre}</h2>
-                  <p style={{ margin: 0, color: '#a0a0a0', fontSize: '0.9rem' }}>{detailUser.email}</p>
+                  <h2>{detailUser.nombre}</h2>
+                  <span className="au-detail-email">{detailUser.email}</span>
                 </div>
               </div>
-              <button className="btn-close" onClick={() => setIsDetailModalOpen(false)}>
-                <X size={24} />
+              <button className="ae-tech-close" onClick={() => setIsDetailModalOpen(false)}>
+                <X size={22} />
               </button>
             </div>
 
-            <div className="admin-detail-body">
-              <div className="admin-detail-grid">
-                {/* Columna 1: Información Física */}
-                <div className="detail-section">
-                  <h3><UserIcon size={20} color="#ff4d4d" /> Información Física</h3>
-                  <div className="detail-info-list">
-                    <div className="detail-item">
-                      <span>Edad:</span> <strong>{detailUser.edad} años</strong>
+            <div className="au-detail-body">
+              {/* Stats Cards Row */}
+              <div className="au-stat-cards">
+                <div className="au-stat-card au-stat-primary">
+                  <span className="au-stat-label">Peso Actual</span>
+                  <span className="au-stat-value">{detailUser.pesoActual || detailUser.peso || '—'} <small>kg</small></span>
+                </div>
+                <div className="au-stat-card">
+                  <span className="au-stat-label">Peso Meta</span>
+                  <span className="au-stat-value">{detailUser.pesoMeta || '—'} <small>kg</small></span>
+                </div>
+                <div className="au-stat-card">
+                  <span className="au-stat-label">Peso Perdido</span>
+                  <span className="au-stat-value au-stat-green">{calculateWeightLost(detailUser)} <small>kg</small></span>
+                </div>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="au-progress-section">
+                <div className="au-progress-header">
+                  <span className="au-progress-title">Progreso del Programa</span>
+                  <span className="au-progress-week">Semana {detailUser.semanasEnProgreso || 0} de {detailUser.plazoSemanas || '—'}</span>
+                </div>
+                <div className="au-progress-track">
+                  <div
+                    className="au-progress-fill"
+                    style={{ width: `${getProgressPercentage(detailUser)}%` }}
+                  >
+                    <span className="au-progress-text">{getProgressPercentage(detailUser)}%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Detail Grid */}
+              <div className="au-detail-grid">
+                <div className="au-detail-section">
+                  <h3><UserIcon size={18} /> Información Física</h3>
+                  <div className="au-detail-list">
+                    <div className="au-detail-item">
+                      <span>Edad</span>
+                      <strong>{detailUser.edad} años</strong>
                     </div>
-                    <div className="detail-item">
-                      <span>Estatura:</span> <strong>{detailUser.altura} cm</strong>
+                    <div className="au-detail-item">
+                      <span>Estatura</span>
+                      <strong>{detailUser.altura} cm</strong>
                     </div>
-                    <div className="detail-item">
-                      <span>Sexo:</span> <strong>{detailUser.sexo === 'm' ? 'Masculino' : 'Femenino'}</strong>
+                    <div className="au-detail-item">
+                      <span>Sexo</span>
+                      <strong>{detailUser.sexo === 'm' ? 'Masculino' : 'Femenino'}</strong>
                     </div>
-                    <div className="detail-item">
-                      <span>Alergias:</span> <strong style={{ color: (detailUser.alergias?.toLowerCase() === 'no' || detailUser.alergias?.toLowerCase() === 'ninguna' ? '#4ade80' : '#ff4d4d') }}>{detailUser.alergias || 'Ninguna'}</strong>
+                    <div className="au-detail-item">
+                      <span>Alergias</span>
+                      <strong className={
+                        (detailUser.alergias?.toLowerCase() === 'no' || detailUser.alergias?.toLowerCase() === 'ninguna')
+                          ? 'au-text-green' : 'au-text-red'
+                      }>
+                        {detailUser.alergias || 'Ninguna'}
+                      </strong>
                     </div>
                   </div>
                 </div>
 
-                {/* Columna 2: Plan y Meta */}
-                <div className="detail-section">
-                  <h3><Target size={20} color="#ff4d4d" /> Plan y Objetivos</h3>
-                  <div className="detail-info-list">
-                    <div className="detail-item">
-                      <span>Peso Inicial:</span> <strong>{detailUser.peso} kg</strong>
+                <div className="au-detail-section">
+                  <h3><Target size={18} /> Plan y Objetivos</h3>
+                  <div className="au-detail-list">
+                    <div className="au-detail-item">
+                      <span>Peso Inicial</span>
+                      <strong>{detailUser.peso} kg</strong>
                     </div>
-                    <div className="detail-item">
-                      <span>Peso Meta:</span> <strong>{detailUser.pesoMeta} kg</strong>
+                    <div className="au-detail-item">
+                      <span>Peso Meta</span>
+                      <strong>{detailUser.pesoMeta} kg</strong>
                     </div>
-                    <div className="detail-item">
-                      <span>Plazo Semanas:</span> <strong>{detailUser.plazoSemanas} semanas</strong>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Columna 3: Progreso Actual */}
-                <div className="detail-section full-width">
-                  <h3><Activity size={20} color="#ff4d4d" /> Avance del Programa</h3>
-                  <div className="progress-highlights">
-                    <div className="highlight-card maroon">
-                      <span className="label">Peso Actual</span>
-                      <span className="value">{detailUser.pesoActual || detailUser.peso} kg</span>
-                    </div>
-                    <div className="highlight-card dark">
-                      <span className="label">Peso Perdido</span>
-                      <span className="value">{calculateWeightLost(detailUser)} kg</span>
-                    </div>
-                    <div className="highlight-card dark">
-                      <span className="label">Semana de Progreso</span>
-                      <span className="value">{detailUser.semanasEnProgreso || 0} / {detailUser.plazoSemanas}</span>
+                    <div className="au-detail-item">
+                      <span>Plazo</span>
+                      <strong>{detailUser.plazoSemanas} semanas</strong>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Columna 4: Feedback Reciente */}
-                <div className="detail-section full-width feedback-section">
-                  <h3><ClipboardList size={20} color="#ff4d4d" /> Último Feedback del Cliente</h3>
-                  <div className="feedback-grid-admin">
-                    <div className="feedback-box">
-                      <label>Sobre la Dieta:</label>
-                      <p>{detailUser.ultimoFeedbackDieta || "Sin feedback registrado aún."}</p>
-                    </div>
-                    <div className="feedback-box">
-                      <label>Sobre el Ejercicio:</label>
-                      <p>{detailUser.ultimoFeedbackEjercicio || "Sin feedback registrado aún."}</p>
-                    </div>
+              {/* Feedback Section */}
+              <div className="au-feedback-section">
+                <h3><ClipboardList size={18} /> Último Feedback del Cliente</h3>
+                <div className="au-feedback-grid">
+                  <div className="au-feedback-card">
+                    <label>Sobre la Dieta</label>
+                    <p>{detailUser.ultimoFeedbackDieta || "Sin feedback registrado aún."}</p>
+                  </div>
+                  <div className="au-feedback-card">
+                    <label>Sobre el Ejercicio</label>
+                    <p>{detailUser.ultimoFeedbackEjercicio || "Sin feedback registrado aún."}</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="modal-actions" style={{ marginTop: '1.5rem', borderTop: '1px solid #333', paddingTop: '1rem' }}>
-              <button type="button" className="btn-cancel" onClick={() => setIsDetailModalOpen(false)}>Cerrar Detalles</button>
+            <div className="au-detail-footer">
+              <button className="au-btn-cancel" onClick={() => setIsDetailModalOpen(false)}>
+                Cerrar Detalles
+              </button>
             </div>
           </div>
         </div>

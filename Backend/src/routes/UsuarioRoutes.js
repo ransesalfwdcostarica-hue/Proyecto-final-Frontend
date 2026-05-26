@@ -14,4 +14,7 @@ router.put('/:id', auth, UsuarioController.update);
 router.patch('/:id', auth, UsuarioController.update);
 router.delete('/:id', auth, isAdmin, UsuarioController.delete);
 
+// Follow / unfollow
+router.post('/:id/follow', auth, UsuarioController.follow);
+
 module.exports = router;

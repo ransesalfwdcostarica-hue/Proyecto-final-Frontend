@@ -42,6 +42,7 @@ const AdminMessages = () => {
         try {
           await deleteContactMessage(id);
           setMessages(messages.filter(m => m.id !== id));
+          window.dispatchEvent(new CustomEvent('refreshAdminStats'));
           
           Swal.fire({
             title: 'Eliminado',

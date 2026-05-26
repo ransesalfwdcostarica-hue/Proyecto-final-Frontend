@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'test') {
             host: config.db.host,
             dialect: config.db.dialect,
             storage: config.db.storage,
-            logging: false
+            logging: console.log
         }
     );
 }

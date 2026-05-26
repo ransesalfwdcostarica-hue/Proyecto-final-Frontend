@@ -32,7 +32,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { obtenerTodosEjercicios } from '../Services/exerciseService';
-import { updateUser, getAllUsers } from '../Services/userService';
+import { updateUser, getAllUsers, followUser } from '../Services/userService';
 import { fetchStoriesData } from '../Services/testimonioService';
 import { UserContext } from '../context/UserContext';
 import { API_BASE_URL } from '../Services/apiConfig';
@@ -220,32 +220,25 @@ const DashCliente = () => {
   };
 
   const handleFollow = async (targetUser) => {
-    if (!user || !targetUser) return;
+    if (!user?.id || !targetUser?.id) return;
 
-    const isFollowing = user.following?.includes(targetUser.id);
-    let newFollowing;
-    let newFollowers;
-
-    if (isFollowing) {
-      newFollowing = user.following.filter(id => id !== targetUser.id);
-      newFollowers = (targetUser.followers || []).filter(id => id !== user.id);
-    } else {
-      newFollowing = [...(user.following || []), targetUser.id];
-      newFollowers = [...(targetUser.followers || []), user.id];
-    }
+    const wasFollowing = user.following?.includes(targetUser.id);
 
     try {
-      // Update current user
-      const updatedUser = await updateUser(user.id, { ...user, following: newFollowing });
-      // Update target user
-      await updateUser(targetUser.id, { ...targetUser, followers: newFollowers });
-      
-      refreshUser(updatedUser);
-      loadData(); // Refresh list
+      // Single atomic call — backend inserts/deletes from perfil_seguidor
+      const result = await followUser(user.id, targetUser.id);
+
+      // Optimistically update local user state without re-fetching everything
+      const newFollowing = result.following
+        ? [...(user.following || []).filter(id => id !== targetUser.id), targetUser.id]
+        : (user.following || []).filter(id => id !== targetUser.id);
+
+      refreshUser({ ...user, following: newFollowing });
+      loadData(); // Refresh the discover list counts
 
       Swal.fire({
         icon: 'success',
-        title: isFollowing ? 'Dejaste de seguir' : '¡Ahora sigues a esta persona!',
+        title: result.following ? '¡Ahora sigues a esta persona!' : 'Dejaste de seguir',
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
@@ -254,7 +247,15 @@ const DashCliente = () => {
         color: '#fff'
       });
     } catch (error) {
-      console.error("Error following:", error);
+      console.error('Error al seguir/dejar de seguir:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message || 'No se pudo completar la acción.',
+        background: '#171212',
+        color: '#fff',
+        confirmButtonColor: '#8b0000'
+      });
     }
   };
 

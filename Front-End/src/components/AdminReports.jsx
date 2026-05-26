@@ -61,6 +61,7 @@ const AdminReports = () => {
             try {
                 await deleteReport(reportId);
                 setReports(reports.filter(r => r.id !== reportId));
+                window.dispatchEvent(new CustomEvent('refreshAdminStats'));
                 Swal.fire({
                     icon: 'success',
                     title: 'Reporte eliminado',
@@ -103,6 +104,7 @@ const AdminReports = () => {
                 }
                 await deleteStory(storyId);
                 setReports(reports.filter(r => r.storyId !== storyId));
+                window.dispatchEvent(new CustomEvent('refreshAdminStats'));
                 Swal.fire({
                     icon: 'success',
                     title: 'Publicación eliminada',

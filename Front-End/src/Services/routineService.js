@@ -1,9 +1,19 @@
 import { API_BASE_URL } from './apiConfig';
 const BASE_URL = `${API_BASE_URL}/api`;
 
+const authHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {})
+  };
+};
+
 export const getAllRoutines = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/rutinas`);
+    const response = await fetch(`${BASE_URL}/rutinas`, {
+      headers: authHeaders()
+    });
     if (!response.ok) {
       throw new Error("Error fetching routines");
     }
@@ -17,7 +27,9 @@ export const getAllRoutines = async () => {
 export const updateRoutineStatus = async (routineId, newStatus) => {
   try {
     // First fetch the specific routine
-    const getResponse = await fetch(`${BASE_URL}/rutinas/${routineId}`);
+    const getResponse = await fetch(`${BASE_URL}/rutinas/${routineId}`, {
+      headers: authHeaders()
+    });
     if (!getResponse.ok) {
       throw new Error("Error fetching routine");
     }
@@ -28,9 +40,7 @@ export const updateRoutineStatus = async (routineId, newStatus) => {
 
     const putResponse = await fetch(`${BASE_URL}/rutinas/${routineId}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: authHeaders(),
       body: JSON.stringify(updatedRoutine),
     });
 
@@ -49,6 +59,7 @@ export const deleteRoutine = async (routineId) => {
   try {
     const response = await fetch(`${BASE_URL}/rutinas/${routineId}`, {
       method: "DELETE",
+      headers: authHeaders()
     });
     if (!response.ok) {
       throw new Error("Error deleting routine");
@@ -58,3 +69,4 @@ export const deleteRoutine = async (routineId) => {
     throw error;
   }
 };
+

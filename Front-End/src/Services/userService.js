@@ -168,6 +168,23 @@ export const deleteUser = async (userId) => {
   if (!response.ok) throw new Error('Error al eliminar el usuario.');
 };
 
+/**
+ * Toggle follow/unfollow atomically via the dedicated backend endpoint.
+ * Returns { following: bool, followerId, targetId }
+ */
+export const followUser = async (currentUserId, targetUserId) => {
+  const response = await fetch(`${BASE_URL}/api/usuarios/${currentUserId}/follow`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ targetUserId })
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || 'Error al seguir/dejar de seguir al usuario.');
+  }
+  return await response.json(); // { following, followerId, targetId }
+};
+
 export const checkUserExists = async (email) => {
   const response = await fetch(`${BASE_URL}/api/usuarios?correo=${encodeURIComponent(email)}`, {
     headers: authHeaders()

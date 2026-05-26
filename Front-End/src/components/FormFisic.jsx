@@ -11,19 +11,25 @@ const ALERGIAS_PREDEFINIDAS = {
     { id: 'huevo', label: 'Huevo' },
     { id: 'soya', label: 'Soya' },
     { id: 'pescado', label: 'Pescado' },
-    { id: 'mani', label: 'Maní' }
+    { id: 'mani', label: 'Maní' },
+    { id: 'legumbres', label: 'Legumbres' },
+    { id: 'semillas', label: 'Semillas (Sésamo o Girasol)' },
+    { id: 'frutas_citricas', label: 'Frutas cítricas' },
+    { id: 'chocolate', label: 'Chocolate / Cacao' }
   ],
   medicamentos: [
-    { id: 'analgesicos', label: 'Analgésicos (Ibuprofeno, Aspirina)' },
+    { id: 'analgesicos', label: 'Analgésicos (Ibuprofeno o Aspirina)' },
     { id: 'penicilina', label: 'Penicilina' },
     { id: 'sulfas', label: 'Sulfas' },
-    { id: 'anestesicos', label: 'Anestésicos locales' }
+    { id: 'anestesicos', label: 'Anestésicos locales' },
+    { id: 'antiinflamatorios', label: 'Antiinflamatorios no esteroides' }
   ],
   contacto: [
-    { id: 'latex', label: 'Látex (en bandas, colchonetas)' },
+    { id: 'latex', label: 'Látex (en bandas o colchonetas)' },
     { id: 'niquel_goma', label: 'Níquel / Goma (en máquinas)' },
     { id: 'polvo_acaros', label: 'Polvo / Ácaros' },
-    { id: 'polen', label: 'Polen' }
+    { id: 'polen', label: 'Polen' },
+    { id: 'moho', label: 'Moho / Hongos ambientales' }
   ]
 };
 
@@ -93,7 +99,7 @@ const FormFisic = ({ userData, onNext, onBack }) => {
       return;
     }
 
-    // Consolidate allergies
+    // Consolidate allergies using pipe delimiter to avoid comma conflicts
     const allOptions = [
       ...ALERGIAS_PREDEFINIDAS.alimentos,
       ...ALERGIAS_PREDEFINIDAS.medicamentos,
@@ -106,11 +112,11 @@ const FormFisic = ({ userData, onNext, onBack }) => {
 
     let consolidadoAlergias = "";
     if (selectedLabels.length > 0) {
-      consolidadoAlergias += selectedLabels.join(", ");
+      consolidadoAlergias += selectedLabels.join("||");
     }
     
     if (otraAlergia.trim()) {
-      consolidadoAlergias += consolidadoAlergias ? ` Adicional: ${otraAlergia.trim()}` : otraAlergia.trim();
+      consolidadoAlergias += consolidadoAlergias ? `||${otraAlergia.trim()}` : otraAlergia.trim();
     }
 
     if (!consolidadoAlergias) {
@@ -316,9 +322,9 @@ const FormFisic = ({ userData, onNext, onBack }) => {
                   const selectedLabels = allOptions
                     .filter(opt => selectedAllergies.includes(opt.id))
                     .map(opt => opt.label);
-                  let consolidado = selectedLabels.join(", ");
+                  let consolidado = selectedLabels.join("||");
                   if (otraAlergia.trim()) {
-                    consolidado += consolidado ? ` Adicional: ${otraAlergia.trim()}` : otraAlergia.trim();
+                    consolidado += consolidado ? `||${otraAlergia.trim()}` : otraAlergia.trim();
                   }
                   onBack({
                     ...formData,

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   LayoutDashboard, Users, Dumbbell, Mail, Home,
   X, Menu, AlertTriangle, Settings,
@@ -12,7 +12,9 @@ import AdminExercises from './AdminExercises';
 import AdminMessages from './AdminMessages';
 import AdminReports from './AdminReports';
 import AdminSettings from './AdminSettings';
-import { crearEjercicio } from '../Services/exerciseService';
+import { crearEjercicio, obtenerTodosEjercicios } from '../Services/exerciseService';
+import { getAllUsers, getAllContactMessages } from '../Services/userService';
+import { getAllReports } from '../Services/testimonioService';
 import Swal from 'sweetalert2';
 import '../Styles/dashboard.css';
 
@@ -24,6 +26,13 @@ const DashAdmin = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { user } = useContext(UserContext);
 
+  const [stats, setStats] = useState({
+    users: 0,
+    messages: 0,
+    reports: 0,
+    exercises: 0
+  });
+
   const [newExercise, setNewExercise] = useState({
     nombre: '',
     nivel: 'PRINCIPIANTE',
@@ -32,6 +41,39 @@ const DashAdmin = () => {
     imagen: '',
     categoria: 'Pecho'
   });
+
+  const fetchStats = async () => {
+    try {
+      const [users, exercises, messages, reports] = await Promise.all([
+        getAllUsers().catch(err => { console.error('Error fetching users in sidebar:', err); return []; }),
+        obtenerTodosEjercicios().catch(err => { console.error('Error fetching exercises in sidebar:', err); return []; }),
+        getAllContactMessages().catch(err => { console.error('Error fetching messages in sidebar:', err); return []; }),
+        getAllReports().catch(err => { console.error('Error fetching reports in sidebar:', err); return []; }),
+      ]);
+      setStats({
+        users: users.length,
+        exercises: exercises.length,
+        messages: messages.length,
+        reports: reports.length
+      });
+    } catch (error) {
+      console.error('Error loading admin sidebar stats:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+    
+    // Listen for custom events to refresh counts when items are added or deleted
+    window.addEventListener('refreshExercises', fetchStats);
+    window.addEventListener('refreshAdminStats', fetchStats);
+    
+    return () => {
+      window.removeEventListener('refreshExercises', fetchStats);
+      window.removeEventListener('refreshAdminStats', fetchStats);
+    };
+  }, []);
+
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -72,10 +114,10 @@ const DashAdmin = () => {
 
   const navItems = [
     { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
-    { id: 'users',    icon: Users,          label: 'Usuarios' },
-    { id: 'messages', icon: Mail,           label: 'Mensajes' },
-    { id: 'reports',  icon: AlertTriangle,  label: 'Reportes' },
-    { id: 'exercises',icon: Dumbbell,       label: 'Ejercicios' },
+    { id: 'users',    icon: Users,          label: 'Usuarios', count: stats.users },
+    { id: 'messages', icon: Mail,           label: 'Mensajes', count: stats.messages },
+    { id: 'reports',  icon: AlertTriangle,  label: 'Reportes', count: stats.reports },
+    { id: 'exercises',icon: Dumbbell,       label: 'Ejercicios', count: stats.exercises },
     { id: 'settings', icon: Settings,       label: 'Ajustes' },
   ];
 
@@ -121,7 +163,7 @@ const DashAdmin = () => {
 
         {/* Primary nav */}
         <nav className="da-sidebar__nav">
-          {navItems.map(({ id, icon: Icon, label }) => (
+          {navItems.map(({ id, icon: Icon, label, count }) => (
             <button
               key={id}
               className={`da-nav-btn ${activeTab === id ? 'da-nav-btn--active' : ''}`}
@@ -129,6 +171,9 @@ const DashAdmin = () => {
             >
               <Icon size={18} />
               <span>{label}</span>
+              {count !== undefined && count > 0 && (
+                <span className="da-sidebar__badge-count">{count}</span>
+              )}
             </button>
           ))}
         </nav>
