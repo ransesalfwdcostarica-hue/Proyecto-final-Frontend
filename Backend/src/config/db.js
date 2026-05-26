@@ -14,10 +14,11 @@ if (process.env.NODE_ENV === 'test') {
     sequelize = new Sequelize(
         config.db.name,
         config.db.user,
-        config.db.password,
+        config.db.password, 
         {
             host: config.db.host,
             dialect: config.db.dialect,
+            storage: config.db.storage,
             logging: false
         }
     );

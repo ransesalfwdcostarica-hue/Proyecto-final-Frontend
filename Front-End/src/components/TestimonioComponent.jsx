@@ -62,6 +62,12 @@ const TestimonioComponent = () => {
         return user?.avatar || fallbackAvatar || `https://i.pravatar.cc/150?u=${userId}`;
     };
 
+    // Helper to get up-to-date user name
+    const getUserName = (userId, fallbackName) => {
+        const user = allUsers.find(u => String(u.id) === String(userId));
+        return user?.nombre || fallbackName || 'Usuario';
+    };
+
     // Comments state
     const [showComments, setShowComments] = useState({});
     const [commentsData, setCommentsData] = useState({});
@@ -88,6 +94,7 @@ const TestimonioComponent = () => {
     // Reporting state
     const [isReportModalOpen, setIsReportModalOpen] = useState(false);
     const [reportingStoryId, setReportingStoryId] = useState(null);
+    const [reportingComment, setReportingComment] = useState(null);
     const [reportReason, setReportReason] = useState('');
     const [reportSubReason, setReportSubReason] = useState('');
     const [reportOtherText, setReportOtherText] = useState('');
@@ -129,12 +136,13 @@ const TestimonioComponent = () => {
         }
     ];
 
-    const handleOpenReportModal = (storyId) => {
+    const handleOpenReportModal = (storyId, comment = null) => {
         if (!currentUser) {
             setIsLoginAlertOpen(true);
             return;
         }
         setReportingStoryId(storyId);
+        setReportingComment(comment);
         setIsReportModalOpen(true);
         setReportReason('');
         setReportSubReason('');
@@ -154,13 +162,18 @@ const TestimonioComponent = () => {
 
         setIsReporting(true);
         try {
+            let finalDescription = reportOtherText;
+            if (reportingComment) {
+                finalDescription = `[REPORTE DE COMENTARIO ID: ${reportingComment.id}] Comentario: "${reportingComment.text}". Detalles: ${reportOtherText}`;
+            }
+
             await createReport({
                 storyId: reportingStoryId,
                 reporterId: currentUser.id,
                 reporterName: currentUser.nombre,
                 reason: reportReason,
-                subReason: reportSubReason,
-                otherText: reportOtherText
+                subReason: reportSubReason || (reportReason === 'Otro' ? 'Otro motivo' : ''),
+                otherText: finalDescription
             });
             
             Swal.fire({
@@ -172,6 +185,7 @@ const TestimonioComponent = () => {
                 confirmButtonColor: '#8b0000'
             });
             setIsReportModalOpen(false);
+            setReportingComment(null);
         } catch (error) {
             console.error('Error reporting:', error);
             alert('Error al enviar el reporte. Por favor intenta de nuevo.');
@@ -660,9 +674,9 @@ const TestimonioComponent = () => {
                                 >
                                     <div className="story-header">
                                         <div className="user-info">
-                                            <img src={getUserAvatar(story.userId, story.userAvatar)} alt={story.userName} className="user-avatar" />
+                                            <img src={getUserAvatar(story.userId, story.userAvatar)} alt={getUserName(story.userId, story.userName)} className="user-avatar" />
                                             <div className="user-details">
-                                                <h4>{story.userName}</h4>
+                                                <h4>{getUserName(story.userId, story.userName)}</h4>
                                                 <div className="story-meta">
                                                     {getTimeAgo(story.fecha || story.time)} • {story.tag}
                                                 </div>
@@ -750,11 +764,33 @@ const TestimonioComponent = () => {
                                                 ) : commentsData[story.id]?.length > 0 ? (
                                                     commentsData[story.id].map(comment => (
                                                         <div key={comment.id} className="comment-item">
-                                                            <img src={getUserAvatar(comment.userId, comment.userAvatar)} alt={comment.userName} className="comment-avatar" />
+                                                            <img src={getUserAvatar(comment.userId, comment.userAvatar)} alt={getUserName(comment.userId, comment.userName)} className="comment-avatar" />
                                                             <div className="comment-content">
-                                                                <div className="comment-header">
-                                                                    <span className="comment-user">{comment.userName}</span>
-                                                                    <span className="comment-date">{getTimeAgo(comment.fecha)}</span>
+                                                                <div className="comment-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                                        <span className="comment-user">{getUserName(comment.userId, comment.userName)}</span>
+                                                                        <span className="comment-date">{getTimeAgo(comment.fecha)}</span>
+                                                                    </div>
+                                                                    {currentUser && currentUser.id !== comment.userId && (
+                                                                        <button
+                                                                            onClick={() => handleOpenReportModal(story.id, comment)}
+                                                                            title="Reportar comentario"
+                                                                            style={{
+                                                                                background: 'none',
+                                                                                border: 'none',
+                                                                                color: 'var(--text-muted)',
+                                                                                cursor: 'pointer',
+                                                                                padding: '2px',
+                                                                                display: 'flex',
+                                                                                alignItems: 'center',
+                                                                                transition: 'color 0.2s'
+                                                                            }}
+                                                                            onMouseOver={(e) => e.currentTarget.style.color = 'var(--primary)'}
+                                                                            onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+                                                                        >
+                                                                            <AlertTriangle size={14} />
+                                                                        </button>
+                                                                    )}
                                                                 </div>
                                                                 <p className="comment-text">{comment.text}</p>
                                                             </div>
@@ -919,15 +955,20 @@ const TestimonioComponent = () => {
                         <div className="modal-header">
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <AlertTriangle size={24} color="var(--primary)" />
-                                <h2>Reportar Publicación</h2>
+                                <h2>{reportingComment ? 'Reportar Comentario' : 'Reportar Publicación'}</h2>
                             </div>
-                            <button className="btn-close" onClick={() => setIsReportModalOpen(false)}>
+                            <button className="btn-close" onClick={() => {
+                                setIsReportModalOpen(false);
+                                setReportingComment(null);
+                            }}>
                                 <X size={24} />
                             </button>
                         </div>
                         <form onSubmit={handleReportSubmit} className="story-form">
                             <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-                                Selecciona el motivo por el cual estás reportando esta publicación. Tu reporte será revisado por el equipo de moderación.
+                                {reportingComment 
+                                    ? 'Selecciona el motivo por el cual estás reportando este comentario. Tu reporte será revisado por el equipo de moderación.'
+                                    : 'Selecciona el motivo por el cual estás reportando esta publicación. Tu reporte será revisado por el equipo de moderación.'}
                             </p>
                             
                             <div className="form-group">

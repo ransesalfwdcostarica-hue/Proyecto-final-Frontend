@@ -43,21 +43,10 @@ export const registerUser = async (userData) => {
     correo: userData.email || userData.correo,
     contrasenia: userData.password || userData.contrasenia,
     nombre: userData.nombre,
-    edad: userData.edad ? Number(userData.edad) : 18,
-    id_rol: userData.id_rol || userData.idRol || 2,
-    // Physical details
-    sexo: userData.sexo || 'Masculino',
-    altura: userData.altura ? Number(userData.altura) : 170,
-    peso: userData.peso ? Number(userData.peso) : 70,
-    lugarEntrenamiento: userData.lugarEntrenamiento || 'Gimnasio',
-    alergias: userData.alergias || '',
-    // Goals
-    pesoMeta: userData.pesoMeta ? Number(userData.pesoMeta) : 70,
-    plazoSemanas: userData.plazoSemanas ? Number(userData.plazoSemanas) : 8,
-    deficitEstimado: userData.deficitEstimado ? Number(userData.deficitEstimado) : 450
+    edad: userData.edad ? Number(userData.edad) : 18
   };
 
-  const response = await fetch(`${BASE_URL}/api/usuarios`, {
+  const response = await fetch(`${BASE_URL}/api/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
@@ -73,7 +62,7 @@ export const registerUser = async (userData) => {
 };
 
 export const loginUser = async (email, password) => {
-  const response = await fetch(`${BASE_URL}/api/usuarios/login`, {
+  const response = await fetch(`${BASE_URL}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ correo: email, contrasenia: password })

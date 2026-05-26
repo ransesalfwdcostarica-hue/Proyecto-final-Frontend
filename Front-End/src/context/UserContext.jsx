@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components, react-hooks/set-state-in-effect */
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useEffect } from 'react';
 import { getUserById } from '../Services/userService';
 import toast from 'react-hot-toast';
@@ -10,6 +10,7 @@ export const UserProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             try {
@@ -54,12 +55,14 @@ export const UserProvider = ({ children }) => {
         }
     }, []);
 
-    const login = (userData) => {
+    const login = (userData, token) => {
+        if (token) localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
     };
 
     const logout = () => {
+        localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);
     };
@@ -67,13 +70,11 @@ export const UserProvider = ({ children }) => {
     const refreshUser = (updatedData) => {
         try {
             const stored = localStorage.getItem('user');
-            const currentUser = stored ? JSON.parse(stored) : {};
-            const newUser = { ...currentUser, ...updatedData };
-            localStorage.setItem('user', JSON.stringify(newUser));
-            setUser(newUser);
-        } catch (error) {
-            console.error("Error refreshing user data in localStorage:", error);
-            // Even if localStorage fails, update the state so the UI stays in sync
+            const current = stored ? JSON.parse(stored) : {};
+            const merged = { ...current, ...updatedData };
+            localStorage.setItem('user', JSON.stringify(merged));
+            setUser(merged);
+        } catch {
             setUser(prev => ({ ...prev, ...updatedData }));
         }
     };

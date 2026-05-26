@@ -47,20 +47,19 @@ function FormLogin() {
     setLoading(true);
     try {
       const user = await loginUser(formData.email, formData.password);
+      const token = localStorage.getItem('token');
 
-      // Store user info in context and localStorage
-      login(user);
+      // Guardar usuario y token en contexto
+      login(user, token);
 
       setNotificationMsg(`¡Bienvenido ${user.nombre || user.email}!`);
       setIsNotificationOpen(true);
 
-      // Store a temporary flag for the redirect to wait for the modal if needed, 
-      // but here we can just wait 1.5s or handle on close
       setTimeout(() => {
-        if (user.rol === "admin") {
-          navigate("/admin");
+        if (user.rol === 'admin') {
+          navigate('/admin');
         } else {
-          navigate("/dashboard");
+          navigate('/dashboard');
         }
       }, 1500);
     } catch (err) {

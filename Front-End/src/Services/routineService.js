@@ -1,5 +1,5 @@
 import { API_BASE_URL } from './apiConfig';
-const BASE_URL = API_BASE_URL;
+const BASE_URL = `${API_BASE_URL}/api`;
 
 export const getAllRoutines = async () => {
   try {

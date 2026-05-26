@@ -3,12 +3,32 @@ const Contribuidor = require('../models/Contribuidor');
 const ContribuidorController = {
     getAll: async (req, res) => {
         try {
-            const contribuidores = await Contribuidor.findAll();
+            const { Usuario, RolContribuidor, Perfil } = require('../index');
+            const contribuidores = await Contribuidor.findAll({
+                include: [
+                    {
+                        model: Usuario,
+                        include: [{ model: Perfil }]
+                    },
+                    {
+                        model: RolContribuidor
+                    }
+                ]
+            });
 
             if (!contribuidores || contribuidores.length === 0) {
-                return res.status(404).json({ message: "No se encontraron contribuidores" });
+                return res.status(200).json([]);
             }
-            res.status(200).json(contribuidores);
+
+            const mapped = contribuidores.map(c => ({
+                id: c.id_contribuidor,
+                name: c.Usuario?.nombre || 'Colaborador',
+                role: c.RolContribuidor?.nombre || 'Experto',
+                points: c.puntos || '0 pts',
+                avatar: c.Usuario?.Perfil?.foto_perfil || ''
+            }));
+
+            res.status(200).json(mapped);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
