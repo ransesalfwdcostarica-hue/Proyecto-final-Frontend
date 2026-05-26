@@ -35,7 +35,8 @@ const mapUsuario = (u) => {
     alergias: u.alergias ?? (u.DatosUsuario?.Alergia ? u.DatosUsuario.Alergia.map(a => a.nombre).join(', ') : (u.DatosUsuario?.Alergias ? u.DatosUsuario.Alergias.map(a => a.nombre).join(', ') : 'Ninguna')),
     following: u.following ?? u.Perfil?.Following?.map(p => p.id_usuario || p.Usuario_idUsuario) ?? [],
     followers: u.followers ?? u.Perfil?.Followers?.map(p => p.id_usuario || p.Usuario_idUsuario) ?? [],
-    ejerciciosElegidos: u.ejerciciosElegidos ?? u.DatosUsuario?.Rutinas?.[0]?.Ejercicios?.map(e => e.id_ejercicio || e.idEjercicios) ?? []
+    ejerciciosElegidos: u.ejerciciosElegidos ?? u.DatosUsuario?.Rutinas?.[0]?.Ejercicios?.map(e => e.id_ejercicio || e.idEjercicios) ?? [],
+    rutina_ia: u.rutina_ia ?? u.DatosUsuario?.rutina_ia ?? null
   };
 };
 

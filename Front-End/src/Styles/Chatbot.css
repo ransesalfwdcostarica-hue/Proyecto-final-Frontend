@@ -724,4 +724,37 @@
   list-style-type: disc;
 }
 
+/* Save routine button inside bot message bubbles */
+.btn-save-routine {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, #7c2626 0%, #5a1a1a 100%);
+  border: 1px solid rgba(255, 77, 77, 0.2);
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(124, 38, 38, 0.2);
+}
+
+.btn-save-routine:hover:not(:disabled) {
+  background: linear-gradient(135deg, #9b3030 0%, #702020 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(124, 38, 38, 0.4);
+}
+
+.btn-save-routine:disabled {
+  background: #332222;
+  border-color: rgba(255, 255, 255, 0.05);
+  color: #8c7d7d;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
 
