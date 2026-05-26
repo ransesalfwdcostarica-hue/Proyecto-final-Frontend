@@ -85,15 +85,6 @@ const PublicacionController = {
                 catId = cat.id_categoria;
             }
 
-<<<<<<< HEAD
-            const nuevo = await Publicacion.create({
-                tiempo,
-                titulo,
-                texto,
-                imagen,
-                id_categoria: catId,
-                id_usuario
-=======
             const nuevo = await Publicacion.create({ 
                 tiempo: finalTiempo, 
                 titulo: finalTitulo, 
@@ -101,7 +92,6 @@ const PublicacionController = {
                 imagen: finalImagen, 
                 id_categoria: catId, 
                 id_usuario: finalUsuario 
->>>>>>> 2f9846f10d2606fce96d7154245e4461b48792cf
             });
 
             // Reload to get relationships for immediate return

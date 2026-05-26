@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-const Comentario = require('../models/Comentario');
-const PublicacionComentario = require('../models/PublicacionComentario');
-=======
 const { Comentario, Usuario, Perfil, PublicacionComentario, Publicacion } = require('../index');
 
 const formatComentario = (c, storyId) => {
@@ -16,16 +12,11 @@ const formatComentario = (c, storyId) => {
         fecha: c.createdAt || new Date().toISOString() // Assuming timestamps are on, else fallback to new Date()
     };
 };
->>>>>>> 2f9846f10d2606fce96d7154245e4461b48792cf
 
 const ComentarioController = {
     getAll: async (req, res) => {
         try {
             const { storyId } = req.query;
-<<<<<<< HEAD
-            const whereClause = storyId ? { id_publicacion: storyId } : undefined;
-            const comentarios = await Comentario.findAll({ where: whereClause });
-=======
             let includeOptions = [
                 { model: Usuario, include: [Perfil] }
             ];
@@ -47,7 +38,6 @@ const ComentarioController = {
                 include: includeOptions
             });
 
->>>>>>> 2f9846f10d2606fce96d7154245e4461b48792cf
             if (!comentarios || comentarios.length === 0) {
                 return res.status(200).json([]);
             }
@@ -79,17 +69,6 @@ const ComentarioController = {
     },
     create: async (req, res) => {
         try {
-<<<<<<< HEAD
-            const { texto, id_usuario, id_publicacion } = req.body;
-
-            if (!texto || !id_usuario || !id_publicacion) {
-                return res.status(400).json({ error: 'El texto, id_usuario y id_publicacion son requeridos' });
-            }
-
-            const nuevo = await Comentario.create({ texto, id_usuario, id_publicacion });
-            await PublicacionComentario.create({ id_publicacion, id_comentario: nuevo.id_comentario });
-        res.status(201).json(nuevo);
-=======
             const { text, texto, userId, id_usuario, storyId, id_publicacion } = req.body;
 
             const finalText = text || texto;
@@ -117,7 +96,6 @@ const ComentarioController = {
             });
 
             res.status(201).json(formatComentario(savedComentario, finalStoryId));
->>>>>>> 2f9846f10d2606fce96d7154245e4461b48792cf
         } catch (error) {
             console.error("Error creating comment:", error);
             res.status(500).json({ error: error.message });
