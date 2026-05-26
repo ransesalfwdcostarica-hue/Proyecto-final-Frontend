@@ -13,7 +13,7 @@ const Reporte = sequelize.define('Reporte', {
         allowNull: false
     },
     id_publicacion: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     id_razon: {
