@@ -44,16 +44,17 @@ const PublicacionController = {
                 }
             }
 
-            const nuevo = await Publicacion.create({ 
-                tiempo, 
-                titulo, 
-                texto, 
-                imagen, 
-                id_categoria: catId, 
-                id_usuario 
+            const nuevo = await Publicacion.create({
+                tiempo,
+                titulo,
+                texto,
+                imagen,
+                id_categoria: catId,
+                id_usuario
             });
             res.status(201).json(nuevo);
         } catch (error) {
+            console.log(error);
             res.status(500).json({ error: error.message });
         }
     },
@@ -88,6 +89,15 @@ const PublicacionController = {
 
             await publicacion.destroy();
             res.status(200).json({ message: 'Publicacion eliminado correctamente' });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
+    fetchComentarios: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const comentarios = await Comentario.findAll({ where: { id_publicacion: id } });
+            res.status(200).json(comentarios);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

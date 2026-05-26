@@ -2,13 +2,13 @@ import React, { useEffect, useRef } from 'react';
 import { X, Upload, ChevronLeft } from 'lucide-react';
 import SubirImagen from './SubirImagen';
 
-const FormPublicaciones = ({ 
-    isOpen, 
-    onClose, 
-    newStory, 
-    setNewStory, 
-    onSubmit, 
-    onImageUpload 
+const FormPublicaciones = ({
+    isOpen,
+    onClose,
+    newStory,
+    setNewStory,
+    onSubmit,
+    onImageUpload
 }) => {
     const titleInputRef = useRef(null);
     const overlayRef = useRef(null);

@@ -287,6 +287,7 @@ const TestimonioComponent = () => {
         };
 
         try {
+            //Cambiarlo por lo de la base de datos
             const createdStory = await createStory(storyPayload);
             const updatedStories = [createdStory, ...stories];
             setStories(updatedStories);

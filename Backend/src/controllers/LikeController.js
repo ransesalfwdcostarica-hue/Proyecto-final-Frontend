@@ -29,14 +29,23 @@ const LikeController = {
     },
     create: async (req, res) => {
         try {
-            const { id_usuario } = req.body;
+            const { id_usuario, id_publicacion } = req.body;
 
-            if (!id_usuario) {
-                return res.status(400).json({ error: 'El id_usuario es requerido' });
+            if (!id_usuario || !id_publicacion) {
+                return res.status(400).json({ error: 'id_usuario y id_publicacion son requeridos' });
             }
 
-            const nuevo = await Like.create({ id_usuario });
-            res.status(201).json(nuevo);
+            // Create a Like entry
+            const nuevoLike = await Like.create({ id_usuario });
+
+            // Associate with the publication via LikePublicacion
+            const LikePublicacion = require('../models/LikePublicacion');
+            await LikePublicacion.create({
+                id_like: nuevoLike.id_like,
+                id_publicacion
+            });
+
+            res.status(201).json({ like: nuevoLike });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

@@ -8,5 +8,6 @@ router.get('/:id', auth, PublicacionController.getById);
 router.post('/', auth, PublicacionController.create);
 router.put('/:id', auth, PublicacionController.update);
 router.delete('/:id', auth, PublicacionController.delete);
+router.get('/:id/comentarios', auth, PublicacionController.fetchComentarios);
 
 module.exports = router;

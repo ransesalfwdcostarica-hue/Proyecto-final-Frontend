@@ -1,223 +1,4 @@
 {
-  "usuarios": [
-    {
-      "id": "c695",
-      "email": "ransesalfwdcostarica@gmail.com",
-      "password": "R4nses_2008",
-      "nombre": "Ranses Alvir",
-      "edad": "20",
-      "rol": "admin",
-      "edadFisica": "20",
-      "sexo": "m",
-      "altura": "170",
-      "peso": "96",
-      "lugarEntrenamiento": "gym",
-      "alergias": "No",
-      "pesoMeta": 72,
-      "plazoSemanas": 8,
-      "pesoActual": "96",
-      "deficitEstimado": 450,
-      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774390526/rldqwumojedsbdfoojao.jpg",
-      "followers": [
-        "0e67"
-      ],
-      "following": [],
-      "cover": ""
-    },
-    {
-      "id": "0e67",
-      "email": "Rsalasfwdcostarica@gmail.com",
-      "password": "1234",
-      "nombre": "Ronny Salas",
-      "edad": "17",
-      "rol": "client",
-      "edadFisica": "17",
-      "sexo": "m",
-      "altura": "180",
-      "peso": "70",
-      "lugarEntrenamiento": "gym",
-      "alergias": "ninguna",
-      "pesoMeta": 65,
-      "plazoSemanas": 8,
-      "pesoActual": "67",
-      "deficitEstimado": 450,
-      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1778622464/vuv30vdhmbhglssqxyx0.jpg",
-      "semanasEnProgreso": 1,
-      "ultimoFeedbackDieta": "muy bien ",
-      "ultimoFeedbackEjercicio": "no mucho",
-      "followers": [],
-      "following": [
-        "d709",
-        "3e74",
-        "c695",
-        "b508",
-        "ac2b"
-      ],
-      "ejerciciosElegidos": [
-        "e1",
-        "e2",
-        "e3",
-        "e8",
-        "e9"
-      ],
-      "cover": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1778622414/yv0vk84hreshyraftpxw.jpg"
-    },
-    {
-      "id": "eb3d",
-      "email": "admin@admin.com",
-      "password": "admin",
-      "nombre": "admin",
-      "edad": "22",
-      "rol": "admin",
-      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1778596362/je2u0f9btdvqhwcyz5de.png",
-      "followers": [],
-      "following": [],
-      "cover": ""
-    },
-    {
-      "id": "ac2b",
-      "email": "jporrasfwdcostarica@gmail.com",
-      "password": "j1234",
-      "nombre": "Jheycob",
-      "edad": "22",
-      "rol": "client",
-      "edadFisica": "22",
-      "sexo": "m",
-      "altura": "180",
-      "peso": "76",
-      "lugarEntrenamiento": "gym",
-      "alergias": "Alergia a todo",
-      "pesoMeta": 70,
-      "plazoSemanas": 8,
-      "pesoActual": "76",
-      "deficitEstimado": 450,
-      "followers": [
-        "0e67"
-      ],
-      "following": [],
-      "cover": ""
-    },
-    {
-      "id": "b508",
-      "email": "ransesalvir75@gmail.com",
-      "password": "R4nses_2008",
-      "nombre": "Ranses Alvir",
-      "edad": "20",
-      "rol": "client",
-      "edadFisica": "20",
-      "sexo": "m",
-      "altura": "170",
-      "peso": "95",
-      "lugarEntrenamiento": "home",
-      "alergias": "",
-      "pesoMeta": 67,
-      "plazoSemanas": 8,
-      "pesoActual": "94.5",
-      "deficitEstimado": 450,
-      "avatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774535316/cvwwxdbvnbxtr6sho1ky.jpg",
-      "semanasEnProgreso": 2,
-      "ultimoFeedbackDieta": "Genial",
-      "ultimoFeedbackEjercicio": "Excelente",
-      "followers": [
-        "0e67"
-      ],
-      "following": [],
-      "cover": "",
-      "ejerciciosElegidos": [
-        "e1",
-        "e3"
-      ]
-    },
-    {
-      "id": "d709",
-      "email": "pepe@pepe",
-      "password": "pepe",
-      "nombre": "Pepe",
-      "edad": "20",
-      "rol": "client",
-      "edadFisica": "20",
-      "sexo": "m",
-      "altura": "190",
-      "peso": "180",
-      "lugarEntrenamiento": "home",
-      "alergias": "",
-      "pesoMeta": 70,
-      "plazoSemanas": 8,
-      "pesoActual": "180",
-      "deficitEstimado": 450,
-      "ejerciciosElegidos": [
-        "e1"
-      ],
-      "followers": [
-        "0e67"
-      ],
-      "following": [],
-      "cover": ""
-    },
-    {
-      "id": "3e74",
-      "email": "Andres@gmail.com",
-      "password": "12345",
-      "nombre": "Andres Salas",
-      "edad": "18",
-      "rol": "client",
-      "edadFisica": "18",
-      "sexo": "m",
-      "altura": "180",
-      "peso": "69.9",
-      "lugarEntrenamiento": "gym",
-      "alergias": "nd",
-      "pesoMeta": 65,
-      "plazoSemanas": 4,
-      "pesoActual": 70,
-      "deficitEstimado": 450,
-      "followers": [
-        "0e67"
-      ],
-      "following": [],
-      "cover": ""
-    },
-    {
-      "id": "80e1",
-      "email": "juanito@juanito",
-      "password": "12345678",
-      "nombre": "Juanito Golondrina",
-      "edad": "20",
-      "rol": "client",
-      "edadFisica": "20",
-      "sexo": "m",
-      "altura": "190",
-      "peso": "100",
-      "lugarEntrenamiento": "gym",
-      "alergias": "no",
-      "pesoMeta": 115,
-      "plazoSemanas": 8,
-      "pesoActual": "100",
-      "deficitEstimado": 450
-    },
-    {
-      "id": "b8d8",
-      "email": "Rsalas00@gmail.com",
-      "password": "123456",
-      "nombre": "Ronny Salas ",
-      "edad": "18",
-      "rol": "client",
-      "edadFisica": "18",
-      "sexo": "m",
-      "altura": "180",
-      "peso": "69.9",
-      "lugarEntrenamiento": "gym",
-      "alergias": "ninguno",
-      "pesoMeta": 65,
-      "plazoSemanas": 4,
-      "pesoActual": 70,
-      "deficitEstimado": 450,
-      "followers": [],
-      "following": [],
-      "avatar": "",
-      "cover": ""
-    }
-  ],
   "mensajes": [
     {
       "id": "5156",
@@ -353,9 +134,12 @@
       "text": "sdfssdf",
       "category": "Pérdida de Peso",
       "image": null,
-      "likes": 0,
-      "likedBy": [],
-      "comments": 1
+      "likes": 1,
+      "likedBy": [
+        3
+      ],
+      "comments": 1,
+      "commentsCount": 1
     },
     {
       "id": "08a2",
@@ -369,9 +153,11 @@
       "text": "Perdí peso bro",
       "category": "Pérdida de Peso",
       "image": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774825277/q2pir0zdiadssokev030.jpg",
-      "likes": 0,
+      "likes": 1,
       "comments": 0,
-      "likedBy": []
+      "likedBy": [
+        3
+      ]
     },
     {
       "id": "58ca",
@@ -385,10 +171,11 @@
       "text": "muy guapos",
       "category": "Pérdida de Peso",
       "image": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1778613674/thfqszpenrio9fnt7lvo.jpg",
-      "likes": 1,
+      "likes": 2,
       "comments": 0,
       "likedBy": [
-        "0e67"
+        "0e67",
+        3
       ]
     },
     {
@@ -403,9 +190,11 @@
       "text": "estoy mamadisimo",
       "category": "Ganancia de Músculo",
       "image": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1778771749/fgial8euioa5yfpr30mt.jpg",
-      "likes": 0,
+      "likes": 1,
       "comments": 0,
-      "likedBy": []
+      "likedBy": [
+        3
+      ]
     },
     {
       "id": "6caa",
@@ -416,6 +205,21 @@
       "tag": "Pérdida de Peso",
       "userId": 3,
       "time": "2026-05-21T19:30:47.639Z",
+      "likes": 0,
+      "likedBy": []
+    },
+    {
+      "id": "3851",
+      "title": "Holaa",
+      "text": "Hola",
+      "image": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1779462333/qymv9gnjrj6ye0oz2nqu.jpg",
+      "category": "Consejos de Expertos",
+      "tag": "Consejos de Expertos",
+      "userId": 3,
+      "userName": "administrador",
+      "userAvatar": "https://i.pravatar.cc/150?u=3",
+      "time": "Justo ahora",
+      "fecha": "2026-05-22T15:05:38.488Z",
       "likes": 0,
       "likedBy": []
     }
@@ -1082,6 +886,15 @@
       "userAvatar": "https://res.cloudinary.com/dg5pkjvvr/image/upload/v1774825669/dv36wuoqgpxvkkfxi5tx.jpg",
       "text": "feo",
       "fecha": "2026-05-12T19:28:24.922Z"
+    },
+    {
+      "id": "c755",
+      "storyId": "9d31",
+      "userId": 3,
+      "userName": "administrador",
+      "userAvatar": "https://i.pravatar.cc/150?u=3",
+      "text": "hola",
+      "fecha": "2026-05-22T20:50:26.870Z"
     }
   ],
   "reportes": [

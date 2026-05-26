@@ -27,12 +27,12 @@ export const fetchStoriesData = async () => {
     const storiesDataRaw = await storiesRes.json();
     const contributorsData = await contributorsRes.json();
     const topicsData = await topicsRes.json();
-    
+
     let commentsData = [];
     if (commentsRes.ok) {
         commentsData = await commentsRes.json();
     }
-    
+
     // Map backend fields and mock fields defensively
     const storiesData = storiesDataRaw.map(s => ({
         id: s.id || s.idpublicaciones,
@@ -61,27 +61,23 @@ export const fetchStoriesData = async () => {
 };
 
 export const createStory = async (storyPayload) => {
-    const payload = {
-        title: storyPayload.title,
-        text: storyPayload.text,
-        image: storyPayload.image,
-        category: storyPayload.category,
-        tag: storyPayload.category,
-        userId: storyPayload.userId,
-        userName: storyPayload.userName,
-        userAvatar: storyPayload.userAvatar,
-        time: storyPayload.time || "Justo ahora",
-        fecha: storyPayload.fecha || new Date().toISOString(),
-        likes: 0,
-        likedBy: []
+    // Map frontend payload to backend fields expected by Publicacion model
+    const backendPayload = {
+        tiempo: storyPayload.time || new Date().toISOString(),
+        titulo: storyPayload.title,
+        texto: storyPayload.text,
+        imagen: storyPayload.image,
+        id_categoria: storyPayload.categoryId || 1, // fallback or map category name to id elsewhere
+        id_usuario: storyPayload.userId
     };
-    
-    const response = await fetch(`${API_URL}/stories`, {
+
+    const response = await fetch(`http://localhost:3000/api/publicaciones`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(backendPayload)
     });
 
     if (!response.ok) {
@@ -89,16 +85,17 @@ export const createStory = async (storyPayload) => {
     }
 
     const rawStory = await response.json();
+    // Convert backend response to frontend shape
     return {
-        id: rawStory.id,
-        title: rawStory.title,
-        text: rawStory.text,
-        image: rawStory.image,
-        time: rawStory.time,
-        fecha: rawStory.time,
-        userId: rawStory.userId,
-        category: rawStory.category,
-        tag: rawStory.tag,
+        id: rawStory.id_publicacion || rawStory.id,
+        title: rawStory.titulo,
+        text: rawStory.texto,
+        image: rawStory.imagen,
+        time: rawStory.tiempo,
+        fecha: rawStory.tiempo,
+        userId: rawStory.id_usuario,
+        category: storyPayload.category,
+        tag: storyPayload.category,
         userName: storyPayload.userName,
         userAvatar: storyPayload.userAvatar,
         likes: 0,
@@ -107,20 +104,21 @@ export const createStory = async (storyPayload) => {
     };
 };
 
+
 export const updateStoryLikes = async (storyId, newLikes, likedBy) => {
     // First get the story to preserve existing fields
-    const getResponse = await fetch(`${API_URL}/stories/${storyId}`);
+    const getResponse = await fetch(``);
     if (!getResponse.ok) {
         throw new Error('Error al buscar la historia.');
     }
     const story = await getResponse.json();
 
-    const response = await fetch(`${API_URL}/stories/${storyId}`, {
+    const response = await fetch(`http://localhost:3000/api/publicaciones/id`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
             ...story,
             likes: newLikes,
             likedBy: likedBy || []
@@ -135,7 +133,7 @@ export const updateStoryLikes = async (storyId, newLikes, likedBy) => {
 };
 
 export const deleteStory = async (storyId) => {
-    const response = await fetch(`${API_URL}/stories/${storyId}`, {
+    const response = await fetch(`http://localhost:3000/api/publicaciones/id`, {
         method: 'DELETE'
     });
 
@@ -147,7 +145,7 @@ export const deleteStory = async (storyId) => {
 };
 
 export const fetchCommentsByStory = async (storyId) => {
-    const response = await fetch(`${API_URL}/comentarios?storyId=${storyId}`);
+    const response = await fetch(`http://localhost:3000/api/publicaciones/${storyId}/comentarios`);
     if (!response.ok) {
         throw new Error('Error al cargar los comentarios.');
     }
@@ -192,13 +190,13 @@ export const getStoriesByUserId = async (userId) => {
     if (!storiesRes.ok) {
         throw new Error('Error al cargar las historias del usuario.');
     }
-    
+
     const storiesRaw = await storiesRes.json();
     let commentsData = [];
     if (commentsRes.ok) {
         commentsData = await commentsRes.json();
     }
-    
+
     const stories = storiesRaw.map(s => ({
         id: s.id,
         title: s.title,
@@ -217,7 +215,7 @@ export const getStoriesByUserId = async (userId) => {
     stories.forEach(story => {
         story.comments = commentsData.filter(c => String(c.storyId) === String(story.id)).length;
     });
-    
+
     return stories;
 };
 

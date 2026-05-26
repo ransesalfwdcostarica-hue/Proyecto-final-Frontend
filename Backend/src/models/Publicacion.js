@@ -28,10 +28,11 @@ const Publicacion = sequelize.define('Publicacion', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    id_usuario: {
+    likes: {
         type: DataTypes.INTEGER,
-        allowNull: false
-    }
+        allowNull: false,
+        defaultValue: 0
+    },
 }, {
     tableName: 'publicacion',
     timestamps: false

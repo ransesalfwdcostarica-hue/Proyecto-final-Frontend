@@ -12,10 +12,14 @@ const Comentario = sequelize.define('Comentario', {
         type: DataTypes.TEXT,
         allowNull: false
     },
+    id_publicacion: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     id_usuario: {
         type: DataTypes.INTEGER,
         allowNull: false
-    }
+    },
 }, {
     tableName: 'comentario',
     timestamps: false
