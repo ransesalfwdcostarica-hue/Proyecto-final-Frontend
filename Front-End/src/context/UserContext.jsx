@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useEffect } from 'react';
-import { getCurrentUser } from '../Services/userService';
+import { getUserById } from '../Services/userService';
 import toast from 'react-hot-toast';
 
 export const UserContext = createContext();
@@ -12,34 +12,47 @@ export const UserProvider = ({ children }) => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
-
-        if (!token) {
-            setLoading(false);
-            return;
-        }
-
         if (storedUser) {
             try {
-                setUser(JSON.parse(storedUser));
-            } catch { /* ignored */ }
-        }
+                const parsedUser = JSON.parse(storedUser);
+                if (parsedUser && parsedUser.id) {
+                    setUser(parsedUser);
 
-        getCurrentUser()
-            .then(freshUser => {
-                if (freshUser && freshUser.id) {
-                    localStorage.setItem('user', JSON.stringify(freshUser));
-                    setUser(freshUser);
+                    // Sync with backend to get latest data (including avatar)
+                    getUserById(parsedUser.id)
+                        .then(latestUser => {
+                            if (latestUser && latestUser.id) {
+                                localStorage.setItem('user', JSON.stringify(latestUser));
+                                setUser(latestUser);
+                            } else {
+                                localStorage.removeItem('user');
+                                setUser(null);
+                                toast.error("Sesión inválida o expirada. Inicia sesión nuevamente.");
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Sync error, user might not exist anymore:", err);
+                            localStorage.removeItem('user');
+                            setUser(null);
+                            toast.error("Sesión inválida o expirada. Inicia sesión nuevamente.");
+                        })
+                        .finally(() => {
+                            setLoading(false);
+                        });
                 } else {
-                    localStorage.removeItem('token');
                     localStorage.removeItem('user');
                     setUser(null);
-                    toast.error('Sesión expirada. Inicia sesión nuevamente.');
+                    setLoading(false);
                 }
-            })
-            .catch(() => {
-                console.warn('No se pudo verificar el token. Usando sesión local.');
-            })
-            .finally(() => setLoading(false));
+            } catch (e) {
+                console.error("Error parsing stored user data:", e);
+                localStorage.removeItem('user');
+                setUser(null);
+                setLoading(false);
+            }
+        } else {
+            setLoading(false);
+        }
     }, []);
 
     const login = (userData, token) => {
@@ -51,6 +64,7 @@ export const UserProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        localStorage.removeItem('token');
         setUser(null);
     };
 

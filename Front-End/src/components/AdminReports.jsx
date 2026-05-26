@@ -61,6 +61,7 @@ const AdminReports = () => {
             try {
                 await deleteReport(reportId);
                 setReports(reports.filter(r => r.id !== reportId));
+                window.dispatchEvent(new CustomEvent('refreshAdminStats'));
                 Swal.fire({
                     icon: 'success',
                     title: 'Reporte eliminado',
@@ -97,9 +98,13 @@ const AdminReports = () => {
 
         if (result.isConfirmed) {
             try {
+                // Delete report first (FK references publication), then delete the publication
+                if (reportId) {
+                    await deleteReport(reportId);
+                }
                 await deleteStory(storyId);
-                await deleteReport(reportId);
                 setReports(reports.filter(r => r.storyId !== storyId));
+                window.dispatchEvent(new CustomEvent('refreshAdminStats'));
                 Swal.fire({
                     icon: 'success',
                     title: 'Publicación eliminada',
@@ -108,7 +113,8 @@ const AdminReports = () => {
                     confirmButtonColor: '#8b0000'
                 });
                 if (selectedStory?.id === storyId) setShowStoryModal(false);
-            } catch {
+            } catch (error) {
+                console.error('Error deleting post:', error, { storyId, reportId });
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',

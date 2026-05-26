@@ -45,6 +45,7 @@ const DatosUsuarioRoutes = require('./routes/DatosUsuarioRoutes');
 const AlergiaRoutes = require('./routes/AlergiaRoutes');
 const RutinaRoutes = require('./routes/RutinaRoutes');
 const EjercicioRoutes = require('./routes/EjercicioRoutes');
+const ChatbotRoutes = require('./routes/ChatbotRoutes');
 
 // Use Routes
 app.use('/api/usuarios', UsuarioRoutes);
@@ -65,6 +66,7 @@ app.use('/api/datos-usuario', DatosUsuarioRoutes);
 app.use('/api/alergias', AlergiaRoutes);
 app.use('/api/rutinas', RutinaRoutes);
 app.use('/api/ejercicios', EjercicioRoutes);
+app.use('/api/chat', ChatbotRoutes);
 
 app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'OK', message: 'PowerFit Backend corriendo correctamente.' });

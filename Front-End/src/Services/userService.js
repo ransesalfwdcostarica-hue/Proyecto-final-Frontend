@@ -32,9 +32,10 @@ const mapUsuario = (u) => {
     ultimoFeedbackEjercicio: u.ultimoFeedbackEjercicio ?? u.DatosUsuario?.feedback_ejercicio ?? u.DatosUsuario?.ultimo_Feedback_Ejercicio ?? null,
     sexo: u.sexo ?? u.DatosUsuario?.sexo ?? null,
     lugarEntrenamiento: u.lugarEntrenamiento ?? u.DatosUsuario?.lugar_entrenamiento ?? null,
-    following: u.following ?? u.Perfil?.Following?.map(p => p.Usuario_idUsuario) ?? [],
-    followers: u.followers ?? u.Perfil?.Followers?.map(p => p.Usuario_idUsuario) ?? [],
-    ejerciciosElegidos: u.ejerciciosElegidos ?? u.DatosUsuario?.Rutinas?.[0]?.Ejercicios?.map(e => e.idEjercicios) ?? []
+    alergias: u.alergias ?? (u.DatosUsuario?.Alergia ? u.DatosUsuario.Alergia.map(a => a.nombre).join(', ') : (u.DatosUsuario?.Alergias ? u.DatosUsuario.Alergias.map(a => a.nombre).join(', ') : 'Ninguna')),
+    following: u.following ?? u.Perfil?.Following?.map(p => p.id_usuario || p.Usuario_idUsuario) ?? [],
+    followers: u.followers ?? u.Perfil?.Followers?.map(p => p.id_usuario || p.Usuario_idUsuario) ?? [],
+    ejerciciosElegidos: u.ejerciciosElegidos ?? u.DatosUsuario?.Rutinas?.[0]?.Ejercicios?.map(e => e.id_ejercicio || e.idEjercicios) ?? []
   };
 };
 
@@ -43,7 +44,18 @@ export const registerUser = async (userData) => {
     correo: userData.email || userData.correo,
     contrasenia: userData.password || userData.contrasenia,
     nombre: userData.nombre,
-    edad: userData.edad ? Number(userData.edad) : 18
+    edad: userData.edad ? Number(userData.edad) : 18,
+    sexo: userData.sexo || 'Masculino',
+    altura: userData.altura ? Number(userData.altura) : 1.70,
+    peso: userData.peso ? Number(userData.peso) : 70.0,
+    lugarEntrenamiento: userData.lugarEntrenamiento || 'Casa',
+    alergias: userData.alergias || '',
+    pesoMeta: userData.pesoMeta ? Number(userData.pesoMeta) : 70.0,
+    plazoSemanas: userData.plazoSemanas ? Number(userData.plazoSemanas) : 8,
+    deficitEstimado: userData.deficitEstimado ? Number(userData.deficitEstimado) : 450,
+    semanasEnProgreso: userData.semanasEnProgreso ? Number(userData.semanasEnProgreso) : 0,
+    ultimoFeedbackDieta: userData.ultimoFeedbackDieta || 'Ninguno',
+    ultimoFeedbackEjercicio: userData.ultimoFeedbackEjercicio || 'Ninguno'
   };
 
   const response = await fetch(`${BASE_URL}/api/auth/register`, {
@@ -154,6 +166,23 @@ export const deleteUser = async (userId) => {
     headers: authHeaders()
   });
   if (!response.ok) throw new Error('Error al eliminar el usuario.');
+};
+
+/**
+ * Toggle follow/unfollow atomically via the dedicated backend endpoint.
+ * Returns { following: bool, followerId, targetId }
+ */
+export const followUser = async (currentUserId, targetUserId) => {
+  const response = await fetch(`${BASE_URL}/api/usuarios/${currentUserId}/follow`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ targetUserId })
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || 'Error al seguir/dejar de seguir al usuario.');
+  }
+  return await response.json(); // { following, followerId, targetId }
 };
 
 export const checkUserExists = async (email) => {

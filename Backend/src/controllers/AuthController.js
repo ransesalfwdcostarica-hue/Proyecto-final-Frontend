@@ -46,23 +46,99 @@ const AuthController = {
             }
             const id_rol = clientRol.id_rol;
 
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(userPassword, salt);
-
             const newUser = await Usuario.create({
                 correo: userEmail,
-                contrasenia: hashedPassword,
+                contrasenia: userPassword,
                 nombre,
                 edad: edad || 18,
                 id_rol
             });
 
-            await Perfil.create({
-                id_usuario: newUser.id_usuario,
-                biografia: 'Nuevo miembro de PowerFit',
-                foto_perfil: '',
-                foto_portada: ''
-            });
+            const isFullRegistration = req.body.sexo !== undefined || req.body.peso !== undefined || req.body.altura !== undefined;
+            const { Alergia } = require('../index');
+            
+            if (isFullRegistration) {
+                const foto_perfil = req.body.avatar || req.body.foto_perfil || '';
+                const foto_portada = req.body.cover || req.body.foto_portada || '';
+                const biografia = req.body.biografia || 'Nuevo miembro de PowerFit';
+                
+                await Perfil.create({
+                    foto_perfil,
+                    foto_portada,
+                    biografia,
+                    id_usuario: newUser.id_usuario
+                });
+
+                const sexo = req.body.sexo || 'Masculino';
+                const altura = req.body.altura !== undefined ? Number(req.body.altura) : 1.70;
+                const peso = req.body.peso !== undefined ? Number(req.body.peso) : 70.0;
+                const lugar_entrenamiento = req.body.lugarEntrenamiento || req.body.lugar_entrenamiento || 'Casa';
+                const peso_meta = req.body.pesoMeta !== undefined ? Number(req.body.pesoMeta) : 70.0;
+                const plazo_semanas = req.body.plazoSemanas !== undefined ? Number(req.body.plazoSemanas) : 8;
+                const deficit_estimado = req.body.deficitEstimado !== undefined ? Number(req.body.deficitEstimado) : 450;
+                const imagen = req.body.imagen || '';
+                const semanas_progreso = req.body.semanasEnProgreso !== undefined ? Number(req.body.semanasEnProgreso) : 0;
+                const feedback_dieta = req.body.ultimoFeedbackDieta || req.body.feedback_dieta || 'Ninguno';
+                const feedback_ejercicio = req.body.ultimoFeedbackEjercicio || req.body.feedback_ejercicio || 'Ninguno';
+
+                const datosUsuario = await DatosUsuario.create({
+                    sexo,
+                    altura,
+                    peso,
+                    lugar_entrenamiento,
+                    peso_meta,
+                    plazo_semanas,
+                    deficit_estimado,
+                    imagen,
+                    id_usuario: newUser.id_usuario,
+                    semanas_progreso,
+                    feedback_dieta,
+                    feedback_ejercicio
+                });
+
+                if (req.body.alergias) {
+                    let alergiasList = [];
+                    const rawAlergias = req.body.alergias;
+
+                    if (Array.isArray(rawAlergias)) {
+                        // Frontend sent an array of allergy names
+                        alergiasList = rawAlergias.map(name => String(name).trim()).filter(n => n.length > 0);
+                    } else if (typeof rawAlergias === 'string' && rawAlergias.trim() !== '') {
+                        // Use '||' pipe delimiter (new format) if present, otherwise fall back to comma
+                        const delimiter = rawAlergias.includes('||') ? '||' : ',';
+                        const cleaned = rawAlergias.replace(/ Adicional:\s*/i, delimiter === '||' ? '||' : ', ');
+                        alergiasList = cleaned
+                            .split(delimiter)
+                            .map(name => name.trim())
+                            .filter(name => name.length > 0);
+                    }
+
+                    // Remove "Ninguna" / "Ninguno" entries
+                    alergiasList = alergiasList.filter(name => 
+                        name.toLowerCase() !== 'ninguna' && name.toLowerCase() !== 'ninguno'
+                    );
+
+                    if (alergiasList.length > 0) {
+                        const alergiaRecords = [];
+                        for (const name of alergiasList) {
+                            const [alergiaRecord] = await Alergia.findOrCreate({ where: { nombre: name } });
+                            alergiaRecords.push(alergiaRecord);
+                        }
+                        if (typeof datosUsuario.setAlergia === 'function') {
+                            await datosUsuario.setAlergia(alergiaRecords);
+                        } else if (typeof datosUsuario.setAlergias === 'function') {
+                            await datosUsuario.setAlergias(alergiaRecords);
+                        }
+                    }
+                }
+            } else {
+                await Perfil.create({
+                    id_usuario: newUser.id_usuario,
+                    biografia: 'Nuevo miembro de PowerFit',
+                    foto_perfil: '',
+                    foto_portada: ''
+                });
+            }
 
             const token = generateToken(newUser);
 
@@ -96,6 +172,7 @@ const AuthController = {
                 return res.status(400).json({ error: 'El correo y la contraseña son obligatorios.' });
             }
 
+            const { Rol, Perfil, DatosUsuario, Rutina, Ejercicio, Alergia } = require('../index');
             const usuario = await Usuario.findOne({
                 where: { correo: userEmail },
                 include: [
@@ -109,10 +186,13 @@ const AuthController = {
                     },
                     { 
                         model: DatosUsuario,
-                        include: [{
-                            model: Rutina,
-                            include: [{ model: Ejercicio }]
-                        }]
+                        include: [
+                            { model: Alergia },
+                            {
+                                model: Rutina,
+                                include: [{ model: Ejercicio }]
+                            }
+                        ]
                     }
                 ]
             });
@@ -127,8 +207,7 @@ const AuthController = {
             } else {
                 isValid = (userPassword === usuario.contrasenia);
                 if (isValid) {
-                    const salt = await bcrypt.genSalt(10);
-                    await usuario.update({ contrasenia: await bcrypt.hash(userPassword, salt) });
+                    await usuario.update({ contrasenia: userPassword });
                 }
             }
 
@@ -151,6 +230,9 @@ const AuthController = {
                 }
                 return list;
             };
+
+            // Duplicate token declaration removed; token already defined above
+            // res.status(200).json({
 
             res.status(200).json({
                 message: 'Inicio de sesión exitoso.',
@@ -179,6 +261,7 @@ const AuthController = {
     me: async (req, res) => {
         try {
             const userId = req.user?.id || req.usuario?.id || req.user?.id_usuario || req.usuario?.id_usuario;
+            const { Rol, Perfil, DatosUsuario, Rutina, Ejercicio, Alergia } = require('../index');
             const usuario = await Usuario.findByPk(userId, {
                 include: [
                     { model: Rol },
@@ -191,7 +274,10 @@ const AuthController = {
                     },
                     { 
                         model: DatosUsuario, 
-                        include: [{ model: Rutina, include: [{ model: Ejercicio }] }] 
+                        include: [
+                            { model: Alergia },
+                            { model: Rutina, include: [{ model: Ejercicio }] }
+                        ] 
                     }
                 ]
             });

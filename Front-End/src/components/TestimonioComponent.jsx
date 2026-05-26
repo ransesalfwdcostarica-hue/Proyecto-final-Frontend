@@ -674,7 +674,7 @@ const TestimonioComponent = () => {
                                     style={{ animationDelay: `${index * 0.1}s` }}
                                 >
                                     <div className="story-header">
-                                        <div className="user-info">
+                                        <Link to={`/perfil/${story.userId}`} className="user-info" style={{ textDecoration: 'none', color: 'inherit' }}>
                                             <img src={getUserAvatar(story.userId, story.userAvatar)} alt={getUserName(story.userId, story.userName)} className="user-avatar" />
                                             <div className="user-details">
                                                 <h4>{getUserName(story.userId, story.userName)}</h4>
@@ -682,7 +682,7 @@ const TestimonioComponent = () => {
                                                     {getTimeAgo(story.fecha || story.time)} • {story.tag}
                                                 </div>
                                             </div>
-                                        </div>
+                                        </Link>
                                         <div className="story-header-actions">
                                             {currentUser && currentUser.id === story.userId ? (
                                                 <button
@@ -765,11 +765,15 @@ const TestimonioComponent = () => {
                                                 ) : commentsData[story.id]?.length > 0 ? (
                                                     commentsData[story.id].map(comment => (
                                                         <div key={comment.id} className="comment-item">
-                                                            <img src={getUserAvatar(comment.userId, comment.userAvatar)} alt={getUserName(comment.userId, comment.userName)} className="comment-avatar" />
+                                                            <Link to={`/perfil/${comment.userId}`}>
+                                                                <img src={getUserAvatar(comment.userId, comment.userAvatar)} alt={getUserName(comment.userId, comment.userName)} className="comment-avatar" />
+                                                            </Link>
                                                             <div className="comment-content">
                                                                 <div className="comment-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                                        <span className="comment-user">{getUserName(comment.userId, comment.userName)}</span>
+                                                                        <Link to={`/perfil/${comment.userId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                                            <span className="comment-user">{getUserName(comment.userId, comment.userName)}</span>
+                                                                        </Link>
                                                                         <span className="comment-date">{getTimeAgo(comment.fecha)}</span>
                                                                     </div>
                                                                     {currentUser && currentUser.id !== comment.userId && (

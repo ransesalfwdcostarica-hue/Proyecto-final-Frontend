@@ -278,3 +278,109 @@
     font-size: 1.5rem;
   }
 }
+
+/* --- Estilos Premium para Apartado de Alergias --- */
+.alergias-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.alergias-instruction-text {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.alergias-grupo {
+  background-color: #120d0d;
+  border: 1px solid #332121;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: border-color 0.3s ease;
+}
+
+.alergias-grupo:hover {
+  border-color: #5c1818;
+}
+
+.grupo-titulo {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ef4444; /* Rojo deportivo y moderno */
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-left: 3px solid #dc2626;
+  padding-left: 0.5rem;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.1rem;
+  background-color: #181212;
+  border: 1px solid #2e1e1e;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  font-size: 0.925rem;
+  color: #e2e8f0;
+}
+
+.checkbox-label:hover {
+  background-color: #221717;
+  border-color: #7d2020;
+  transform: translateY(-1px);
+}
+
+.checkbox-label.selected {
+  background-color: #3b1414;
+  border-color: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+}
+
+.checkbox-label input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #120d0d;
+  border: 2px solid #5c3b3b;
+  padding: 8px;
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+  background-color: #dc2626;
+  border-color: #dc2626;
+}
+
+.checkbox-label input[type="checkbox"]:checked:after {
+  content: '\2714';
+  font-size: 10px;
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

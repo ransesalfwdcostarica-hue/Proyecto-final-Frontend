@@ -1,2 +1,24 @@
-node_modules
-Proyecto-final-Frontend\Backend\node_modules
+node_modules/
+
+# Variables de entorno — NUNCA subir al repositorio
+.env
+.env.*
+*.env
+Chatbot.env
+*Chatbot.env
+
+# Scripts de debug/test locales
+test_auth.js
+test-api.js
+test-db.js
+check-db.js
+check-dupes.js
+check-publicaciones.js
+check_tables.js
+fix-db.js
+migrate-db.js
+reset-db.js
+seed-data.js
+seed-mensajes.js
+seed-stories.js
+show-tables.js

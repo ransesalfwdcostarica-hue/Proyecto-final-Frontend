@@ -6,13 +6,38 @@ const UsuarioController = {
     getAll: async (req, res) => {
         try {
             const { page, limit } = req.query;
+            const { Rol, DatosUsuario, Perfil, Rutina, Ejercicio, Alergia } = require('../index');
+            
+            const includeArray = [
+                { model: Rol },
+                { 
+                    model: DatosUsuario,
+                    include: [
+                        { model: Alergia },
+                        {
+                            model: Rutina,
+                            include: [{ model: Ejercicio }]
+                        }
+                    ]
+                },
+                { 
+                    model: Perfil,
+                    include: [
+                        { model: Perfil, as: 'Followers' },
+                        { model: Perfil, as: 'Following' }
+                    ]
+                }
+            ];
+
             if (page && limit) {
                 const limitNum = parseInt(limit, 10) || 10;
                 const offsetNum = (parseInt(page, 10) - 1) * limitNum;
                 const { count, rows } = await Usuario.findAndCountAll({
                     limit: limitNum,
                     offset: offsetNum,
-                    attributes: { exclude: ['contrasenia'] }
+                    attributes: { exclude: ['contrasenia'] },
+                    include: includeArray,
+                    distinct: true
                 });
                 return res.status(200).json({
                     data: rows,
@@ -23,7 +48,8 @@ const UsuarioController = {
             }
 
             const usuarios = await Usuario.findAll({
-                attributes: { exclude: ['contrasenia'] }
+                attributes: { exclude: ['contrasenia'] },
+                include: includeArray
             });
 
             if (!usuarios || usuarios.length === 0) {
@@ -37,17 +63,20 @@ const UsuarioController = {
     getById: async (req, res) => {
         try {
             const { id } = req.params;
-            const { Rol, DatosUsuario, Perfil, Rutina, Ejercicio } = require('../index');
+            const { Rol, DatosUsuario, Perfil, Rutina, Ejercicio, Alergia } = require('../index');
             const usuario = await Usuario.findByPk(id, {
                 attributes: { exclude: ['contrasenia'] },
                 include: [
                     { model: Rol },
                     { 
                         model: DatosUsuario,
-                        include: [{
-                            model: Rutina,
-                            include: [{ model: Ejercicio }]
-                        }]
+                        include: [
+                            { model: Alergia },
+                            {
+                                model: Rutina,
+                                include: [{ model: Ejercicio }]
+                            }
+                        ]
                     },
                     { 
                         model: Perfil,
@@ -70,13 +99,107 @@ const UsuarioController = {
     },
     create: async (req, res) => {
         try {
-            const { correo, contrasenia, nombre, edad, id_rol } = req.body;
+            const { correo, email, contrasenia, password, nombre, edad, id_rol } = req.body;
 
-            if (!correo || !contrasenia || !nombre) {
+            const finalCorreo = correo || email;
+            const finalContrasenia = contrasenia || password;
+
+            if (!finalCorreo || !finalContrasenia || !nombre) {
                 return res.status(400).json({ error: 'El correo, contrasenia, nombre es requerido' });
             }
 
-            const nuevo = await Usuario.create({ correo, contrasenia, nombre, edad, id_rol });
+            // Crear el usuario con id_rol por defecto a 2 (Cliente) si no se especifica
+            const nuevo = await Usuario.create({
+                correo,
+                contrasenia,
+                nombre,
+                edad: edad ? Number(edad) : 18,
+                id_rol: id_rol || 1
+            });
+
+            const { Perfil, DatosUsuario, Alergia } = require('../index');
+
+            // Crear Perfil y DatosUsuario si hay campos de registro físico/completo
+            const isFullRegistration = req.body.sexo !== undefined || req.body.peso !== undefined || req.body.altura !== undefined;
+            
+            if (isFullRegistration) {
+                // Crear Perfil
+                const foto_perfil = req.body.avatar || req.body.foto_perfil || 'avatar.png';
+                const foto_portada = req.body.cover || req.body.foto_portada || 'banner.jpg';
+                const biografia = req.body.biografia || 'Miembro de PowerFit';
+                
+                await Perfil.create({
+                    foto_perfil,
+                    foto_portada,
+                    biografia,
+                    id_usuario: nuevo.id_usuario
+                });
+
+                // Crear DatosUsuario
+                const sexo = req.body.sexo || 'Masculino';
+                const altura = req.body.altura !== undefined ? Number(req.body.altura) : 1.70;
+                const peso = req.body.peso !== undefined ? Number(req.body.peso) : 70.0;
+                const lugar_entrenamiento = req.body.lugarEntrenamiento || req.body.lugar_entrenamiento || 'Casa';
+                const peso_meta = req.body.pesoMeta !== undefined ? Number(req.body.pesoMeta) : 70.0;
+                const plazo_semanas = req.body.plazoSemanas !== undefined ? Number(req.body.plazoSemanas) : 8;
+                const deficit_estimado = req.body.deficitEstimado !== undefined ? Number(req.body.deficitEstimado) : 450;
+                const imagen = req.body.imagen || 'inicial.png';
+                const semanas_progreso = req.body.semanasEnProgreso !== undefined ? Number(req.body.semanasEnProgreso) : 0;
+                const feedback_dieta = req.body.ultimoFeedbackDieta || req.body.feedback_dieta || 'Ninguno';
+                const feedback_ejercicio = req.body.ultimoFeedbackEjercicio || req.body.feedback_ejercicio || 'Ninguno';
+
+                const datosUsuario = await DatosUsuario.create({
+                    sexo,
+                    altura,
+                    peso,
+                    lugar_entrenamiento,
+                    peso_meta,
+                    plazo_semanas,
+                    deficit_estimado,
+                    imagen,
+                    id_usuario: nuevo.id_usuario,
+                    semanas_progreso,
+                    feedback_dieta,
+                    feedback_ejercicio
+                });
+
+                // Procesar alergias si se enviaron
+                if (req.body.alergias) {
+                    let alergiasList = [];
+                    const rawAlergias = req.body.alergias;
+
+                    if (Array.isArray(rawAlergias)) {
+                        alergiasList = rawAlergias.map(name => String(name).trim()).filter(n => n.length > 0);
+                    } else if (typeof rawAlergias === 'string' && rawAlergias.trim() !== '') {
+                        const delimiter = rawAlergias.includes('||') ? '||' : ',';
+                        const cleaned = rawAlergias.replace(/ Adicional:\s*/i, delimiter === '||' ? '||' : ', ');
+                        alergiasList = cleaned
+                            .split(delimiter)
+                            .map(name => name.trim())
+                            .filter(name => name.length > 0);
+                    }
+
+                    alergiasList = alergiasList.filter(name => 
+                        name.toLowerCase() !== 'ninguna' && name.toLowerCase() !== 'ninguno'
+                    );
+
+                    if (alergiasList.length > 0) {
+                        const alergiaRecords = [];
+                        for (const name of alergiasList) {
+                            const [alergiaRecord] = await Alergia.findOrCreate({
+                                where: { nombre: name }
+                            });
+                            alergiaRecords.push(alergiaRecord);
+                        }
+                        if (typeof datosUsuario.setAlergia === 'function') {
+                            await datosUsuario.setAlergia(alergiaRecords);
+                        } else if (typeof datosUsuario.setAlergias === 'function') {
+                            await datosUsuario.setAlergias(alergiaRecords);
+                        }
+                    }
+                }
+            }
+
             const nuevoJson = nuevo.toJSON();
             delete nuevoJson.contrasenia;
             res.status(201).json(nuevoJson);
@@ -94,13 +217,18 @@ const UsuarioController = {
                 return res.status(404).json({ message: 'Usuario no encontrado' });
             }
 
-            if (!correo || !contrasenia || !nombre) {
-                return res.status(400).json({ error: 'El correo, contrasenia, nombre es requerido' });
+            const updateFields = {};
+            if (correo !== undefined) updateFields.correo = correo;
+            if (contrasenia !== undefined) updateFields.contrasenia = contrasenia;
+            if (nombre !== undefined) updateFields.nombre = nombre;
+            if (edad !== undefined) updateFields.edad = edad;
+            if (id_rol !== undefined) updateFields.id_rol = id_rol;
+
+            if (Object.keys(updateFields).length > 0) {
+                await usuario.update(updateFields);
             }
 
-            await usuario.update({ correo, contrasenia, nombre, edad, id_rol });
-
-            const { DatosUsuario, Perfil } = require('../index');
+            const { DatosUsuario, Perfil, Alergia, DatosUsuarioAlergia } = require('../index');
 
             // Update or Create DatosUsuario if fields are present
             let datosUsuario = await DatosUsuario.findOne({ where: { id_usuario: id } });
@@ -122,7 +250,63 @@ const UsuarioController = {
                 if (datosUsuario) {
                     await datosUsuario.update(updateData);
                 } else {
-                    await DatosUsuario.create({ ...updateData, id_usuario: id });
+                    datosUsuario = await DatosUsuario.create({ 
+                        ...updateData, 
+                        id_usuario: id,
+                        semanas_progreso: req.body.semanasEnProgreso || 1,
+                        feedback_dieta: req.body.ultimoFeedbackDieta || 'Ninguno',
+                        feedback_ejercicio: req.body.ultimoFeedbackEjercicio || 'Ninguno',
+                        imagen: req.body.imagen || ''
+                    });
+                }
+            }
+
+            // Handle Alergias if present
+            if (req.body.alergias !== undefined) {
+                if (!datosUsuario) {
+                    datosUsuario = await DatosUsuario.create({
+                        id_usuario: id,
+                        sexo: req.body.sexo || 'm',
+                        altura: req.body.altura || 0,
+                        peso: req.body.peso || 0,
+                        lugar_entrenamiento: req.body.lugarEntrenamiento || 'gym',
+                        peso_meta: req.body.pesoMeta || 0,
+                        plazo_semanas: req.body.plazoSemanas || 8,
+                        deficit_estimado: req.body.deficitEstimado || 450,
+                        semanas_progreso: 1,
+                        feedback_dieta: 'Ninguno',
+                        feedback_ejercicio: 'Ninguno',
+                        imagen: ''
+                    });
+                }
+
+                // Clean up existing associations for this user
+                await DatosUsuarioAlergia.destroy({ where: { id_datos_usuario: datosUsuario.id_datos_usuario } });
+
+                let alergiasList = [];
+                const rawAlergias = req.body.alergias;
+
+                if (Array.isArray(rawAlergias)) {
+                    alergiasList = rawAlergias.map(name => String(name).trim()).filter(n => n.length > 0);
+                } else if (typeof rawAlergias === 'string' && rawAlergias.trim() !== '') {
+                    const delimiter = rawAlergias.includes('||') ? '||' : ',';
+                    const cleaned = rawAlergias.replace(/Adicional:/gi, delimiter === '||' ? '||' : ',');
+                    alergiasList = cleaned
+                        .split(delimiter)
+                        .map(name => name.trim())
+                        .filter(name => name.length > 0);
+                }
+
+                alergiasList = alergiasList.filter(name => 
+                    name.toLowerCase() !== 'ninguna' && name.toLowerCase() !== 'ninguno'
+                );
+
+                for (const nombreAlergia of alergiasList) {
+                    const [alergia] = await Alergia.findOrCreate({ where: { nombre: nombreAlergia } });
+                    await DatosUsuarioAlergia.create({
+                        id_datos_usuario: datosUsuario.id_datos_usuario,
+                        id_alergia: alergia.id_alergia
+                    });
                 }
             }
 
@@ -133,12 +317,15 @@ const UsuarioController = {
             if (req.body.avatar !== undefined) perfilUpdate.foto_perfil = req.body.avatar;
             if (req.body.cover !== undefined) perfilUpdate.foto_portada = req.body.cover;
             
-            if (Object.keys(perfilUpdate).length > 0) {
-                if (perfil) {
-                    await perfil.update(perfilUpdate);
-                } else {
-                    perfil = await Perfil.create({ ...perfilUpdate, id_usuario: id, biografia: 'Miembro de PowerFit' });
-                }
+            if (!perfil && (req.body.following !== undefined || req.body.followers !== undefined || Object.keys(perfilUpdate).length > 0)) {
+                perfil = await Perfil.create({ 
+                    foto_perfil: req.body.avatar || '', 
+                    foto_portada: req.body.cover || '', 
+                    id_usuario: id, 
+                    biografia: 'Miembro de PowerFit' 
+                });
+            } else if (perfil && Object.keys(perfilUpdate).length > 0) {
+                await perfil.update(perfilUpdate);
             }
 
             // Update followers/following if provided
@@ -179,10 +366,13 @@ const UsuarioController = {
                     { model: require('../index').Rol },
                     { 
                         model: DatosUsuario,
-                        include: [{
-                            model: Rutina,
-                            include: [{ model: Ejercicio }]
-                        }]
+                        include: [
+                            { model: Alergia },
+                            {
+                                model: Rutina,
+                                include: [{ model: Ejercicio }]
+                            }
+                        ]
                     },
                     { 
                         model: Perfil,
@@ -206,17 +396,20 @@ const UsuarioController = {
                 return res.status(400).json({ error: 'Correo y contrasenia son requeridos' });
             }
 
-            const { Rol, DatosUsuario, Perfil, Rutina, Ejercicio } = require('../index');
+            const { Rol, DatosUsuario, Perfil, Rutina, Ejercicio, Alergia } = require('../index');
             const usuario = await Usuario.findOne({ 
                 where: { correo },
                 include: [
                     { model: Rol },
                     { 
                         model: DatosUsuario,
-                        include: [{
-                            model: Rutina,
-                            include: [{ model: Ejercicio }]
-                        }]
+                        include: [
+                            { model: Alergia },
+                            {
+                                model: Rutina,
+                                include: [{ model: Ejercicio }]
+                            }
+                        ]
                     },
                     { 
                         model: Perfil,
@@ -276,7 +469,85 @@ const UsuarioController = {
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
+    },
+    /**
+     * POST /api/usuarios/:id/follow
+     * Body: { targetUserId }
+     * Toggles follow/unfollow between the authenticated user (id) and targetUserId.
+     * Returns { following: bool, followerId, targetId }
+     */
+    follow: async (req, res) => {
+        try {
+            const { id } = req.params;           // current user (the one doing the follow)
+            const { targetUserId } = req.body;   // user to follow/unfollow
+
+            if (!targetUserId) {
+                return res.status(400).json({ error: 'targetUserId es requerido' });
+            }
+
+            if (String(id) === String(targetUserId)) {
+                return res.status(400).json({ error: 'No puedes seguirte a ti mismo' });
+            }
+
+            const { Perfil } = require('../index');
+
+            // Find (or create) profiles for both users
+            let [perfilSeguidor] = await Perfil.findOrCreate({
+                where: { id_usuario: id },
+                defaults: { foto_perfil: '', foto_portada: '', biografia: 'Miembro de PowerFit' }
+            });
+
+            let [perfilObjetivo] = await Perfil.findOrCreate({
+                where: { id_usuario: targetUserId },
+                defaults: { foto_perfil: '', foto_portada: '', biografia: 'Miembro de PowerFit' }
+            });
+
+            // Check if already following using the junction table
+            const sequelize = require('../config/db');
+            const { QueryTypes } = require('sequelize');
+
+            const existing = await sequelize.query(
+                'SELECT * FROM perfil_seguidor WHERE id_perfil = :followerId AND id_seguidor = :targetId',
+                {
+                    replacements: { followerId: perfilSeguidor.id_perfil, targetId: perfilObjetivo.id_perfil },
+                    type: QueryTypes.SELECT
+                }
+            );
+
+            let isNowFollowing;
+            if (existing.length > 0) {
+                // Already following → unfollow
+                await sequelize.query(
+                    'DELETE FROM perfil_seguidor WHERE id_perfil = :followerId AND id_seguidor = :targetId',
+                    {
+                        replacements: { followerId: perfilSeguidor.id_perfil, targetId: perfilObjetivo.id_perfil },
+                        type: QueryTypes.DELETE
+                    }
+                );
+                isNowFollowing = false;
+            } else {
+                // Not following → follow
+                await sequelize.query(
+                    'INSERT INTO perfil_seguidor (id_perfil, id_seguidor) VALUES (:followerId, :targetId)',
+                    {
+                        replacements: { followerId: perfilSeguidor.id_perfil, targetId: perfilObjetivo.id_perfil },
+                        type: QueryTypes.INSERT
+                    }
+                );
+                isNowFollowing = true;
+            }
+
+            return res.status(200).json({
+                following: isNowFollowing,
+                followerId: parseInt(id),
+                targetId: parseInt(targetUserId)
+            });
+        } catch (error) {
+            console.error('follow error:', error);
+            res.status(500).json({ error: error.message });
+        }
     }
 };
 
 module.exports = UsuarioController;
+

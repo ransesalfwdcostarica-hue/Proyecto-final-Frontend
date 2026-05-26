@@ -13,7 +13,6 @@ function RegistroProceso() {
     edad: "",
     rol: "",
     // Step 2 data
-    edadFisica: "",
     sexo: "",
     altura: "",
     peso: "",

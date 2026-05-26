@@ -58,9 +58,32 @@ const ReporteController = {
             let finalRazonId = id_razon;
             
             if (!finalRazonId && reason) {
-                const { RazonReporte } = require('../index');
-                const r = await RazonReporte.findOne({ where: { nombre: reason } });
-                if (r) finalRazonId = r.id_razon;
+                const { RazonReporte, DetalleRazonReporte } = require('../index');
+                
+                // 1. Manejar o crear el Detalle de la Razón (subReason)
+                let detalleId = null;
+                if (subReason) {
+                    const [detalle] = await DetalleRazonReporte.findOrCreate({
+                        where: { nombre: subReason },
+                        defaults: { nombre: subReason }
+                    });
+                    detalleId = detalle.id_detalle_razon;
+                } else {
+                    // Fallback a un detalle genérico si no se envía subReason
+                    const [detalle] = await DetalleRazonReporte.findOrCreate({
+                        where: { nombre: 'Otro' },
+                        defaults: { nombre: 'Otro' }
+                    });
+                    detalleId = detalle.id_detalle_razon;
+                }
+
+                // 2. Manejar o crear la Razón Principal (reason) ligada al detalle
+                const [razon] = await RazonReporte.findOrCreate({
+                    where: { nombre: reason, id_detalle_razon: detalleId },
+                    defaults: { nombre: reason, id_detalle_razon: detalleId }
+                });
+                
+                finalRazonId = razon.id_razon;
             }
             if (!finalRazonId) finalRazonId = 1; // Fallback to 1
 

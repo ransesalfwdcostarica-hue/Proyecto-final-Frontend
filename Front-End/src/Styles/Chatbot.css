@@ -682,3 +682,46 @@
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(243, 156, 18, 0); }
 }
 
+/* Estilos para el Markdown nativo dentro del chat */
+.md-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.md-p {
+  margin: 0;
+  color: #eae3e3;
+  line-height: 1.6;
+}
+
+.md-h {
+  margin: 16px 0 8px 0;
+  color: #ff4d4d; /* Rojo vibrante premium */
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.md-h:first-child {
+  margin-top: 0;
+}
+
+.md-strong {
+  color: #ff6b6b; /* Resaltado de negrita en rojo suave */
+  font-weight: 600;
+}
+
+.md-ul, .md-ol {
+  margin: 4px 0 12px 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.md-li {
+  color: #e2d9d9;
+  list-style-type: disc;
+}
+
+

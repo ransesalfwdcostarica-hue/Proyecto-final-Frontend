@@ -3,9 +3,10 @@ import {
   Dumbbell, Users, Mail, BarChart2, ChevronRight, Plus, Dumbbell as DumbbellIcon, Play, X
 } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
-import { getAllUsers } from '../Services/userService';
+import { getAllUsers, getAllContactMessages } from '../Services/userService';
 import { getAllRoutines } from '../Services/routineService';
 import { obtenerTodosEjercicios } from '../Services/exerciseService';
+import { getAllReports } from '../Services/testimonioService';
 
 const DashboardAdministrador = ({ changeTab, openAddModal }) => {
   const { user } = useContext(UserContext);
@@ -27,10 +28,12 @@ const DashboardAdministrador = ({ changeTab, openAddModal }) => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [users, routines, exercises] = await Promise.all([
-          getAllUsers(),
-          getAllRoutines(),
-          obtenerTodosEjercicios(),
+        const [users, routines, exercises, messages, reports] = await Promise.all([
+          getAllUsers().catch(err => { console.error('Error fetching users:', err); return []; }),
+          getAllRoutines().catch(err => { console.error('Error fetching routines:', err); return []; }),
+          obtenerTodosEjercicios().catch(err => { console.error('Error fetching exercises:', err); return []; }),
+          getAllContactMessages().catch(err => { console.error('Error fetching messages:', err); return []; }),
+          getAllReports().catch(err => { console.error('Error fetching reports:', err); return []; }),
         ]);
         const pending = routines.filter(r => r.status === 'pending').length;
         const approved = routines.filter(r => r.status === 'approved').length;
@@ -40,8 +43,8 @@ const DashboardAdministrador = ({ changeTab, openAddModal }) => {
           pendingRoutines: pending,
           approvedRoutines: approved,
           totalExercises: exercises.length,
-          totalMessages: 0,
-          totalReports: 0,
+          totalMessages: messages.length,
+          totalReports: reports.length,
         });
         setExercises(exercises);
       } catch (error) {
