@@ -55,6 +55,10 @@ const DatosUsuario = sequelize.define('DatosUsuario', {
     feedback_ejercicio: {
         type: DataTypes.STRING(150),
         allowNull: false
+    },
+    rutina_ia: {
+        type: DataTypes.TEXT,
+        allowNull: true
     }
 }, {
     tableName: 'datos_usuario',
