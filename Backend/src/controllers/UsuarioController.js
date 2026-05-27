@@ -114,7 +114,7 @@ const UsuarioController = {
                 contrasenia,
                 nombre,
                 edad: edad ? Number(edad) : 18,
-                id_rol: id_rol || 1
+                id_rol: 2
             });
 
             const { Perfil, DatosUsuario, Alergia } = require('../index');
