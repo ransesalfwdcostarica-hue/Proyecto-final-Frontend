@@ -2,85 +2,22 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import { Link } from 'react-router-dom';
 import { sendMessage } from '../Services/Chatbot';
+import { updateUser } from '../Services/userService';
+import { parseInlineMarkdown, renderMarkdown } from '../utils/markdownParser';
 import {
   PlusSquare, Settings, User, LayoutDashboard, MessageSquare,
   Dumbbell, Apple, Clock, CheckCircle, Activity, Utensils,
-  BarChart2, Paperclip, Send, Flame, Footprints, Heart, Moon, Menu, X
+  BarChart2, Paperclip, Send, Flame, Footprints, Heart, Moon, Menu, X,
+  Save
 } from 'lucide-react';
+import Swal from 'sweetalert2';
 import '../styles/Chatbot.css';
-
-// Función auxiliar para parsear negritas **texto** en línea de forma segura en React
-const parseInlineMarkdown = (text) => {
-  if (!text) return '';
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((part, idx) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      const clean = part.slice(2, -2);
-      return <strong key={idx} className="md-strong">{clean}</strong>;
-    }
-    return part;
-  });
-};
-
-// Convertir de forma nativa bloques Markdown a elementos React estables
-const renderMarkdown = (text) => {
-  if (!text) return null;
-  const blocks = text.split(/\n\n+/);
-
-  return blocks.map((block, blockIdx) => {
-    const trimmed = block.trim();
-    if (!trimmed) return null;
-
-    // Encabezados ## o ### o #
-    if (trimmed.startsWith('### ')) {
-      const content = trimmed.replace(/^###\s+/, '');
-      return <h5 key={blockIdx} className="md-h">{parseInlineMarkdown(content)}</h5>;
-    }
-    if (trimmed.startsWith('## ')) {
-      const content = trimmed.replace(/^##\s+/, '');
-      return <h4 key={blockIdx} className="md-h">{parseInlineMarkdown(content)}</h4>;
-    }
-    if (trimmed.startsWith('# ')) {
-      const content = trimmed.replace(/^#\s+/, '');
-      return <h3 key={blockIdx} className="md-h">{parseInlineMarkdown(content)}</h3>;
-    }
-
-    // Listas desordenadas (líneas que empiezan con - o *)
-    const lines = trimmed.split('\n');
-    const isList = lines.every(line => {
-      const l = line.trim();
-      return l.startsWith('- ') || l.startsWith('* ') || l === '';
-    });
-    
-    if (isList && lines.some(line => line.trim().startsWith('- ') || line.trim().startsWith('* '))) {
-      return (
-        <ul key={blockIdx} className="md-ul">
-          {lines
-            .filter(line => line.trim() !== '')
-            .map((line, lineIdx) => {
-              const content = line.trim().replace(/^[-*]\s+/, '');
-              return <li key={lineIdx} className="md-li">{parseInlineMarkdown(content)}</li>;
-            })}
-        </ul>
-      );
-    }
-
-    // Párrafo normal
-    const paragraphContent = lines.map((line, lineIdx) => (
-      <React.Fragment key={lineIdx}>
-        {parseInlineMarkdown(line)}
-        {lineIdx < lines.length - 1 && <br />}
-      </React.Fragment>
-    ));
-    return <p key={blockIdx} className="md-p">{paragraphContent}</p>;
-  });
-};
-
 
 
 const ChatComponent = () => {
-  const { user } = useContext(UserContext);
+  const { user, refreshUser } = useContext(UserContext);
   const [inputText, setInputText] = useState('');
+  const [savedRoutineIdx, setSavedRoutineIdx] = useState(null);
   const [messages, setMessages] = useState([
     {
       role: 'bot',
@@ -281,6 +218,45 @@ const ChatComponent = () => {
                       <div className="md-content">
                         {renderMarkdown(msg.content)}
                       </div>
+                      {/* Botón Guardar Rutina – solo si el mensaje parece contener una rutina */}
+                      {/rutina|entrenamiento|ejercicio|series|repeticion/i.test(msg.content) && (
+                        <button
+                          className="btn-save-routine"
+                          disabled={savedRoutineIdx === idx}
+                          onClick={async () => {
+                            if (!user?.id) return;
+                            try {
+                              const updated = await updateUser(user.id, { rutina_ia: msg.content });
+                              refreshUser(updated);
+                              setSavedRoutineIdx(idx);
+                              Swal.fire({
+                                icon: 'success',
+                                title: '¡Rutina Guardada!',
+                                text: 'Puedes verla en tu apartado de Entrenamientos.',
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                background: '#171212',
+                                color: '#fff'
+                              });
+                            } catch (err) {
+                              console.error('Error saving routine:', err);
+                              Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'No se pudo guardar la rutina.',
+                                background: '#171212',
+                                color: '#fff',
+                                confirmButtonColor: '#8b0000'
+                              });
+                            }
+                          }}
+                        >
+                          <Save size={14} />
+                          {savedRoutineIdx === idx ? 'Rutina Guardada ✓' : 'Guardar esta Rutina'}
+                        </button>
+                      )}
                     </div>
                   ) : (
                     <div className="msg-bubble user-bubble">

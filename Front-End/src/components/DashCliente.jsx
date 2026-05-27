@@ -28,7 +28,9 @@ import {
   Heart,
   MessageCircle,
   Share2,
-  Camera
+  Camera,
+  Bot,
+  Trash2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { obtenerTodosEjercicios } from '../Services/exerciseService';
@@ -38,6 +40,7 @@ import { UserContext } from '../context/UserContext';
 import { API_BASE_URL } from '../Services/apiConfig';
 import Swal from 'sweetalert2';
 import SubirImagen from './SubirImagen';
+import { renderMarkdown } from '../utils/markdownParser';
 import '../styles/DashboardCliente.css';
 
 const DashCliente = () => {
@@ -57,6 +60,38 @@ const DashCliente = () => {
   });
   const [allUsers, setAllUsers] = useState([]);
   const [stories, setStories] = useState([]);
+
+  const handleRemoveExercise = async (exerciseId) => {
+    const currentChosen = user.ejerciciosElegidos || [];
+    const newChosen = currentChosen.filter(id => id !== exerciseId);
+    try {
+      const updated = await updateUser(user.id, {
+        ejerciciosElegidos: newChosen
+      });
+      refreshUser(updated);
+      Swal.fire({
+        icon: 'success',
+        title: 'Ejercicio eliminado',
+        text: 'El ejercicio ha sido removido de tus rutinas.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2000,
+        background: '#171212',
+        color: '#fff'
+      });
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo eliminar el ejercicio.',
+        background: '#171212',
+        color: '#fff',
+        confirmButtonColor: '#8b0000'
+      });
+    }
+  };
 
   const handleActiveTab = (tab) => {
     setActiveTab(tab);
@@ -550,7 +585,68 @@ const DashCliente = () => {
 
         {activeTab === 'training' && (
           <section className="training-view animate-fade-in">
-            <div className="section-header-row">
+            {/* ===== Rutina generada por VitalBot ===== */}
+            {user.rutina_ia ? (
+              <div className="ai-routine-card">
+                <div className="ai-routine-header">
+                  <div className="ai-routine-title">
+                    <Bot size={22} color="#ff4d4d" />
+                    <h2>Rutina Generada por VitalBot</h2>
+                  </div>
+                  <button
+                    className="btn-delete-routine"
+                    onClick={async () => {
+                      const result = await Swal.fire({
+                        title: '¿Eliminar rutina?',
+                        text: 'Puedes generar una nueva desde el chat con VitalBot.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#8b0000',
+                        cancelButtonColor: '#333',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar',
+                        background: '#171212',
+                        color: '#fff'
+                      });
+                      if (result.isConfirmed) {
+                        try {
+                          const updated = await updateUser(user.id, { rutina_ia: null });
+                          refreshUser(updated);
+                          Swal.fire({
+                            icon: 'success',
+                            title: 'Rutina eliminada',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            background: '#171212',
+                            color: '#fff'
+                          });
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      }
+                    }}
+                  >
+                    <Trash2 size={16} /> Eliminar
+                  </button>
+                </div>
+                <div className="ai-routine-body md-content">
+                  {renderMarkdown(user.rutina_ia)}
+                </div>
+              </div>
+            ) : (
+              <div className="ai-routine-empty">
+                <Bot size={36} color="#555" />
+                <h3>Sin rutina de IA aún</h3>
+                <p>Habla con <strong>VitalBot</strong> en el chat y pídele que te sugiera una rutina de entrenamiento. Luego podrás guardarla y verla aquí.</p>
+                <Link to="/chat" className="btn-primary-small">
+                  <MessageCircle size={16} /> Ir al Chat
+                </Link>
+              </div>
+            )}
+
+            <div className="section-header-row" style={{ marginTop: '2rem' }}>
               <div className="header-text">
                 <h2>Mis Rutinas Personalizadas</h2>
                 <p>Aquí verás los ejercicios que has elegido de la biblioteca y los agruparemos por músculo.</p>
@@ -590,10 +686,16 @@ const DashCliente = () => {
                                 <span className="tag-lvl">{ex.nivel}</span>
                                 <span className="tag-time">{ex.tiempo}</span>
                               </div>
-                              <button className="btn-mini-technique" onClick={() => setSelectedTechnique(ex)}>
-                                <Play size={14} fill="currentColor" />
-                                Ver técnica
-                              </button>
+                              <div className="mini-card-actions">
+                                <button className="btn-mini-technique" onClick={() => setSelectedTechnique(ex)}>
+                                  <Play size={14} fill="currentColor" />
+                                  Ver técnica
+                                </button>
+                                <button className="btn-mini-remove" onClick={() => handleRemoveExercise(ex.id)}>
+                                  <Trash2 size={14} />
+                                  Eliminar
+                                </button>
+                              </div>
                             </div>
                           </div>
                         ))}

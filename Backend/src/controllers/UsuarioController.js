@@ -245,6 +245,7 @@ const UsuarioController = {
             if (req.body.ultimoFeedbackEjercicio !== undefined) updateData.feedback_ejercicio = req.body.ultimoFeedbackEjercicio;
             if (req.body.sexo !== undefined) updateData.sexo = req.body.sexo;
             if (req.body.lugarEntrenamiento !== undefined) updateData.lugar_entrenamiento = req.body.lugarEntrenamiento;
+            if (req.body.rutina_ia !== undefined) updateData.rutina_ia = req.body.rutina_ia;
 
             if (Object.keys(updateData).length > 0) {
                 if (datosUsuario) {
@@ -256,7 +257,8 @@ const UsuarioController = {
                         semanas_progreso: req.body.semanasEnProgreso || 1,
                         feedback_dieta: req.body.ultimoFeedbackDieta || 'Ninguno',
                         feedback_ejercicio: req.body.ultimoFeedbackEjercicio || 'Ninguno',
-                        imagen: req.body.imagen || ''
+                        imagen: req.body.imagen || '',
+                        rutina_ia: req.body.rutina_ia || null
                     });
                 }
             }
@@ -276,7 +278,8 @@ const UsuarioController = {
                         semanas_progreso: 1,
                         feedback_dieta: 'Ninguno',
                         feedback_ejercicio: 'Ninguno',
-                        imagen: ''
+                        imagen: '',
+                        rutina_ia: null
                     });
                 }
 
